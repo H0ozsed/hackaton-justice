@@ -8,6 +8,7 @@ import { scenarioSchema, type Scenario } from './schema'
 export type { Avatar, Character, Choice, ChoiceQuality, Line, Scenario, Scene } from './schema'
 export { scenarioSchema } from './schema'
 export * from './engine'
+export * from './results'
 export { parseRichText, plainText, type RichTextSegment } from './rich-text'
 
 export const scenarios = defineCollection('scenarios', scenarioSchema, scenariosData)

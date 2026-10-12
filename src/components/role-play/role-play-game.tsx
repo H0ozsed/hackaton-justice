@@ -3,6 +3,7 @@ import { useEffect, useReducer, useRef, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
 import {
+  computeResults,
   createInitialState,
   currentScene,
   rolePlayReducer,
@@ -12,6 +13,7 @@ import {
 } from '@/shared/role-play'
 
 import { CharacterPortrait } from './character-portrait'
+import { ResultsScreen } from './results-screen'
 import { RichText } from './rich-text'
 import { SceneView } from './scene-view'
 
@@ -20,7 +22,7 @@ import { SceneView } from './scene-view'
  * Everything stays in the browser: choices are neither sent nor stored (RGPD).
  */
 export function RolePlayGame({ scenario }: { scenario: Scenario }) {
-  const [started, setStarted] = useState(false)
+  const [phase, setPhase] = useState<'intro' | 'playing' | 'results'>('intro')
   const [state, dispatch] = useReducer(
     (s: RolePlayState, a: RolePlayAction) => rolePlayReducer(scenario, s, a),
     scenario,
@@ -36,6 +38,7 @@ export function RolePlayGame({ scenario }: { scenario: Scenario }) {
   const restart = () => {
     dispatch({ type: 'restart' })
     setRun((r) => r + 1)
+    setPhase('playing')
   }
 
   // Same props on the server and the client (no hydration mismatch); reduced motion
@@ -56,11 +59,12 @@ export function RolePlayGame({ scenario }: { scenario: Scenario }) {
 
       {/* initial={false}: the intro is rendered visible by the server, not animated in. */}
       <AnimatePresence mode="wait" initial={false}>
-        {!started ? (
+        {phase === 'intro' && (
           <motion.div key="intro" {...slide}>
-            <Intro scenario={scenario} onStart={() => setStarted(true)} />
+            <Intro scenario={scenario} onStart={() => setPhase('playing')} />
           </motion.div>
-        ) : (
+        )}
+        {phase === 'playing' && (
           <motion.div key={`${run}-${scene.id}`} {...slide}>
             <SceneView
               scenario={scenario}
@@ -69,8 +73,15 @@ export function RolePlayGame({ scenario }: { scenario: Scenario }) {
               reduceMotion={reduceMotion}
               announce={setAnnouncement}
               onChoose={(choiceId) => dispatch({ type: 'choose', choiceId })}
-              renderEnding={(ending) => <Ending title={ending.title} onRestart={restart} />}
+              renderEnding={(ending) => (
+                <Ending title={ending.title} onShowResults={() => setPhase('results')} />
+              )}
             />
+          </motion.div>
+        )}
+        {phase === 'results' && (
+          <motion.div key={`${run}-results`} {...slide}>
+            <ResultsScreen results={computeResults(scenario, state)} onRestart={restart} />
           </motion.div>
         )}
       </AnimatePresence>
@@ -103,7 +114,7 @@ function Intro({ scenario, onStart }: { scenario: Scenario; onStart: () => void 
   )
 }
 
-function Ending({ title, onRestart }: { title: string; onRestart: () => void }) {
+function Ending({ title, onShowResults }: { title: string; onShowResults: () => void }) {
   const heading = useRef<HTMLHeadingElement>(null)
   useEffect(() => heading.current?.focus(), [])
 
@@ -116,8 +127,8 @@ function Ending({ title, onRestart }: { title: string; onRestart: () => void }) 
       >
         Fin : {title}
       </h3>
-      <Button onClick={onRestart} className="self-start">
-        Rejouer
+      <Button onClick={onShowResults} className="self-start">
+        Voir mon bilan
       </Button>
     </div>
   )
