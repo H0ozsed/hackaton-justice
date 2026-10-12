@@ -11,6 +11,15 @@ export type SimulationAnswers = Record<string, StepValues | undefined>
 // Answers of the ACTIVE steps only: this is what the result screen receives.
 export type SimulationResult = Record<string, StepValues>
 
+// zod schema of the fields of one step (input and output are both plain field values).
+export type StepSchema = z.ZodType<StepValues, StepValues>
+
+// What `Fields` receives: the answers of the active steps that come before the step. A step whose
+// fields depend on an earlier choice (e.g. the losses of the chosen conflict type) reads them here.
+export type StepFieldsProps = {
+  answers: SimulationResult
+}
+
 export type SimulationStep = {
   /** Unique, stable identifier of the step: key of its answers. */
   id: string
@@ -18,8 +27,12 @@ export type SimulationStep = {
   title: string
   /** Optional help text shown under the title. */
   description?: string
-  /** zod schema of the step fields. One schema per step: it validates before moving on. */
-  schema: z.ZodType<StepValues, StepValues>
+  /**
+   * zod schema of the step fields. One schema per step: it validates before moving on.
+   * A function receives the answers of the active steps that come before (same as `Fields`), for a
+   * step whose rules depend on an earlier choice. It must not depend on anything else.
+   */
+  schema: StepSchema | ((previousAnswers: SimulationResult) => StepSchema)
   /**
    * Should the step be asked? Absent = always active.
    * Receives the answers of the ACTIVE steps that come before it (never its own, nor those of an
@@ -28,7 +41,7 @@ export type SimulationStep = {
    */
   isActive?: (answers: SimulationAnswers) => boolean
   /** Step fields. They read the form with react-hook-form's `useFormContext()`. */
-  Fields: ComponentType
+  Fields: ComponentType<StepFieldsProps>
 }
 
 // Contract of the result screen, provided by the page (the final result belongs to #16).
