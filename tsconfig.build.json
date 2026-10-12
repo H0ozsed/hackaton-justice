@@ -1,0 +1,9 @@
+{
+  // Type checking of `npm run typecheck` and `next build` (see next.config.ts, #43).
+  // Next.js writes route types to .next/types (typegen, build) and .next/dev/types
+  // (next dev), and keeps both in tsconfig.json on purpose. Both copies of
+  // validator.ts declare the same global types, so `tsc` fails once the dev server
+  // has run. The editor and `next dev` keep using tsconfig.json.
+  "extends": "./tsconfig.json",
+  "exclude": ["node_modules", ".next/dev"]
+}
