@@ -19,7 +19,7 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "npm run content:check && next build",
     "start": "next start",
     "postinstall": "prisma generate",
     "prepare": "husky",
@@ -30,14 +30,16 @@
     "db:up": "docker compose up -d db",
     "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio",
-    "db:generate": "prisma generate"
+    "db:generate": "prisma generate",
+    "content:check": "tsx scripts/check-content.ts"
   },
   "lint-staged": {
     "*.{ts,tsx,js,mjs}": [
       "eslint --fix",
       "prettier --write"
     ],
-    "*.{json,md,yml,yaml,css}": "prettier --write"
+    "*.{json,md,yml,yaml,css}": "prettier --write",
+    "src/shared/**/*.ts": "npm run content:check --"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.9.1",
@@ -74,11 +76,13 @@
     "prettier-plugin-tailwindcss": "^0.8.1",
     "prisma": "7.10.0",
     "tailwindcss": "^4.3.3",
+    "tsx": "^4.23.15",
     "typescript": "^5.9.3"
   },
   "allowScripts": {
     "prisma@7.10.0": true,
     "unrs-resolver@1.12.2": true,
-    "@prisma/engines@7.10.0": true
+    "@prisma/engines@7.10.0": true,
+    "esbuild@0.28.2": true
   }
 }
