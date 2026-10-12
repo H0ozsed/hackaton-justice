@@ -1,44 +1,49 @@
-# Simulation: multi-step form engine (#12)
+# Simulation: multi-step form engine (#12) and steps
 
 The engine knows no content: it chains the **steps** it is given and renders a **result screen**
 provided by the page. Answers stay **in memory** (no database, no `localStorage`, no network call):
 reloading the page starts over.
 
-> Current state: the `steps.ts` registry only holds two **technical demo steps** (`demo-steps.tsx`)
-> and the end screen is a temporary `TechnicalRecap`. They will be replaced by the steps of #13,
-> #14, #15 and the result of #16.
+> Current state: the `steps.ts` registry holds a **temporary** conflict type placeholder
+> (`demo-conflict-type-step.tsx`, replaced by #13) followed by the real losses and frequency step
+> (#14). The end screen is a temporary `TechnicalRecap`, replaced by the result of #16.
 
 ## Files
 
-| File                  | Role                                                                         |
-| --------------------- | ---------------------------------------------------------------------------- |
-| `simulation-form.tsx` | `<SimulationForm steps ResultView />`: the component to put in the page      |
-| `step-panel.tsx`      | One react-hook-form + zod form per step, progress, focus, errors             |
-| `engine.ts`           | Pure logic (active steps, next, back, restart), no React                     |
-| `use-simulation.ts`   | Hook: in-memory state on top of the `engine.ts` functions                    |
-| `form-fields.tsx`     | Accessible native HTML fields: `TextField`, `RadioGroupField`                |
-| `step-progress.tsx`   | "Étape X sur N" indicator                                                    |
-| `error-summary.tsx`   | Error summary (`role="alert"`, links to the fields)                          |
-| `types.ts`            | `SimulationStep`, `SimulationAnswers`, `SimulationResult`, `ResultViewProps` |
-| `steps.ts`            | **Registry** of the steps, in the order they are asked                       |
-| `demo-steps.tsx`      | Two temporary technical steps                                                |
-| `technical-recap.tsx` | Temporary result screen                                                      |
-| `*.test.ts(x)`        | Unit tests of the engine and registry, component tests of `SimulationForm`   |
+| File                          | Role                                                                           |
+| ----------------------------- | ------------------------------------------------------------------------------ |
+| `simulation-form.tsx`         | `<SimulationForm steps ResultView />`: the component to put in the page        |
+| `step-panel.tsx`              | One react-hook-form + zod form per step, progress, focus, errors               |
+| `engine.ts`                   | Pure logic (active steps, next, back, restart), no React                       |
+| `use-simulation.ts`           | Hook: in-memory state on top of the `engine.ts` functions                      |
+| `form-fields.tsx`             | Accessible native HTML fields: `TextField`, `NumberField`, `RadioGroupField`   |
+| `numbers.ts`                  | `parseDecimal`: "12,5", "12.5", "1 200" to a number (NaN if not a number)      |
+| `step-progress.tsx`           | "Étape X sur N" indicator                                                      |
+| `error-summary.tsx`           | Error summary (`role="alert"`, links to the fields)                            |
+| `types.ts`                    | `SimulationStep`, `StepFieldsProps`, `SimulationAnswers`, `ResultViewProps`... |
+| `steps.ts`                    | **Registry** of the steps, in the order they are asked                         |
+| `conflict-type.ts`            | Contract with #13: conflict type step id and field, `getChosenConflictType`    |
+| `loss-frequency.ts`           | Rules (zod) and options of the losses and frequency step (#14)                 |
+| `loss-frequency-fields.tsx`   | Fields of that step: one block per declared loss kind, then the frequency      |
+| `loss-frequency-step.tsx`     | `createLossFrequencyStep(conflictTypes)`: the step itself                      |
+| `demo-conflict-type-step.tsx` | TEMPORARY placeholder for the conflict type step (#13)                         |
+| `technical-recap.tsx`         | Temporary result screen                                                        |
+| `*.test.ts(x)`                | Unit tests (engine, numbers, rules, registry), component tests (form, step)    |
 
 ## Add a step
 
-1. Create a step file (e.g. `conflict-type-step.tsx`). Texts shown to users are in French:
+1. Create a step file (e.g. `openness-step.tsx`). Texts shown to users are in French:
 
 ```tsx
-const schema = z.object({ type: z.enum(['voisinage', 'travail'], { error: 'Choisissez un type.' }) })
+const schema = z.object({ open: z.enum(['yes', 'no'], { error: 'Choisissez une réponse.' }) })
 
 function Fields() {
-  return <RadioGroupField name="type" legend="Quel est votre conflit ?" options={...} />
+  return <RadioGroupField name="open" legend="Êtes-vous prêt à discuter ?" options={...} />
 }
 
-export const conflictTypeStep: SimulationStep = {
-  id: 'conflict-type', // unique and stable: key of the answers
-  title: 'Votre conflit',
+export const opennessStep: SimulationStep = {
+  id: 'openness', // unique and stable: key of the answers
+  title: 'Ouverture à la discussion',
   schema,
   Fields,
   // isActive?: (answers) => boolean   // absent = always asked
@@ -50,7 +55,57 @@ export const conflictTypeStep: SimulationStep = {
 In `Fields`, read the form with react-hook-form's `useFormContext()`, or use the fields of
 `form-fields.tsx` (bound label, `fieldset`/`legend`, error linked with `aria-describedby`).
 Keep the schema simple: its output is also the initial value when going back, so avoid
-transformations that change the shape of the values.
+transformations that change the shape of the values (see "Numbers" below for the one exception).
+
+### A step that depends on an earlier choice
+
+`schema` can be a function of the answers of the active steps that come before, and `Fields`
+receives the same answers in its `answers` prop:
+
+```tsx
+schema: (previous) => lossFrequencySchema(chosenType(previous).lossKinds),
+Fields: ({ answers }) => <Blocks kinds={chosenType(answers).lossKinds} />,
+```
+
+Both only see the answers of **active steps before** the step, never an inactive one. Combine it
+with `isActive` so that the step is only asked once the choice it depends on exists.
+
+### Numbers
+
+`NumberField` is a text input with a decimal keypad (not `type="number"`). The form keeps the
+raw text; the schema turns it into a number with `z.preprocess(parseDecimal, z.number(...))`
+(French comma or point, spaces as thousands separators) and gives the error messages. Zod then
+outputs a number, and a number is accepted as input too, so going back shows it again.
+
+## Contract with the conflict type step (#13)
+
+Steps that depend on the conflict type read it from the answers (`conflict-type.ts`): the
+conflict type step **must** use the id `CONFLICT_TYPE_STEP_ID` (`'conflict-type'`) and store the
+chosen slug in the field `CONFLICT_TYPE_FIELD` (`'type'`). `getChosenConflictType(answers, types)`
+finds the matching content entry.
+
+## Losses and frequency step (#14)
+
+Asked once a conflict type is chosen. It shows **only the loss kinds that conflict type declares**
+(`lossKinds` of `@/shared/simulation`), each with its own UI, then the frequency (always).
+
+| Loss kind      | Fields              | Rules                                                             |
+| -------------- | ------------------- | ----------------------------------------------------------------- |
+| `money`        | `money`             | number in euros, >= 0, at most 2 decimals, at most 1 000 000      |
+| `time`         | `time` + `timeUnit` | number >= 0 with `hours` or `days`; at most one year in that unit |
+| `health`       | `health`            | one impact level (`none` to `very-high`)                          |
+| `relationship` | `relationship`      | one impact level (`none` to `very-high`)                          |
+| (always)       | `frequency`         | `once`, `rarely`, `monthly`, `weekly` or `daily`                  |
+
+- Answers only contain the declared kinds: zod drops the others (for example leftovers of a
+  previously chosen conflict type, whose answers are kept as a draft but never reach the result).
+- Zero is accepted: a declared loss can be nil so far. Negative, non-numeric, too many decimals and
+  implausible values are refused with a message that says how to fix them.
+- "Too long for its unit" involves two fields, so it is checked on the whole object with `when`,
+  and shows up together with the other errors.
+- The wording (labels, options, messages) is **provisional UI copy**, not legal content. It lives
+  in `loss-frequency.ts` and `loss-frequency-fields.tsx` and can move to `src/shared/simulation`
+  if the content team wants to own it.
 
 ## Adaptive steps: behaviour
 
@@ -71,10 +126,10 @@ transformations that change the shape of the values.
 ## Accessibility (what is in place)
 
 A single `h1` (the page), one `h2` per step that receives the focus on every step change (never on
-page load), bound labels, `fieldset`/`legend` for radio buttons, `aria-required` fields, errors
-linked to the field (`aria-invalid`, `aria-describedby`) and a `role="alert"` summary that takes
-the focus, a `role="progressbar"` bar, colours from the charter tokens. This is not a full RGAA
-audit (see #24).
+page load), bound labels, `fieldset`/`legend` for radio buttons and loss blocks, `aria-required`
+fields, errors linked to the field (`aria-invalid`, `aria-describedby`) and a `role="alert"`
+summary that takes the focus, a `role="progressbar"` bar, colours from the charter tokens. This is
+not a full RGAA audit (see #24).
 
 ## Result screen
 
@@ -83,7 +138,8 @@ answers of the active steps, keyed by step id. #16 provides the real screen.
 
 ## Tests
 
-`npm test` runs them (see `docs/TESTING.md`): unit tests of `engine.ts`, a guard on the registry
-and component tests of `SimulationForm` (navigation, validation, focus, accessibility with
-Testing Library and axe-core). They define their own neutral steps and never rely on the demo
-steps, so replacing the demo steps does not break them.
+`npm test` runs them (see `docs/TESTING.md`): unit tests of the engine, the number parsing, the
+losses rules and the registry, and component tests of `SimulationForm` and of the losses step
+(conditional blocks, refused values, kept answers, focus, accessibility with Testing Library and
+axe-core). They define their own neutral steps and conflict types, and never rely on the
+temporary placeholder or on the shared example content.

@@ -42,17 +42,20 @@ function FieldError({ id, message }: { id: string; message: string }) {
 const inputClasses =
   'h-10 w-full rounded-md border border-input bg-background px-3 text-base focus-visible:border-ring aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20'
 
-export function TextField({
+type InputFieldProps = {
+  name: string
+  label: string
+  hint?: string
+}
+
+// Text input with its label, hint and error, shared by TextField and NumberField.
+function InputField({
   name,
   label,
   hint,
   autoComplete,
-}: {
-  name: string
-  label: string
-  hint?: string
-  autoComplete?: string
-}) {
+  inputMode,
+}: InputFieldProps & { autoComplete?: string; inputMode?: 'decimal' }) {
   const { register } = useFormContext()
   const error = useFieldError(name)
   const id = fieldId(name)
@@ -73,6 +76,7 @@ export function TextField({
       <input
         id={id}
         type="text"
+        inputMode={inputMode}
         autoComplete={autoComplete}
         aria-required="true"
         aria-invalid={error ? true : undefined}
@@ -82,6 +86,17 @@ export function TextField({
       />
     </div>
   )
+}
+
+export function TextField(props: InputFieldProps & { autoComplete?: string }) {
+  return <InputField {...props} />
+}
+
+// Number typed by the person ("12,5" or "12.5"). A text input with a decimal keypad, not
+// `type="number"` (no scroll-wheel changes, no locale surprises). The value stays raw text in the
+// form: the step schema parses it (see `parseDecimal`) and gives the clear error messages.
+export function NumberField(props: InputFieldProps) {
+  return <InputField {...props} inputMode="decimal" autoComplete="off" />
 }
 
 export type RadioOption = { value: string; label: string }

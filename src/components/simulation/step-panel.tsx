@@ -4,7 +4,7 @@ import { FormProvider, useForm, useWatch } from 'react-hook-form'
 
 import { Button } from '@/components/ui/button'
 
-import { resolveFlow } from './engine'
+import { getPreviousAnswers, resolveFlow } from './engine'
 import { ErrorSummary } from './error-summary'
 import { StepProgress } from './step-progress'
 import type { SimulationAnswers, SimulationStep, StepValues } from './types'
@@ -31,8 +31,12 @@ export function StepPanel({
   onSubmit: (values: StepValues) => void
   onBack: (draft: StepValues) => void
 }) {
+  // Earlier answers the step may depend on (its schema can be a function of them).
+  const previous = getPreviousAnswers(steps, answers, step.id)
+  const schema = typeof step.schema === 'function' ? step.schema(previous) : step.schema
+
   const form = useForm<StepValues>({
-    resolver: zodResolver(step.schema),
+    resolver: zodResolver(schema),
     defaultValues,
     // Focus is handled here: on the error summary, not directly on the first field.
     shouldFocusError: false,
@@ -95,7 +99,7 @@ export function StepPanel({
 
         <p className="text-sm text-muted-foreground">Tous les champs sont obligatoires.</p>
 
-        <Fields />
+        <Fields answers={previous} />
 
         <div className="flex justify-between gap-3">
           {isFirst ? (
