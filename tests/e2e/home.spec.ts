@@ -24,7 +24,21 @@ test('the home page sections follow the h1 > h2 heading order', async ({ page })
   await expect(page.getByRole('heading', { level: 2 })).toHaveText([
     'Choisissez votre parcours',
     'Infos pratiques',
+    'Questions fréquentes',
   ])
+})
+
+test('a home FAQ question opens and closes from the keyboard', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'keyboard navigation is tested on desktop')
+  await page.goto('/')
+  const faq = page.getByRole('region', { name: 'Questions fréquentes' })
+  const question = faq.getByRole('button').first()
+  await expect(question).toHaveAttribute('aria-expanded', 'false')
+  await question.focus()
+  await page.keyboard.press('Enter')
+  await expect(question).toHaveAttribute('aria-expanded', 'true')
+  await page.keyboard.press('Space')
+  await expect(question).toHaveAttribute('aria-expanded', 'false')
 })
 
 for (const { cta, path } of JOURNEYS) {
