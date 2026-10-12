@@ -19,6 +19,14 @@ test('the home page explains the service and lists the 3 journeys', async ({ pag
   ])
 })
 
+test('the home page sections follow the h1 > h2 heading order', async ({ page }) => {
+  await page.goto('/')
+  await expect(page.getByRole('heading', { level: 2 })).toHaveText([
+    'Choisissez votre parcours',
+    'Infos pratiques',
+  ])
+})
+
 for (const { cta, path } of JOURNEYS) {
   test(`opens ${path} in one click from the home page`, async ({ page }) => {
     await page.goto('/')
