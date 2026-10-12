@@ -64,7 +64,8 @@ shown to users, which is in French.
 
 On commit, Husky runs lint-staged: ESLint `--fix`, Prettier and the tests related to the staged files. On every PR, GitHub CI runs all checks, the build and the E2E tests.
 
-> **Known issue (#46)**: with Next 16.4.0, `npm run dev` crashes on the home page (`/`) in
-> the browser ("module factory is not available", Turbopack bug
-> [vercel/next.js#99789](https://github.com/vercel/next.js/issues/99789)). The other pages
-> and the production build work. To check the home page locally: `npm run build && npm run start`.
+> **Known issue (#46)**: with Next 16.4.0, `npm run dev` can crash a page in the browser
+> ("module factory is not available", Turbopack bug
+> [vercel/next.js#99789](https://github.com/vercel/next.js/issues/99789)): today `/` and
+> `/apprendre`. The production build works. To check these pages locally:
+> `npm run build && npm run start`.

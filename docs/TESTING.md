@@ -46,7 +46,7 @@ First E2E run on a machine: `npx playwright install chromium`.
 A server already running on :3100 is reused: stop your own `next dev -p 3100` first, or the
 tests run against it.
 
-**Known issue (#46)**: Next 16.4.0 dev mode crashes on `/` during hydration
+**Known issue (#46)**: Next 16.4.0 dev mode crashes some pages (`/`, `/apprendre`) during hydration
 ("module factory is not available", [vercel/next.js#99789](https://github.com/vercel/next.js/issues/99789)).
 This is why the E2E tests use the production build. Remove this note and check
 `npm run dev` once Next ships the fix (16.4.1 / 16.5).
