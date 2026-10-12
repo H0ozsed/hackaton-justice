@@ -7,7 +7,14 @@
 * **Footer**
 * **Infos pratiques**
 * **FAQ**
-* **Chatbot**
+* **Chatbot : IRIS** (Informer, Renseigner, Indiquer les Solutions)
+  * Bouton flottant → panneau accessible (focus, Échap, réponses annoncées aux lecteurs d'écran)
+  * Répond uniquement à partir du contenu du site (FAQ, infos pratiques, lexique, types de conflit, interlocuteurs, quiz), avec ses sources
+  * Rien de pertinent → « Je n'ai pas cette information », sans appeler le modèle
+  * Informe et oriente, ne garantit rien, pas de conseil juridique personnalisé
+  * Questions suggérées, relances comprises (historique), termes du lexique cliquables
+  * Conversation gardée dans l'onglet uniquement (sessionStorage), rien stocké côté serveur
+  * Modèle local (Ollama dans Docker) ; site utilisable si IRIS est indisponible
 
 ### `/`simulation
 
