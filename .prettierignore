@@ -8,3 +8,6 @@ src/generated
 prisma/migrations
 docs
 .claude
+test-results
+playwright-report
+coverage

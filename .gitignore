@@ -49,3 +49,7 @@ next-env.d.ts
 .vscode/*
 !.vscode/extensions.json
 !.vscode/settings.json
+
+# tests
+/test-results
+/playwright-report
