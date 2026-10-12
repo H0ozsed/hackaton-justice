@@ -4,9 +4,9 @@ The engine knows no content: it chains the **steps** it is given and renders a *
 provided by the page. Answers stay **in memory** (no database, no `localStorage`, no network call):
 reloading the page starts over.
 
-> Current state: the `steps.ts` registry only holds two **technical demo steps** (`demo-steps.tsx`)
-> and the end screen is a temporary `TechnicalRecap`. They will be replaced by the steps of #13,
-> #14, #15 and the result of #16.
+> Current state: the `steps.ts` registry holds two **technical demo steps** (`demo-steps.tsx`, to be
+> replaced by the steps of #13 and #14) and the real openness to discussion step (#15). The end
+> screen is a temporary `TechnicalRecap`, replaced by the result of #16.
 
 ## Files
 
@@ -23,6 +23,8 @@ reloading the page starts over.
 | `steps.ts`            | **Registry** of the steps, in the order they are asked                       |
 | `demo-steps.tsx`      | Two temporary technical steps                                                |
 | `technical-recap.tsx` | Temporary result screen                                                      |
+| `openness.ts`         | Rules, options and typed reader of the openness to discussion step (#15)     |
+| `openness-step.tsx`   | The openness to discussion step itself                                       |
 | `*.test.ts(x)`        | Unit tests of the engine and registry, component tests of `SimulationForm`   |
 
 ## Add a step
@@ -67,6 +69,22 @@ transformations that change the shape of the values.
 - We only complete once **every active step** has a validated answer.
 - **Going back**: the in-progress input (even invalid) of the step being left is kept as a draft
   and restored on return; a draft is never an answer.
+
+## Openness to discussion step (#15)
+
+Always asked, whatever the conflict type. Two required questions, as radio buttons:
+
+| Field                | Question                                           | Values                          |
+| -------------------- | -------------------------------------------------- | ------------------------------- |
+| `userOpenness`       | Would you be willing to talk with the other party? | `yes`, `maybe`, `no`            |
+| `otherPartyOpenness` | Do you think the other party would be?             | `yes`, `maybe`, `no`, `unknown` |
+
+- A missing answer is refused with a message for that question. `unknown` ("Je ne sais pas") is
+  only offered for the other party: the person knows their own mind.
+- The result screen (#16) gets the answers under the step id `openness`. `getOpennessAnswers(result)`
+  reads and types them (it returns undefined if the step was not answered).
+- The wording is **provisional UI copy**, not legal content. It lives in `openness.ts` and
+  `openness-step.tsx` and can move to `src/shared/simulation` if the content team wants to own it.
 
 ## Accessibility (what is in place)
 
