@@ -20,3 +20,5 @@ export const LOSS_KIND_LABELS: Record<LossKind, string> = {
   health: 'Santé',
   relationship: 'Relations',
 }
+
+export { answerSchema, followUpAnswersSchema, type FollowUpAnswers } from './answers'

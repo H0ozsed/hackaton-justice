@@ -32,7 +32,8 @@ Les entrées actuelles sont des **EXEMPLES** à remplacer.
   du lexique par leur `slug`. Le terme cité doit exister.
 - **Types de conflit** : `lossKinds` liste les pertes à demander (`money`, `time`, `health`,
   `relationship`) ; `followUpQuestions` ajoute des questions propres à ce type
-  (`kind: 'choice'`, `'number'` ou `'yesNo'`). Le formulaire s'adapte tout seul.
+  (`kind: 'choice'`, `'number'` ou `'yesNo'`). Le formulaire s'adapte tout seul, validation
+  comprise. Une question est obligatoire sauf si tu mets `required: false`.
 - **Quiz** : une seule bonne réponse dans `correctChoiceIds` → boutons radio ; plusieurs →
   cases à cocher.
 - **FAQ** : `pages` indique où la question s'affiche (`home` = accueil, `learn` = Apprendre).

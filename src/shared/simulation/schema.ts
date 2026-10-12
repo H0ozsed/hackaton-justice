@@ -13,6 +13,8 @@ const questionBase = {
   label: z.string().min(1),
   /** Optional help text under the field. */
   help: z.string().min(1).optional(),
+  /** false: the user may skip it. */
+  required: z.boolean().default(true),
 }
 
 const choiceOptionSchema = z.object({ value: slugSchema, label: z.string().min(1) })
