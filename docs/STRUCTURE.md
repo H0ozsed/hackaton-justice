@@ -36,7 +36,11 @@ docs/                     Specs (CDC, user journeys), design charter, RGAA, RGPD
 
 Current domains in `src/shared/`: `glossary`, `faq`, `practical-info`, `simulation`
 (conflict types + channels), `quiz`, `role-play` (scenarios of `/mise-en-situation` and the
-pure game engine that plays them).
+pure game engine that plays them), `chatbot` (IRIS request/stream schemas and fixed texts; its
+server side is `src/server/domains/chatbot`, its route `src/pages/api/chatbot.ts`).
+
+Test files never go in `src/pages`: Next would serve them as routes. API route tests live next
+to the service they exercise (e.g. `src/server/domains/chatbot/route.int.test.ts`).
 
 ## Rule 1: the front never talks to the database
 

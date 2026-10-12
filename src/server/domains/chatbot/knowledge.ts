@@ -28,7 +28,8 @@ export const GLOSSARY_BOOST = 0.1
 export const MIN_SCORE = Number(process.env.IRIS_MIN_SCORE) || 0.5
 
 const EMBED_BATCH_SIZE = 16
-const DEFAULT_CACHE_DIR = path.join(process.cwd(), 'node_modules', '.cache', 'iris')
+const DEFAULT_CACHE_DIR =
+  process.env.IRIS_CACHE_DIR || path.join(process.cwd(), 'node_modules', '.cache', 'iris')
 
 type EmbedFn = (texts: string[]) => Promise<number[][]>
 
