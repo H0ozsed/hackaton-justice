@@ -4,34 +4,36 @@ The engine knows no content: it chains the **steps** it is given and renders a *
 provided by the page. Answers stay **in memory** (no database, no `localStorage`, no network call):
 reloading the page starts over.
 
-> Current state: the `steps.ts` registry holds a **temporary** conflict type placeholder
-> (`demo-conflict-type-step.tsx`, replaced by #13) followed by the real losses and frequency step
-> (#14) and the real openness to discussion step (#15). The end screen is a temporary
-> `TechnicalRecap`, replaced by the result of #16.
+> Current state: the `steps.ts` registry holds the conflict type step and its follow-up questions
+> (#13), the losses and frequency step (#14) and the openness to discussion step (#15). The end
+> screen is a temporary `TechnicalRecap`, replaced by the result of #16.
 
 ## Files
 
-| File                          | Role                                                                           |
-| ----------------------------- | ------------------------------------------------------------------------------ |
-| `simulation-form.tsx`         | `<SimulationForm steps ResultView />`: the component to put in the page        |
-| `step-panel.tsx`              | One react-hook-form + zod form per step, progress, focus, errors               |
-| `engine.ts`                   | Pure logic (active steps, next, back, restart), no React                       |
-| `use-simulation.ts`           | Hook: in-memory state on top of the `engine.ts` functions                      |
-| `form-fields.tsx`             | Accessible native HTML fields: `TextField`, `NumberField`, `RadioGroupField`   |
-| `numbers.ts`                  | `parseDecimal`: "12,5", "12.5", "1 200" to a number (NaN if not a number)      |
-| `step-progress.tsx`           | "Étape X sur N" indicator                                                      |
-| `error-summary.tsx`           | Error summary (`role="alert"`, links to the fields)                            |
-| `types.ts`                    | `SimulationStep`, `StepFieldsProps`, `SimulationAnswers`, `ResultViewProps`... |
-| `steps.ts`                    | **Registry** of the steps, in the order they are asked                         |
-| `conflict-type.ts`            | Contract with #13: conflict type step id and field, `getChosenConflictType`    |
-| `loss-frequency.ts`           | Rules (zod) and options of the losses and frequency step (#14)                 |
-| `loss-frequency-fields.tsx`   | Fields of that step: one block per declared loss kind, then the frequency      |
-| `loss-frequency-step.tsx`     | `createLossFrequencyStep(conflictTypes)`: the step itself                      |
-| `openness.ts`                 | Rules, options and typed reader of the openness to discussion step (#15)       |
-| `openness-step.tsx`           | The openness to discussion step itself                                         |
-| `demo-conflict-type-step.tsx` | TEMPORARY placeholder for the conflict type step (#13)                         |
-| `technical-recap.tsx`         | Temporary result screen                                                        |
-| `*.test.ts(x)`                | Unit tests (engine, numbers, rules, registry), component tests (form, step)    |
+| File                        | Role                                                                           |
+| --------------------------- | ------------------------------------------------------------------------------ |
+| `simulation-form.tsx`       | `<SimulationForm steps ResultView />`: the component to put in the page        |
+| `step-panel.tsx`            | One react-hook-form + zod form per step, progress, focus, errors               |
+| `engine.ts`                 | Pure logic (active steps, next, back, restart), no React                       |
+| `use-simulation.ts`         | Hook: in-memory state on top of the `engine.ts` functions                      |
+| `form-fields.tsx`           | Accessible native fields: text, number, radio group, checkbox group            |
+| `numbers.ts`                | `parseDecimal`: "12,5", "12.5", "1 200" to a number (NaN if not a number)      |
+| `step-progress.tsx`         | "Étape X sur N" indicator                                                      |
+| `error-summary.tsx`         | Error summary (`role="alert"`, links to the fields)                            |
+| `types.ts`                  | `SimulationStep`, `StepFieldsProps`, `SimulationAnswers`, `ResultViewProps`... |
+| `steps.ts`                  | **Registry** of the steps, in the order they are asked                         |
+| `conflict-type.ts`          | Contract: conflict type step id and field, `getChosenConflictType`             |
+| `conflict-type-step.tsx`    | `createConflictTypeStep(conflictTypes)`: choose the conflict type (#13)        |
+| `follow-up.ts`              | Validation of the follow-up questions, through `followUpAnswersSchema` (#13)   |
+| `follow-up-fields.tsx`      | One field per question of the content, by `kind`                               |
+| `follow-up-step.tsx`        | `createFollowUpStep(conflictTypes)`: the follow-up questions step              |
+| `loss-frequency.ts`         | Rules (zod) and options of the losses and frequency step (#14)                 |
+| `loss-frequency-fields.tsx` | Fields of that step: one block per declared loss kind, then the frequency      |
+| `loss-frequency-step.tsx`   | `createLossFrequencyStep(conflictTypes)`: the step itself                      |
+| `openness.ts`               | Rules, options and typed reader of the openness to discussion step (#15)       |
+| `openness-step.tsx`         | The openness to discussion step itself                                         |
+| `technical-recap.tsx`       | Temporary result screen                                                        |
+| `*.test.ts(x)`              | Unit tests (engine, numbers, rules, registry), component tests (form, steps)   |
 
 ## Add a step
 
@@ -80,12 +82,34 @@ raw text; the schema turns it into a number with `z.preprocess(parseDecimal, z.n
 (French comma or point, spaces as thousands separators) and gives the error messages. Zod then
 outputs a number, and a number is accepted as input too, so going back shows it again.
 
-## Contract with the conflict type step (#13)
+## Conflict type and follow-up questions (#13)
 
-Steps that depend on the conflict type read it from the answers (`conflict-type.ts`): the
-conflict type step **must** use the id `CONFLICT_TYPE_STEP_ID` (`'conflict-type'`) and store the
-chosen slug in the field `CONFLICT_TYPE_FIELD` (`'type'`). `getChosenConflictType(answers, types)`
-finds the matching content entry.
+**Conflict type step** (`conflict-type-step.tsx`): the first step. The person picks the nature of
+their conflict among the conflict types of the content (`@/shared/simulation`), each shown with
+its description and examples. The choice is stored under the step id `CONFLICT_TYPE_STEP_ID`
+(`'conflict-type'`) in the field `CONFLICT_TYPE_FIELD` (`'type'`). That is the contract the next
+steps rely on: `getChosenConflictType(answers, types)` finds the matching content entry.
+
+**Follow-up questions step** (`follow-up-step.tsx`, id `follow-up`): asked only when the chosen
+conflict type declares `followUpQuestions`. Each question is rendered from its config, by `kind`:
+
+| `kind`             | Rendered as                       | Answer                |
+| ------------------ | --------------------------------- | --------------------- |
+| `choice`           | radio buttons                     | one option value      |
+| `choice`, multiple | checkboxes                        | list of option values |
+| `number`           | decimal text field (unit, bounds) | number                |
+| `yesNo`            | two radio buttons                 | `'yes'` or `'no'`     |
+
+- Validation goes through `followUpAnswersSchema` of the shared content, so its rules and
+  messages ("Ce champ est obligatoire", "Minimum : 0"...) apply as they are. `follow-up.ts` only
+  adapts what the form gives: the typed text of number questions becomes a number, an unchecked
+  radio group (`null`) and untouched checkboxes count as no answer, and text that is not a number
+  says so instead of "required". Every error is reported at once.
+- A question with `required: false` says "(facultatif)" and can be skipped; the notice at the top
+  of the step says every field is required except those.
+- Answers are stored under `follow-up`, keyed by question id. Only the questions of the chosen
+  conflict type are kept: the answers of a previously chosen type are dropped.
+- The wording comes from the content, apart from the step title and the field texts around it.
 
 ## Losses and frequency step (#14)
 
@@ -158,7 +182,8 @@ answers of the active steps, keyed by step id. #16 provides the real screen.
 ## Tests
 
 `npm test` runs them (see `docs/TESTING.md`): unit tests of the engine, the number parsing, the
-losses and openness rules and the registry, and component tests of `SimulationForm`, of the losses
-step and of the openness step (conditional blocks, refused values, kept answers, focus,
-accessibility with Testing Library and axe-core). They define their own neutral steps and conflict types, and never rely on the
-temporary placeholder or on the shared example content.
+losses, follow-up and openness rules and the registry, and component tests of `SimulationForm`, of
+the conflict type, follow-up, losses and openness steps (conditional blocks, one case per kind of
+question, refused values, kept answers, focus, accessibility with Testing Library and axe-core).
+They define their own neutral steps and conflict types, and never rely on the shared example
+content.

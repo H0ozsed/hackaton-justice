@@ -2,9 +2,10 @@ import type { ConflictType } from '@/shared/simulation'
 
 import type { SimulationAnswers } from './types'
 
-// Contract between the step that asks the conflict type (#13) and the steps that depend on that
-// choice (losses: #14, ...). The conflict type step must use this id and store the chosen slug in
-// this field; the steps read it with `getChosenConflictType`.
+// Contract between the step that asks the conflict type (`conflict-type-step.tsx`, #13) and the
+// steps that depend on that choice (follow-up questions: #13, losses: #14, ...). The conflict type
+// step stores the chosen slug in this field under this id; the steps read it with
+// `getChosenConflictType`.
 export const CONFLICT_TYPE_STEP_ID = 'conflict-type'
 export const CONFLICT_TYPE_FIELD = 'type'
 
