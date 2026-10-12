@@ -32,7 +32,9 @@ When scaffolding, use these choices rather than substituting alternatives (e.g. 
 - `docs/CDC.md` — cahier des charges (spec): stack and feature overview.
 - `docs/PARCOURS_UTILISATEURS.md` — detailed user journeys per route, the source of truth for expected pages/flows.
 
-Keep these two docs in sync with any routing/feature changes made in code.
+- `docs/CHARTE_GRAPHIQUE.pdf`, `docs/RGAA.pdf`, `docs/RGPD.pdf` — design charter and accessibility (RGAA) / data-privacy (RGPD) constraints the UI and data handling must respect.
+
+Keep the two markdown docs in sync with any routing/feature changes made in code.
 
 ## graphify
 
