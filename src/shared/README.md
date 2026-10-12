@@ -6,14 +6,15 @@ conflict types, orientation channels, quizzes. **Only edit the `data.ts` files.*
 Field names and comments are in English; the content itself is in French (it is what users
 read on the site).
 
-| Content                                  | File                                       |
-| ---------------------------------------- | ------------------------------------------ |
-| Glossary                                 | `glossary/data.ts`                         |
-| FAQ                                      | `faq/data.ts`                              |
-| Practical info                           | `practical-info/data.ts`                   |
-| Conflict types (simulation)              | `simulation/data.ts` → `conflictTypesData` |
-| Orientation channels (simulation result) | `simulation/data.ts` → `channelsData`      |
-| Quizzes                                  | `quiz/data.ts`                             |
+| Content                                    | File                                       |
+| ------------------------------------------ | ------------------------------------------ |
+| Glossary                                   | `glossary/data.ts`                         |
+| FAQ                                        | `faq/data.ts`                              |
+| Practical info                             | `practical-info/data.ts`                   |
+| Conflict types (simulation)                | `simulation/data.ts` → `conflictTypesData` |
+| Orientation channels (simulation result)   | `simulation/data.ts` → `channelsData`      |
+| Quizzes                                    | `quiz/data.ts`                             |
+| Role-play scenarios (`/mise-en-situation`) | `role-play/data.ts`                        |
 
 The current entries are **examples** (prefixed `EXEMPLE`) to be replaced.
 
@@ -37,6 +38,15 @@ The current entries are **examples** (prefixed `EXEMPLE`) to be replaced.
   (`kind: 'choice'`, `'number'` or `'yesNo'`). The form adapts by itself, validation
   included. A question is required unless you set `required: false`.
 - **Quizzes**: one id in `correctChoiceIds` → radio buttons; several → checkboxes.
+- **Role-play scenarios**: a scenario is a set of `scenes`. Each scene has `lines` of
+  dialogue (`speaker` = a character `id`, omitted for the narrator), then either `choices`
+  or an `ending` (never both). Each choice says which scene comes `next`, its `quality`
+  (`good`, `ok` or `bad`: 2, 1 or 0 points for the score), its `feedback` (the correction
+  shown in the results) and its `losses` (`money` in €, `time` in hours, `health` and
+  `relationship` in points). Every scene must be reachable from `startSceneId` and a scene
+  cannot come back later in the same run (no loop): the check names the faulty scene.
+  To link a glossary term in any text, write `[[slug]]` (shows the glossary term) or
+  `[[slug|texte affiché]]` (shows another spelling): `Envoyez une [[mise-en-demeure]]`.
 - **FAQ**: `pages` says where the question is shown (`home` = home page, `learn` = `/apprendre`).
 
 Technical structure of this folder: [`docs/STRUCTURE.md`](../../docs/STRUCTURE.md).
