@@ -5,9 +5,10 @@ import { cn } from '@/lib/utils'
 
 // Native HTML form fields for the simulation steps.
 // - Label bound to the field (`for`/`id`) and placed above it (RGAA 11.1, 11.4).
-// - Radio buttons grouped in a fieldset with a legend (RGAA 11.5, 11.6).
-// - Required fields: `aria-required` (the "all fields are required" notice is rendered by the
-//   step, RGAA 11.10.1); `noValidate` on the form lets zod handle the errors.
+// - Radio buttons and checkboxes grouped in a fieldset with a legend (RGAA 11.5, 11.6).
+// - Required fields: `aria-required` (the notice that every field is required unless marked
+//   "facultatif" is rendered by the step, RGAA 11.10.1); an optional field says "(facultatif)" in
+//   its label; `noValidate` on the form lets zod handle the errors.
 // - Error: visible message starting with "Erreur", bound to the field by `aria-describedby`,
 //   `aria-invalid` on the field (RGAA 11.10); never conveyed by colour alone (RGAA 3.1).
 
@@ -39,20 +40,35 @@ function FieldError({ id, message }: { id: string; message: string }) {
   )
 }
 
+// Label or legend text, followed by "(facultatif)" for an optional field. The mention is part of
+// the accessible name, so it is announced too.
+function LabelText({ text, required }: { text: string; required: boolean }) {
+  return (
+    <>
+      {text}
+      {!required && <span className="font-normal text-muted-foreground"> (facultatif)</span>}
+    </>
+  )
+}
+
 const inputClasses =
   'h-10 w-full rounded-md border border-input bg-background px-3 text-base focus-visible:border-ring aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20'
 
-type InputFieldProps = {
+type FieldProps = {
   name: string
-  label: string
   hint?: string
+  /** Defaults to true. An optional field says "(facultatif)" and is not `aria-required`. */
+  required?: boolean
 }
+
+type InputFieldProps = FieldProps & { label: string }
 
 // Text input with its label, hint and error, shared by TextField and NumberField.
 function InputField({
   name,
   label,
   hint,
+  required = true,
   autoComplete,
   inputMode,
 }: InputFieldProps & { autoComplete?: string; inputMode?: 'decimal' }) {
@@ -65,7 +81,7 @@ function InputField({
   return (
     <div className="space-y-2">
       <label htmlFor={id} className="block font-medium">
-        {label}
+        <LabelText text={label} required={required} />
       </label>
       {hint && (
         <p id={hintId} className="text-sm text-muted-foreground">
@@ -78,7 +94,7 @@ function InputField({
         type="text"
         inputMode={inputMode}
         autoComplete={autoComplete}
-        aria-required="true"
+        aria-required={required ? 'true' : undefined}
         aria-invalid={error ? true : undefined}
         aria-describedby={describedBy(hint && hintId, error && errorId)}
         className={inputClasses}
@@ -99,35 +115,49 @@ export function NumberField(props: InputFieldProps) {
   return <InputField {...props} inputMode="decimal" autoComplete="off" />
 }
 
-export type RadioOption = { value: string; label: string }
+export type ChoiceOption = {
+  value: string
+  label: string
+  /** Optional explanation under the label, linked to the control with `aria-describedby`. */
+  description?: string
+}
+export type RadioOption = ChoiceOption
 
-export function RadioGroupField({
+type GroupFieldProps = FieldProps & {
+  legend: string
+  options: ChoiceOption[]
+}
+
+// Fieldset with a legend, hint and error around a list of choices (radio buttons or checkboxes).
+function ChoiceGroup({
   name,
   legend,
   hint,
   options,
-}: {
-  name: string
-  legend: string
-  hint?: string
-  options: RadioOption[]
-}) {
+  required = true,
+  kind,
+}: GroupFieldProps & { kind: 'radio' | 'checkbox' }) {
   const { register } = useFormContext()
   const error = useFieldError(name)
   const id = fieldId(name)
   const hintId = `${id}-hint`
   const errorId = `${id}-error`
+  const isRadio = kind === 'radio'
 
   return (
     <fieldset
       id={id}
-      role="radiogroup"
-      aria-required="true"
-      aria-invalid={error ? true : undefined}
+      // A radio group is a `radiogroup` (it supports aria-required and aria-invalid); a checkbox
+      // group stays a plain group, and each checkbox carries `aria-invalid`.
+      role={isRadio ? 'radiogroup' : undefined}
+      aria-required={isRadio && required ? 'true' : undefined}
+      aria-invalid={isRadio && error ? true : undefined}
       aria-describedby={describedBy(hint && hintId, error && errorId)}
       className="space-y-3"
     >
-      <legend className="mb-2 font-medium">{legend}</legend>
+      <legend className="mb-2 font-medium">
+        <LabelText text={legend} required={required} />
+      </legend>
       {hint && (
         <p id={hintId} className="text-sm text-muted-foreground">
           {hint}
@@ -137,28 +167,47 @@ export function RadioGroupField({
       <div className="space-y-2">
         {options.map((option) => {
           const optionId = `${id}-${option.value}`
+          const descriptionId = `${optionId}-description`
           return (
             <div
               key={option.value}
               className={cn(
-                'flex items-center gap-3 rounded-md border px-3 has-checked:border-primary has-checked:bg-secondary',
+                'flex items-start gap-3 rounded-md border px-3 has-checked:border-primary has-checked:bg-secondary',
                 error && 'border-destructive',
               )}
             >
               <input
                 id={optionId}
-                type="radio"
+                type={kind}
                 value={option.value}
-                className="size-5 shrink-0 accent-primary"
+                aria-invalid={!isRadio && error ? true : undefined}
+                aria-describedby={option.description ? descriptionId : undefined}
+                className="mt-3.5 size-5 shrink-0 accent-primary"
                 {...register(name)}
               />
-              <label htmlFor={optionId} className="flex-1 cursor-pointer py-3">
-                {option.label}
-              </label>
+              <div className="flex-1 py-3">
+                <label htmlFor={optionId} className="block cursor-pointer">
+                  {option.label}
+                </label>
+                {option.description && (
+                  <p id={descriptionId} className="text-sm text-muted-foreground">
+                    {option.description}
+                  </p>
+                )}
+              </div>
             </div>
           )
         })}
       </div>
     </fieldset>
   )
+}
+
+export function RadioGroupField(props: GroupFieldProps) {
+  return <ChoiceGroup {...props} kind="radio" />
+}
+
+// Several answers allowed. The form value is the list of the checked values.
+export function CheckboxGroupField(props: GroupFieldProps) {
+  return <ChoiceGroup {...props} kind="checkbox" />
 }

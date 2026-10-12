@@ -97,7 +97,9 @@ export function StepPanel({
           />
         )}
 
-        <p className="text-sm text-muted-foreground">Tous les champs sont obligatoires.</p>
+        <p className="text-sm text-muted-foreground">
+          Tous les champs sont obligatoires, sauf ceux marqués « facultatif ».
+        </p>
 
         <Fields answers={previous} />
 
