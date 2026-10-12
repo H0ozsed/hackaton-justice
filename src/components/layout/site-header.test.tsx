@@ -1,12 +1,17 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { SiteHeader } from './site-header'
 
-vi.mock('next/router', () => ({ useRouter: () => ({ pathname: '/simulation' }) }))
+const router = vi.hoisted(() => ({ pathname: '/simulation' }))
+vi.mock('next/router', () => ({ useRouter: () => router }))
 
 describe('SiteHeader', () => {
+  beforeEach(() => {
+    router.pathname = '/simulation'
+  })
+
   it('marks the current page for screen readers', () => {
     render(<SiteHeader />)
     const current = screen.getAllByRole('link', { current: 'page' })
@@ -43,5 +48,12 @@ describe('SiteHeader', () => {
     await user.click(link)
 
     expect(document.getElementById('main-menu')).toBeNull()
+  })
+
+  it('keeps a journey current on its sub-pages, but not the home page', () => {
+    router.pathname = '/apprendre/lexique'
+    render(<SiteHeader />)
+    const current = screen.getAllByRole('link', { current: 'page' })
+    expect(current.map((link) => link.textContent)).toEqual(['Apprendre'])
   })
 })
