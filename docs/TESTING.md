@@ -36,7 +36,7 @@ Config: `vitest.config.mts` (projects `unit`, `components`, `api`), `vitest.setu
 npm test               # unit + component (Vitest, once)
 npm run test:watch     # same, re-run on save
 npm run test:e2e       # E2E: builds, then starts the production server on :3100 (like CI)
-E2E_DEV=1 npm run test:e2e   # E2E on the dev server (faster, see the known issue below)
+E2E_DEV=1 npm run test:e2e   # E2E on the dev server (faster)
 npx playwright test --ui   # E2E with the interactive UI (debugging)
 ```
 
@@ -46,10 +46,12 @@ First E2E run on a machine: `npx playwright install chromium`.
 A server already running on :3100 is reused: stop your own `next dev -p 3100` first, or the
 tests run against it.
 
-**Known issue (#46)**: Next 16.4.0 dev mode crashes some pages (`/`, `/apprendre`) during hydration
-("module factory is not available", [vercel/next.js#99789](https://github.com/vercel/next.js/issues/99789)).
-This is why the E2E tests use the production build. Remove this note and check
-`npm run dev` once Next ships the fix (16.4.1 / 16.5).
+**Dev server on Webpack (#46)**: Next 16.4.0's Turbopack dev mode crashes some pages
+(`/`, `/apprendre`) during hydration ("module factory is not available",
+[vercel/next.js#99789](https://github.com/vercel/next.js/issues/99789)), so `npm run dev` runs
+`next dev --webpack`, and `E2E_DEV=1` is reliable again. The default E2E run still uses the
+production build (Turbopack), like CI. Switch `dev` back to plain `next dev` once a stable Next
+release ships the fix (16.4.1 / 16.5).
 
 ## When tests run
 
