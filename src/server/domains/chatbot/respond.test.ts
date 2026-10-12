@@ -4,7 +4,7 @@ import { chatRequestSchema, IRIS, type ChatStreamEvent } from '@/shared/chatbot'
 
 import type { Chunk } from './chunks'
 import { normalize, type KnowledgeIndex } from './knowledge'
-import { OllamaUnavailableError } from './ollama'
+import { OllamaUnavailableError, type ChatPart } from './ollama'
 import { clearAnswerCache, respond, type RespondDeps } from './respond'
 
 const chunk = (id: string, domain: Chunk['domain'], title: string): Chunk => ({
@@ -22,23 +22,28 @@ const index: KnowledgeIndex = {
     { ...chunk('glossary:mediation', 'glossary', 'Médiation'), vector: normalize([1, 0]) },
     {
       ...chunk('faq:cout', 'faq', 'La médiation est-elle payante ?'),
-      vector: normalize([0.9, 0.1]),
+      vector: normalize([0.97, 0.24]),
     },
     {
       ...chunk('faq:duree', 'faq', 'Combien de temps dure une médiation ?'),
-      vector: normalize([0.8, 0.2]),
+      vector: normalize([0.95, 0.31]),
     },
     { ...chunk('faq:loyer', 'faq', 'Mon loyer a augmenté'), vector: normalize([0, 1]) },
   ],
 }
 
-function deps(queryVector: number[], answer = ['La médiation ', 'est une démarche amiable.']) {
+const text = (t: string): ChatPart => ({ kind: 'text', text: t })
+
+function deps(
+  queryVector: number[],
+  output: ChatPart[] = [text('La **médiation** '), text('est amiable.')],
+) {
   return {
-    config: { url: 'http://ollama', chatModel: 'chat', embedModel: 'embed' },
+    config: { url: 'http://ollama', chatModel: 'qwen3:4b', embedModel: 'embed' },
     getIndex: vi.fn(async () => index),
     embed: vi.fn(async (texts: string[]) => texts.map(() => queryVector)),
     chat: vi.fn<RespondDeps['chat']>(async function* () {
-      yield* answer
+      yield* output
     }),
   } satisfies RespondDeps
 }
@@ -58,36 +63,80 @@ async function run(
 beforeEach(() => clearAnswerCache())
 
 describe('respond', () => {
-  it('streams the sources, the answer, then follow-up questions', async () => {
-    const d = deps([1, 0])
-    const events = await run('C’est quoi la médiation ?', d)
+  it('reports its steps, then sends one cleaned answer with sources and follow-ups', async () => {
+    // No glossary term in the question: the 3 close extracts are all kept.
+    const events = await run('Comment ça se passe ?', deps([1, 0]))
 
-    expect(events[0]).toEqual({
-      type: 'sources',
-      sources: expect.arrayContaining([
-        { title: 'Médiation', url: '/apprendre/lexique#mediation' },
-      ]),
-    })
-    expect(
-      events
-        .filter((e) => e.type === 'token')
-        .map((e) => e.text)
-        .join(''),
-    ).toBe('La médiation est une démarche amiable.')
+    expect(events.slice(0, -1)).toEqual([
+      { type: 'status', step: 'search' },
+      { type: 'status', step: 'read', count: 3 },
+      { type: 'status', step: 'write' },
+    ])
     expect(events.at(-1)).toEqual({
-      type: 'done',
+      type: 'answer',
+      text: 'La **médiation** est amiable.',
+      sources: [
+        { title: 'Médiation', url: '/apprendre/lexique#mediation' },
+        { title: 'La médiation est-elle payante ?', url: '/apprendre#questions-frequentes' },
+        { title: 'Combien de temps dure une médiation ?', url: '/apprendre#questions-frequentes' },
+      ],
       suggestions: ['La médiation est-elle payante ?', 'Combien de temps dure une médiation ?'],
     })
+  })
+
+  it('never lets reasoning through, even when only a closing tag marks its end', async () => {
+    const leaked = [
+      text("Okay, let's see. The user is asking about mediation.\n"),
+      text('Wait, the extracts say…\n</think>\n\n'),
+      text('La médiation est une démarche amiable.'),
+    ]
+    const events = await run('C’est quoi la médiation ?', deps([1, 0], leaked))
+    expect(events.at(-1)).toMatchObject({
+      type: 'answer',
+      text: 'La médiation est une démarche amiable.',
+    })
+    expect(JSON.stringify(events)).not.toMatch(/Okay|Wait|think/)
+  })
+
+  it('shows a "thinking" step while the model reasons', async () => {
+    const reasoning: ChatPart[] = [{ kind: 'thinking' }, { kind: 'thinking' }, text('Réponse.')]
+    const events = await run('C’est quoi la médiation ?', deps([1, 0], reasoning))
+    expect(events.filter((e) => e.type === 'status').map((e) => e.step)).toEqual([
+      'search',
+      'read',
+      'think',
+      'write',
+    ])
   })
 
   it('answers "no information" without calling the model when nothing is relevant', async () => {
     const d = deps([-1, -1])
     const events = await run('Quelle est la capitale du Pérou ?', d)
-    expect(events).toEqual([{ type: 'no-answer', text: IRIS.noAnswer, suggestions: [] }])
+    expect(events.at(-1)).toEqual({ type: 'no-answer', text: IRIS.noAnswer, suggestions: [] })
     expect(d.chat).not.toHaveBeenCalled()
   })
 
-  it('gives the model only the relevant extracts', async () => {
+  it('shows no sources when the model finds no answer in the extracts', async () => {
+    const d = deps([1, 0], [text('Je n’ai pas cette information sur le site.')])
+    const events = await run('La médiation, c’est quand ?', d)
+    expect(events.at(-1)).toMatchObject({ type: 'no-answer', text: IRIS.noAnswer })
+    expect(events.at(-1)).not.toHaveProperty('sources')
+  })
+
+  it('treats an answer made only of reasoning as "no information"', async () => {
+    const d = deps([1, 0], [text('<think>Let me think about this for a long')])
+    expect((await run('C’est quoi la médiation ?', d)).at(-1)?.type).toBe('no-answer')
+  })
+
+  it('keeps only the glossary entry when the question names its term', async () => {
+    const events = await run('C’est quoi la médiation ?', deps([1, 0]))
+    expect(events).toContainEqual({ type: 'status', step: 'read', count: 1 })
+    expect(events.at(-1)).toMatchObject({
+      sources: [{ title: 'Médiation', url: '/apprendre/lexique#mediation' }],
+    })
+  })
+
+  it('gives the model only the extracts close to the best one', async () => {
     const d = deps([0, 1])
     await run('Mon loyer a augmenté, que faire ?', d)
     const system = d.chat.mock.calls[0][0][0].content
@@ -95,10 +144,15 @@ describe('respond', () => {
     expect(system).not.toContain('Médiation (texte)')
   })
 
+  it('asks a Qwen3 model not to reason', async () => {
+    const d = deps([1, 0])
+    await run('C’est quoi la médiation ?', d)
+    expect(d.chat.mock.calls[0][0].at(-1)?.content).toMatch(/\/no_think$/)
+  })
+
   it('does not suggest the question that was just asked', async () => {
     const events = await run('la médiation est-elle payante ?', deps([1, 0]))
-    expect(events.at(-1)).toEqual({
-      type: 'done',
+    expect(events.at(-1)).toMatchObject({
       suggestions: ['Combien de temps dure une médiation ?'],
     })
   })
@@ -120,13 +174,17 @@ describe('respond', () => {
     const first = await run('C’est quoi la médiation ?', d)
     const second = await run('c’est quoi la MÉDIATION ?', d)
     expect(d.chat).toHaveBeenCalledTimes(1)
-    expect(second.map((e) => e.type)).toEqual(['sources', 'token', 'done'])
     expect(second.at(-1)).toEqual(first.at(-1))
   })
 
-  it('reports IRIS as unavailable when Ollama is down', async () => {
+  it('reports IRIS as unavailable and logs what to do', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
     const d = deps([1, 0])
-    d.getIndex.mockRejectedValue(new OllamaUnavailableError('down'))
-    expect(await run('Bonjour', d)).toEqual([{ type: 'error', code: 'unavailable' }])
+    d.getIndex.mockRejectedValue(
+      new OllamaUnavailableError('Ollama error: model requires more system memory (5.6 GiB)'),
+    )
+    expect((await run('Bonjour', d)).at(-1)).toEqual({ type: 'error', code: 'unavailable' })
+    expect(warn).toHaveBeenCalledWith(expect.stringMatching(/does not fit in memory/))
+    warn.mockRestore()
   })
 })

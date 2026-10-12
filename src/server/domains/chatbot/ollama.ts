@@ -64,24 +64,35 @@ export async function embed(texts: string[], config = ollamaConfig(), signal?: A
   return data.embeddings
 }
 
-type ChatChunk = { message?: { content?: string }; done?: boolean; error?: string }
+type ChatChunk = {
+  message?: { content?: string; thinking?: string }
+  done?: boolean
+  error?: string
+}
+
+/** A piece of the model's output: its reasoning (never shown) or answer text. */
+export type ChatPart = { kind: 'thinking' } | { kind: 'text'; text: string }
+
+/** Longest answer generated, in tokens: IRIS answers in a few sentences. */
+const MAX_ANSWER_TOKENS = 600
 
 /**
- * Streams the answer of the chat model, text piece by text piece.
- * Deterministic settings: IRIS rephrases the retrieved content, it must not improvise.
+ * Streams the output of the chat model. Deterministic settings: IRIS rephrases the
+ * retrieved content, it must not improvise. Reasoning is turned off; when a model
+ * reasons anyway, Ollama's `thinking` field comes out as `thinking` parts, and
+ * inline `<think>` text is removed later by cleanAnswer().
  */
 export async function* chat(
   messages: ChatMessage[],
   config = ollamaConfig(),
   signal?: AbortSignal,
-): AsyncGenerator<string> {
+): AsyncGenerator<ChatPart> {
   const request = {
     model: config.chatModel,
     messages,
     stream: true,
-    // Reasoning traces are slow and never shown: off.
     think: false,
-    options: { temperature: 0, num_ctx: 4096 },
+    options: { temperature: 0, num_ctx: 4096, num_predict: MAX_ANSWER_TOKENS },
   }
   let response: Response
   try {
@@ -93,16 +104,48 @@ export async function* chat(
   }
   if (!response.body) throw new OllamaUnavailableError('Ollama returned an empty answer')
 
-  const strip = thinkStripper()
   for await (const raw of readNdjson(response.body)) {
     const chunk = raw as ChatChunk
     if (chunk.error) throw new OllamaUnavailableError(`Ollama error: ${chunk.error}`)
-    const text = strip.push(chunk.message?.content ?? '')
-    if (text) yield text
-    if (chunk.done) break
+    if (chunk.message?.thinking) yield { kind: 'thinking' }
+    if (chunk.message?.content) yield { kind: 'text', text: chunk.message.content }
+    if (chunk.done) return
   }
-  const rest = strip.flush()
-  if (rest) yield rest
+}
+
+/** True while the text so far is inside a reasoning block (`<think>` not closed yet). */
+export function isInsideThinking(text: string) {
+  return text.lastIndexOf('<think>') > text.lastIndexOf('</think>')
+}
+
+/**
+ * The answer without any reasoning: `<think>…</think>` blocks are removed, and when
+ * only a closing `</think>` is present (the opening tag was in the prompt template),
+ * everything before it is reasoning too.
+ */
+export function cleanAnswer(text: string) {
+  let answer = text.replace(/<think>[\s\S]*?<\/think>/g, '')
+  const orphanClose = answer.lastIndexOf('</think>')
+  if (orphanClose !== -1) answer = answer.slice(orphanClose + '</think>'.length)
+  // An unclosed block means the answer was cut while reasoning: nothing usable.
+  const open = answer.indexOf('<think>')
+  if (open !== -1) answer = answer.slice(0, open)
+  return answer.trim()
+}
+
+/** What to do about an Ollama failure, for the server logs. */
+export function explainOllamaError(error: OllamaUnavailableError, config = ollamaConfig()) {
+  const message = error.message
+  if (/not reachable/i.test(message)) {
+    return `${message}. Is the \`ollama\` service running? (docker compose up -d ollama)`
+  }
+  if (/not found/i.test(message)) {
+    return `${message}. Download the models: docker compose up ollama-models`
+  }
+  if (/memory/i.test(message)) {
+    return `${message}. The model ${config.chatModel} does not fit in memory: use a smaller one (OLLAMA_CHAT_MODEL=qwen3:4b) or give Docker more memory.`
+  }
+  return message
 }
 
 /** True when Ollama answers within the timeout. */
@@ -115,47 +158,4 @@ export async function isOllamaAvailable(config = ollamaConfig(), timeoutMs = 200
   } catch {
     return false
   }
-}
-
-/**
- * Removes `<think>…</think>` blocks from a stream of text pieces, even when a tag
- * is split across pieces. Safety net for models that think despite `think: false`.
- */
-export function thinkStripper() {
-  let inside = false
-  let pending = ''
-  /** Text held back because it might be the start of a tag: released at the end. */
-  const flush = () => {
-    const rest = inside ? '' : pending
-    pending = ''
-    return rest
-  }
-  const push = (piece: string) => {
-    let text = pending + piece
-    pending = ''
-    let out = ''
-    for (;;) {
-      const tag = inside ? '</think>' : '<think>'
-      const index = text.indexOf(tag)
-      if (index === -1) {
-        // Keep a possible partial tag at the end for the next piece.
-        const keep = partialTagLength(text, tag)
-        if (!inside) out += text.slice(0, text.length - keep)
-        pending = text.slice(text.length - keep)
-        return out
-      }
-      if (!inside) out += text.slice(0, index)
-      text = text.slice(index + tag.length)
-      inside = !inside
-      if (!inside) text = text.replace(/^\s+/, '')
-    }
-  }
-  return { push, flush }
-}
-
-function partialTagLength(text: string, tag: string) {
-  for (let length = Math.min(tag.length - 1, text.length); length > 0; length--) {
-    if (tag.startsWith(text.slice(-length))) return length
-  }
-  return 0
 }

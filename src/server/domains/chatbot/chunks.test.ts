@@ -6,21 +6,31 @@ import { practicalInfo } from '@/shared/practical-info'
 import { quizzes } from '@/shared/quiz'
 import { channels, conflictTypes } from '@/shared/simulation'
 
-import { buildChunks } from './chunks'
+import { buildChunks, isPlaceholder } from './chunks'
 
 describe('buildChunks', () => {
   const chunks = buildChunks()
 
-  it('has one chunk per indexable entry', () => {
-    const questions = quizzes.all.reduce((n, quiz) => n + quiz.questions.length, 0)
+  it('has one chunk per written entry, and none for placeholder content', () => {
+    const written = (texts: string[]) => texts.filter((t) => !isPlaceholder(t)).length
     expect(chunks).toHaveLength(
-      faq.all.length +
-        practicalInfo.all.length +
-        glossary.all.length +
-        conflictTypes.all.length +
-        channels.all.length +
-        questions,
+      written(faq.all.map((e) => e.answer)) +
+        written(practicalInfo.all.map((i) => i.body)) +
+        written(glossary.all.map((t) => t.definition)) +
+        written(conflictTypes.all.map((t) => t.description)) +
+        written(channels.all.map((c) => c.description)) +
+        written(quizzes.all.flatMap((q) => q.questions.map((x) => x.explanation))),
     )
+  })
+
+  it('recognises text the content team has not written at all', () => {
+    expect(isPlaceholder('EXEMPLE — à remplacer.')).toBe(true)
+    expect(isPlaceholder('EXEMPLE — à remplacer. Démarche pour trouver un accord.')).toBe(false)
+    expect(isPlaceholder('La médiation est gratuite.')).toBe(false)
+  })
+
+  it('removes the example markers from the indexed text', () => {
+    for (const chunk of chunks) expect(chunk.text).not.toMatch(/à remplacer/i)
   })
 
   it('gives every chunk a unique id', () => {
@@ -32,14 +42,15 @@ describe('buildChunks', () => {
   })
 
   it('links a glossary chunk to its anchor in the glossary page', () => {
-    const term = glossary.all[0]
+    const term = glossary.all.find((t) => !isPlaceholder(t.definition))!
     expect(chunks.find((c) => c.id === `glossary:${term.slug}`)?.url).toBe(
       `/apprendre/lexique#${term.slug}`,
     )
   })
 
   it('keeps the question and the answer of a FAQ entry in its text', () => {
-    const entry = faq.all[0]
+    const entry = faq.all.find((e) => !isPlaceholder(e.answer))
+    if (!entry) return
     const chunk = chunks.find((c) => c.id === `faq:${entry.slug}`)
     expect(chunk?.text).toContain(entry.question)
     expect(chunk?.text).toContain(entry.answer)

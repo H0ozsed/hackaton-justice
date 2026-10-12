@@ -3,11 +3,11 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { readNdjson } from '@/lib/ndjson'
 import {
   chatStreamEventSchema,
-  IRIS,
   MAX_HISTORY,
   type ChatErrorCode,
   type ChatMessage,
   type ChatSource,
+  type ChatStep,
 } from '@/shared/chatbot'
 
 // Conversation state of the IRIS widget. The conversation lives in this browser
@@ -17,8 +17,11 @@ export type IrisMessage = {
   id: string
   role: 'user' | 'assistant'
   content: string
-  /** assistant only */
-  status?: 'streaming' | 'done' | 'no-answer' | 'error'
+  /** assistant only. pending: IRIS is working on it (see `step`). */
+  status?: 'pending' | 'done' | 'no-answer' | 'error' | 'stopped'
+  step?: ChatStep
+  /** Number of extracts read (step "read"). */
+  count?: number
   sources?: ChatSource[]
   suggestions?: string[]
   error?: ChatErrorCode
@@ -30,8 +33,10 @@ function load(): IrisMessage[] {
   try {
     const raw = sessionStorage.getItem(STORAGE_KEY)
     const messages = raw ? (JSON.parse(raw) as IrisMessage[]) : []
-    // An answer cut off by a reload cannot resume: drop it.
-    return Array.isArray(messages) ? messages.filter((m) => m.status !== 'streaming') : []
+    // An answer interrupted by a reload cannot resume: mark it as stopped.
+    return Array.isArray(messages)
+      ? messages.map((m) => (m.status === 'pending' ? { ...m, status: 'stopped' } : m))
+      : []
   } catch {
     return []
   }
@@ -46,12 +51,17 @@ function save(messages: IrisMessage[]) {
   }
 }
 
-/** Previous exchanges sent with a question: completed answers only. */
+/** Previous exchanges sent with a question: only questions that got a real answer. */
 export function historyFor(messages: readonly IrisMessage[]): ChatMessage[] {
-  return messages
-    .filter((m) => m.role === 'user' || m.status === 'done')
-    .map(({ role, content }) => ({ role, content }))
-    .slice(-MAX_HISTORY)
+  const history: ChatMessage[] = []
+  messages.forEach((message, i) => {
+    const answer = messages[i + 1]
+    if (message.role === 'user' && answer?.role === 'assistant' && answer.status === 'done') {
+      history.push({ role: 'user', content: message.content })
+      history.push({ role: 'assistant', content: answer.content })
+    }
+  })
+  return history.slice(-MAX_HISTORY)
 }
 
 let nextId = 0
@@ -74,27 +84,20 @@ export function useIris() {
     if (loaded) save(messages)
   }, [messages, loaded])
 
-  const busy = messages.at(-1)?.status === 'streaming'
+  const busy = messages.at(-1)?.status === 'pending'
 
-  const updateLast = (patch: (m: IrisMessage) => Partial<IrisMessage>) =>
-    setMessages((current) => {
-      const last = current.at(-1)
-      if (!last || last.role !== 'assistant') return current
-      return [...current.slice(0, -1), { ...last, ...patch(last) }]
-    })
+  const updateLast = useCallback(
+    (patch: (m: IrisMessage) => Partial<IrisMessage>) =>
+      setMessages((current) => {
+        const last = current.at(-1)
+        if (!last || last.role !== 'assistant') return current
+        return [...current.slice(0, -1), { ...last, ...patch(last) }]
+      }),
+    [],
+  )
 
-  const ask = useCallback(
-    async (rawQuestion: string) => {
-      const question = rawQuestion.trim()
-      if (!question || busy) return
-
-      const history = historyFor(messages)
-      setMessages((current) => [
-        ...current,
-        { id: newId(), role: 'user', content: question },
-        { id: newId(), role: 'assistant', content: '', status: 'streaming' },
-      ])
-
+  const send = useCallback(
+    async (question: string, history: ChatMessage[]) => {
       const controller = new AbortController()
       controllerRef.current = controller
       try {
@@ -117,14 +120,16 @@ export function useIris() {
         for await (const raw of readNdjson(response.body)) {
           const event = chatStreamEventSchema.parse(raw)
           switch (event.type) {
-            case 'sources':
-              updateLast(() => ({ sources: event.sources }))
+            case 'status':
+              updateLast(() => ({ step: event.step, count: event.count ?? undefined }))
               break
-            case 'token':
-              updateLast((m) => ({ content: m.content + event.text }))
-              break
-            case 'done':
-              updateLast(() => ({ status: 'done', suggestions: event.suggestions }))
+            case 'answer':
+              updateLast(() => ({
+                status: 'done',
+                content: event.text,
+                sources: event.sources,
+                suggestions: event.suggestions,
+              }))
               break
             case 'no-answer':
               updateLast(() => ({
@@ -138,12 +143,8 @@ export function useIris() {
               break
           }
         }
-        // Stream closed without an end event: keep what arrived.
-        updateLast((m) =>
-          m.status === 'streaming'
-            ? { status: m.content ? 'done' : 'error', error: m.content ? undefined : 'unavailable' }
-            : {},
-        )
+        // Stream closed without a final event.
+        updateLast((m) => (m.status === 'pending' ? { status: 'error', error: 'unavailable' } : {}))
       } catch {
         if (controller.signal.aborted) return
         updateLast(() => ({ status: 'error', error: 'unavailable' }))
@@ -151,8 +152,44 @@ export function useIris() {
         if (controllerRef.current === controller) controllerRef.current = null
       }
     },
-    [busy, messages],
+    [updateLast],
   )
+
+  const ask = useCallback(
+    (rawQuestion: string) => {
+      const question = rawQuestion.trim()
+      if (!question || busy) return
+      const history = historyFor(messages)
+      setMessages((current) => [
+        ...current,
+        { id: newId(), role: 'user', content: question },
+        { id: newId(), role: 'assistant', content: '', status: 'pending', step: 'search' },
+      ])
+      void send(question, history)
+    },
+    [busy, messages, send],
+  )
+
+  /** Stops the answer in progress (the server stops generating too). */
+  const stop = useCallback(() => {
+    controllerRef.current?.abort()
+    controllerRef.current = null
+    updateLast((m) => (m.status === 'pending' ? { status: 'stopped' } : {}))
+  }, [updateLast])
+
+  /** Asks the last question again, after an error or a stop. */
+  const retry = useCallback(() => {
+    const last = messages.at(-1)
+    const question = messages.at(-2)
+    if (!last || !question || question.role !== 'user' || busy) return
+    if (last.status !== 'error' && last.status !== 'stopped') return
+    const history = historyFor(messages.slice(0, -2))
+    setMessages((current) => [
+      ...current.slice(0, -1),
+      { id: newId(), role: 'assistant', content: '', status: 'pending', step: 'search' },
+    ])
+    void send(question.content, history)
+  }, [busy, messages, send])
 
   /** Stops any answer in progress and forgets the conversation. */
   const reset = useCallback(() => {
@@ -161,5 +198,5 @@ export function useIris() {
     setMessages([])
   }, [])
 
-  return { messages, busy, ask, reset, greeting: IRIS.greeting }
+  return { messages, busy, ask, stop, retry, reset }
 }
