@@ -37,7 +37,14 @@ const scenario = scenarioSchema.parse({
       ],
       choices: [
         { id: 'parler', label: 'Discuter', next: 'fin', quality: 'good', feedback: 'Bien.' },
-        { id: 'crier', label: 'Crier', next: 'fin', quality: 'bad', feedback: 'Non.' },
+        {
+          id: 'crier',
+          label: 'Crier',
+          next: 'fin',
+          quality: 'bad',
+          feedback: 'Non.',
+          losses: { relationship: 3 },
+        },
       ],
     },
     { id: 'fin', lines: [{ speaker: 'moi', text: 'Au revoir.' }], ending: { title: 'Accord' } },
@@ -132,12 +139,45 @@ describe('RolePlayGame', () => {
 
     expect(await screen.findByRole('heading', { name: 'Scène 2' })).toHaveFocus()
     await user.tab()
-    while (!screen.queryByRole('button', { name: 'Rejouer' })) await user.keyboard('{Enter}')
+    while (!screen.queryByRole('button', { name: 'Voir mon bilan' })) {
+      await user.keyboard('{Enter}')
+    }
     expect(screen.getByRole('heading', { name: 'Fin : Accord' })).toHaveFocus()
 
     await user.tab()
     await user.keyboard('{Enter}')
+    expect(await screen.findByRole('heading', { name: 'Votre bilan' })).toHaveFocus()
+
+    await user.tab()
+    while (document.activeElement?.textContent !== 'Rejouer') await user.tab()
+    await user.keyboard('{Enter}')
     expect(await screen.findByRole('heading', { name: /Scène 1/ })).toHaveFocus()
+  })
+
+  it('ends with results consistent with the choices made', async () => {
+    const user = userEvent.setup()
+    render(<RolePlayGame scenario={scenario} />)
+    await user.click(screen.getByRole('button', { name: 'Commencer' }))
+    await screen.findByRole('heading', { name: /Scène 1/ })
+    await readScene(user)
+    await user.click(screen.getByRole('button', { name: 'Crier' }))
+    await screen.findByRole('heading', { name: 'Scène 2' })
+    await readScene(user)
+    await user.click(screen.getByRole('button', { name: 'Voir mon bilan' }))
+
+    const results = await screen.findByRole('region', { name: 'Votre bilan' })
+    expect(results).toHaveTextContent('0 %')
+    expect(results).toHaveTextContent('0 bon choix sur 1')
+
+    const corrections = within(screen.getByRole('region', { name: 'Corrections' }))
+    const correction = corrections.getByRole('listitem')
+    expect(correction).toHaveTextContent('Votre choix : Crier À éviter')
+    expect(correction).toHaveTextContent('Non.')
+    expect(correction).toHaveTextContent('Meilleur choix : Discuter')
+
+    const losses = within(screen.getByRole('region', { name: 'Ce que vos choix vous ont coûté' }))
+    expect(losses.getByText('Relations').closest('div')).toHaveTextContent('Moyenne')
+    expect(losses.getByText('Argent').closest('div')).toHaveTextContent('0 €')
   })
 
   it('shows the text at once and without animation when reduced motion is preferred', async () => {
