@@ -2,8 +2,7 @@ import { defineConfig, devices } from '@playwright/test'
 
 // End-to-end tests: a real browser on the running app (see docs/TESTING.md).
 // The production build is tested, locally as in CI (CI builds in an earlier step).
-// E2E_DEV=1 uses the dev server instead: faster to iterate, but Next 16.4.0 dev
-// crashes on / (vercel/next.js#99789, see #46).
+// E2E_DEV=1 uses the dev server instead (`next dev --webpack`, see #46): faster to iterate.
 const PORT = 3100
 const isCI = Boolean(process.env.CI)
 const useDevServer = Boolean(process.env.E2E_DEV)
