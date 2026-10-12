@@ -1,6 +1,7 @@
 # Repository structure
 
-**Mandatory reading before writing code in this repo** (humans and AI agents).
+**Mandatory reading before writing code in this repo** (humans and AI agents), together
+with [`TESTING.md`](TESTING.md).
 The two architecture rules below are enforced by ESLint (`eslint.config.mjs`): the lint
 and the pre-commit hook fail if they are broken.
 
@@ -26,8 +27,10 @@ src/
   styles/globals.css      Tailwind + shadcn theme (from docs/CHARTE_GRAPHIQUE.pdf).
   generated/              Prisma client output. Git-ignored, never edit.
 scripts/                  Node scripts run with tsx (e.g. check-content.ts).
+tests/e2e/                Playwright end-to-end tests (unit/component tests sit next to the code).
+.github/workflows/        CI (lint, types, content, tests, build, E2E on every PR).
 prisma/                   Prisma schema and migrations.
-docs/                     Specs (CDC, user journeys), design charter, RGAA, RGPD, this file.
+docs/                     Specs (CDC, user journeys), design charter, RGAA, RGPD, this file, TESTING.md.
 ```
 
 Current domains in `src/shared/`: `glossary`, `faq`, `practical-info`, `simulation`

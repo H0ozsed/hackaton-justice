@@ -40,18 +40,20 @@ npm run dev              # http://localhost:3000
 
 ## Structure du code
 
-À lire avant de coder : [`docs/STRUCTURE.md`](docs/STRUCTURE.md). Pour écrire du contenu (lexique, FAQ, quiz…) : [`src/shared/README.md`](src/shared/README.md).
+À lire avant de coder : [`docs/STRUCTURE.md`](docs/STRUCTURE.md) et [`docs/TESTING.md`](docs/TESTING.md). Pour écrire du contenu (lexique, FAQ, quiz…) : [`src/shared/README.md`](src/shared/README.md).
 
 ## Scripts
 
-| Script                                     | Rôle                                                                          |
-| ------------------------------------------ | ----------------------------------------------------------------------------- |
-| `dev` / `build` / `start`                  | Next.js                                                                       |
-| `lint`                                     | ESLint                                                                        |
-| `typecheck`                                | Génère les types de routes Next puis `tsc`                                    |
-| `format` / `format:check`                  | Prettier (écrit / vérifie)                                                    |
-| `content:check`                            | Valide tous les contenus de `src/shared/` (lancé aussi au build et au commit) |
-| `db:up`                                    | Démarre le conteneur PostgreSQL                                               |
-| `db:migrate` / `db:studio` / `db:generate` | Prisma : migrations, interface web, client typé                               |
+| Script                                     | Rôle                                                                                        |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------- |
+| `dev` / `build` / `start`                  | Next.js                                                                                     |
+| `lint`                                     | ESLint                                                                                      |
+| `typecheck`                                | Génère les types de routes Next puis `tsc`                                                  |
+| `format` / `format:check`                  | Prettier (écrit / vérifie)                                                                  |
+| `content:check`                            | Valide tous les contenus de `src/shared/` (lancé aussi au build et au commit)               |
+| `test` / `test:watch`                      | Tests unitaires et composants (Vitest)                                                      |
+| `test:e2e`                                 | Tests end-to-end + accessibilité (Playwright, 1re fois : `npx playwright install chromium`) |
+| `db:up`                                    | Démarre le conteneur PostgreSQL                                                             |
+| `db:migrate` / `db:studio` / `db:generate` | Prisma : migrations, interface web, client typé                                             |
 
-Au commit, Husky lance lint-staged : ESLint `--fix` + Prettier sur les fichiers stagés.
+Au commit, Husky lance lint-staged : ESLint `--fix`, Prettier et les tests liés aux fichiers stagés. Sur chaque PR, la CI GitHub lance toutes les vérifications, le build et les tests e2e.
