@@ -1,7 +1,7 @@
 import { PageTitle } from '@/components/layout/page-title'
 import { SimulationForm } from '@/components/simulation/simulation-form'
+import { SimulationResult } from '@/components/simulation/simulation-result'
 import { SIMULATION_STEPS } from '@/components/simulation/steps'
-import { TechnicalRecap } from '@/components/simulation/technical-recap'
 
 export default function SimulationPage() {
   return (
@@ -12,7 +12,7 @@ export default function SimulationPage() {
         Répondez à quelques questions sur votre conflit pour savoir vers qui vous tourner.
       </p>
       <div className="mt-8">
-        <SimulationForm steps={SIMULATION_STEPS} ResultView={TechnicalRecap} />
+        <SimulationForm steps={SIMULATION_STEPS} ResultView={SimulationResult} />
       </div>
     </>
   )
