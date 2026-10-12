@@ -235,14 +235,11 @@ describe('getPreviousAnswers', () => {
   })
 })
 
+// `restart` only takes the steps, never the previous state: it does not clean a state, it gives a
+// fresh one. A unit test therefore cannot show that answers are cleared; that is tested where the
+// state lives, after a real run: see use-simulation.test.tsx.
 describe('restart', () => {
-  it('clears every answer and draft and goes back to the first step', () => {
-    let state = submitStep(steps, initialState(steps), 'a', { go: 'yes' })
-    state = goBack(steps, state, { note: 'draft' })
-    // Something to clear: one validated answer and one draft.
-    expect(state.answers).toEqual({ a: { go: 'yes' } })
-    expect(state.drafts).toEqual({ b: { note: 'draft' } })
-
+  it('gives the state of a fresh start, with the focus handling switched on', () => {
     expect(restart(steps)).toEqual({
       answers: {},
       drafts: {},
@@ -250,5 +247,14 @@ describe('restart', () => {
       completed: false,
       navigated: true,
     })
+  })
+
+  it('is the initial state, except that the page may now move the focus', () => {
+    expect(restart(steps)).toEqual({ ...initialState(steps), navigated: true })
+  })
+
+  it('starts on the first active step of the steps it is given', () => {
+    const skipped = step('skipped', () => false)
+    expect(restart([skipped, a, b]).currentStepId).toBe('a')
   })
 })
