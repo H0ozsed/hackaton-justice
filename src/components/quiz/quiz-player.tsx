@@ -94,12 +94,15 @@ export function QuizPlayer({ quiz, headingLevel = 2, className }: QuizPlayerProp
 
 // ---- One question ------------------------------------------------------------
 
+// One schema shape for both modes (react-hook-form needs a single value type): a string for
+// radios, an array for checkboxes; empty means "no answer".
 function answerSchema(multiple: boolean) {
-  return multiple
-    ? z.object({ answer: z.array(z.string()).min(1, 'Choisissez au moins une réponse.') })
-    : z.object({
-        answer: z.string({ error: 'Choisissez une réponse.' }).min(1, 'Choisissez une réponse.'),
-      })
+  const message = multiple ? 'Choisissez au moins une réponse.' : 'Choisissez une réponse.'
+  return z.object({
+    answer: z
+      .union([z.string(), z.array(z.string())], { error: message })
+      .refine((value) => value.length > 0, message),
+  })
 }
 
 type AnswerValues = { answer: string | string[] }
