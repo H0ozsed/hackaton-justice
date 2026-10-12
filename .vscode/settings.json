@@ -1,0 +1,33 @@
+{
+  // Formatting: Prettier on save, then ESLint auto-fixes.
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+
+  // Files Prettier cannot format: their own extension takes over.
+  "[prisma]": {
+    "editor.defaultFormatter": "Prisma.prisma"
+  },
+  "[dockerfile]": {
+    "editor.defaultFormatter": "docker.docker"
+  },
+  "[dotenv]": {
+    "editor.formatOnSave": false
+  },
+
+  // TypeScript from node_modules (same version as `npm run typecheck`).
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+
+  // Tailwind IntelliSense, including Nuxt UI's `ui` prop (Nuxt UI docs).
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
+  "editor.quickSuggestions": {
+    "strings": "on"
+  },
+  "tailwindCSS.classAttributes": ["class", "ui"],
+  "tailwindCSS.experimental.classRegex": [["ui:\\s*{([^)]*)\\s*}", "(?:'|\"|`)([^']*)(?:'|\"|`)"]]
+}

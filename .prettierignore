@@ -1,0 +1,11 @@
+node_modules
+.nuxt
+.output
+.data
+package-lock.json
+src/server/generated
+search-works
+docs/**/*.pdf
+backups
+playwright-report
+test-results
