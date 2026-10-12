@@ -1,6 +1,6 @@
 import { PageTitle } from '@/components/layout/page-title'
 
-export default function ApprendrePage() {
+export default function LearnPage() {
   return (
     <>
       <PageTitle title="Apprendre" />

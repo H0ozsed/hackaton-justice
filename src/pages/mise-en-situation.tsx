@@ -1,6 +1,6 @@
 import { PageTitle } from '@/components/layout/page-title'
 
-export default function MiseEnSituationPage() {
+export default function RolePlayPage() {
   return (
     <>
       <PageTitle title="Mise en situation" />

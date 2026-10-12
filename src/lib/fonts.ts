@@ -1,10 +1,10 @@
 import localFont from 'next/font/local'
 
-// Polices de la charte graphique de l'État (docs/CHARTE_GRAPHIQUE.pdf, p. 41-44).
-// Fichiers issus du DSFR (@gouvfr/dsfr) : la Marianne est réservée aux acteurs
-// de la sphère étatique, ne pas la réutiliser hors de ce cadre.
+// Fonts of the French State design charter (docs/CHARTE_GRAPHIQUE.pdf, p. 41-44).
+// Files taken from the DSFR (@gouvfr/dsfr): Marianne is restricted to French
+// State bodies, do not reuse it outside this context.
 
-// Typographie principale : 4 graisses fournies par le DSFR.
+// Main typeface: the 4 weights shipped by the DSFR.
 export const marianne = localFont({
   src: [
     { path: '../fonts/Marianne-Light.woff2', weight: '300', style: 'normal' },
@@ -17,7 +17,7 @@ export const marianne = localFont({
   fallback: ['arial', 'sans-serif'],
 })
 
-// Typographie de complément : avec parcimonie (citations, contenus secondaires).
+// Secondary typeface: use sparingly (quotes, secondary content).
 export const spectral = localFont({
   src: [
     { path: '../fonts/Spectral-Regular.woff2', weight: '400', style: 'normal' },

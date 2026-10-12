@@ -1,6 +1,6 @@
 import { PageTitle } from '@/components/layout/page-title'
 
-export default function AccessibilitePage() {
+export default function AccessibilityPage() {
   return (
     <>
       <PageTitle title="Accessibilité" />

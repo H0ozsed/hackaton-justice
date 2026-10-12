@@ -5,100 +5,100 @@
 @custom-variant dark (&:is(.dark *));
 
 /* =============================================================================
-   Thème : charte graphique de l'État (docs/CHARTE_GRAPHIQUE.pdf, chap. VII).
-   - Couleurs principales (p. 46) : Bleu France, Blanc, Rouge Marianne.
-   - Couleurs complémentaires (p. 47) : teinte 1 = pure, 2/3/4 = 50/25/10 %
-     mélangée au blanc, 0 = ombre (+10 % de noir).
-   - Règle d'usage (p. 48) : teintes claires en fond, couleurs fortes pour le texte.
-   Contrastes vérifiés (RGAA 3.2/3.3 : texte >= 4,5:1, composants d'interface >= 3:1),
-   ratios notés en commentaire. La charte ne définit pas de mode sombre.
+   Theme: French State design charter (docs/CHARTE_GRAPHIQUE.pdf, chap. VII).
+   - Main colors (p. 46): Bleu France (France blue), white, Rouge Marianne (Marianne red).
+   - Complementary colors (p. 47): tint 1 = pure, 2/3/4 = 50/25/10 % mixed
+     with white, 0 = shade (+10 % black).
+   - Usage rule (p. 48): light tints for backgrounds, strong colors for text.
+   Contrasts checked (RGAA 3.2/3.3: text >= 4.5:1, UI components >= 3:1),
+   ratios noted in comments. The charter defines no dark mode.
    ============================================================================= */
 
 :root {
-  /* ---- Palette de la charte (valeurs brutes, utilisables en classes Tailwind) ---- */
-  --bleu-france: #000091; /* p. 46 */
-  --bleu-france-0: #000082; /* ombre */
-  --bleu-france-3: #bfbfe4; /* 25 % */
-  --bleu-france-4: #e6e6f4; /* 10 % */
-  --rouge-marianne: #e1000f; /* p. 46 */
-  --rouge-marianne-0: #ca000e; /* ombre */
-  --rouge-marianne-4: #fce6e7; /* 10 % */
-  --noir: #000000; /* Q1 */
-  --noir-2: #808080; /* Q2, 50 % */
-  --noir-4: #e6e6e6; /* Q4, 10 % */
-  --gris-bleu: #484d7a; /* G1 */
-  --blanc: #ffffff;
+  /* ---- Charter palette (raw values, also exposed as Tailwind classes) ---- */
+  --france-blue: #000091; /* p. 46 */
+  --france-blue-0: #000082; /* shade */
+  --france-blue-3: #bfbfe4; /* 25 % */
+  --france-blue-4: #e6e6f4; /* 10 % */
+  --marianne-red: #e1000f; /* p. 46 */
+  --marianne-red-0: #ca000e; /* shade */
+  --marianne-red-4: #fce6e7; /* 10 % */
+  --black: #000000; /* Q1 */
+  --black-2: #808080; /* Q2, 50 % */
+  --black-4: #e6e6e6; /* Q4, 10 % */
+  --slate-blue: #484d7a; /* G1 */
+  --white: #ffffff;
 
   /* ---- Tokens shadcn ---- */
-  --background: var(--blanc);
-  --foreground: var(--noir); /* 21:1 */
-  --card: var(--blanc);
-  --card-foreground: var(--noir);
-  --popover: var(--blanc);
-  --popover-foreground: var(--noir);
+  --background: var(--white);
+  --foreground: var(--black); /* 21:1 */
+  --card: var(--white);
+  --card-foreground: var(--black);
+  --popover: var(--white);
+  --popover-foreground: var(--black);
 
-  /* Action principale : Bleu France, texte blanc (14,9:1). */
-  --primary: var(--bleu-france);
-  --primary-foreground: var(--blanc);
+  /* Main action: France blue, white text (14.9:1). */
+  --primary: var(--france-blue);
+  --primary-foreground: var(--white);
 
-  /* Fond clair + texte fort, comme le préconise la p. 48 (12,1:1). */
-  --secondary: var(--bleu-france-4);
-  --secondary-foreground: var(--bleu-france);
+  /* Light background + strong text, as recommended p. 48 (12.1:1). */
+  --secondary: var(--france-blue-4);
+  --secondary-foreground: var(--france-blue);
 
-  /* Texte secondaire : G1, seul gris de la charte assez foncé (8:1 sur blanc).
-     Le noir 50 % (Q2) ne fait que 3,9:1 : interdit pour du texte. */
-  --muted: var(--noir-4);
-  --muted-foreground: var(--gris-bleu); /* 6,4:1 sur --muted */
+  /* Secondary text: G1, the only charter gray dark enough (8:1 on white).
+     Black 50 % (Q2) is only 3.9:1: not allowed for text. */
+  --muted: var(--black-4);
+  --muted-foreground: var(--slate-blue); /* 6.4:1 on --muted */
 
-  /* Survol de menus / items actifs. */
-  --accent: var(--bleu-france-4);
-  --accent-foreground: var(--bleu-france);
+  /* Menu hover / active items. */
+  --accent: var(--france-blue-4);
+  --accent-foreground: var(--france-blue);
 
-  /* Erreurs : Rouge Marianne (5:1 sur blanc, texte blanc dessus OK). */
-  --destructive: var(--rouge-marianne);
+  /* Errors: Marianne red (5:1 on white, white text on it OK). */
+  --destructive: var(--marianne-red);
 
-  /* Bordures décoratives en noir 10 %, mais bordures de champs en noir 50 %
-     pour atteindre 3:1 (RGAA 3.3, composants d'interface). */
-  --border: var(--noir-4);
-  --input: var(--noir-2); /* 3,95:1 */
-  --ring: var(--bleu-france); /* focus visible, 14,9:1 */
+  /* Decorative borders in black 10 %, but form field borders in black 50 %
+     to reach 3:1 (RGAA 3.3, UI components). */
+  --border: var(--black-4);
+  --input: var(--black-2); /* 3.95:1 */
+  --ring: var(--france-blue); /* visible focus, 14.9:1 */
 
-  /* Graphiques : couleurs complémentaires harmonieuses (p. 49). */
-  --chart-1: var(--bleu-france);
+  /* Charts: harmonious complementary colors (p. 49). */
+  --chart-1: var(--france-blue);
   --chart-2: #5770be; /* F1 */
   --chart-3: #00ac8c; /* E1 */
   --chart-4: #ff9940; /* M1 */
   --chart-5: #ff8d7e; /* H1 */
 
-  /* La charte ne fixe pas d'arrondi : angles sobres, proches du DSFR. */
+  /* The charter sets no radius: sober corners, close to the DSFR. */
   --radius: 0.25rem;
 
-  --sidebar: var(--blanc);
-  --sidebar-foreground: var(--noir);
-  --sidebar-primary: var(--bleu-france);
-  --sidebar-primary-foreground: var(--blanc);
-  --sidebar-accent: var(--bleu-france-4);
-  --sidebar-accent-foreground: var(--bleu-france);
-  --sidebar-border: var(--noir-4);
-  --sidebar-ring: var(--bleu-france);
+  --sidebar: var(--white);
+  --sidebar-foreground: var(--black);
+  --sidebar-primary: var(--france-blue);
+  --sidebar-primary-foreground: var(--white);
+  --sidebar-accent: var(--france-blue-4);
+  --sidebar-accent-foreground: var(--france-blue);
+  --sidebar-border: var(--black-4);
+  --sidebar-ring: var(--france-blue);
 }
 
 @theme inline {
-  /* Polices chargées dans src/lib/fonts.ts, injectées sur :root par _app.tsx. */
+  /* Fonts loaded in src/lib/fonts.ts, injected on :root by _app.tsx. */
   --font-sans: var(--font-marianne), arial, sans-serif;
   --font-serif: var(--font-spectral), georgia, serif;
   --font-heading: var(--font-marianne), arial, sans-serif;
   --font-mono: ui-monospace, sfmono-regular, menlo, monospace;
 
-  /* Palette de la charte exposée en classes : bg-bleu-france, text-rouge-marianne... */
-  --color-bleu-france: var(--bleu-france);
-  --color-bleu-france-0: var(--bleu-france-0);
-  --color-bleu-france-3: var(--bleu-france-3);
-  --color-bleu-france-4: var(--bleu-france-4);
-  --color-rouge-marianne: var(--rouge-marianne);
-  --color-rouge-marianne-0: var(--rouge-marianne-0);
-  --color-rouge-marianne-4: var(--rouge-marianne-4);
-  --color-gris-bleu: var(--gris-bleu);
+  /* Charter palette as classes: bg-france-blue, text-marianne-red... */
+  --color-france-blue: var(--france-blue);
+  --color-france-blue-0: var(--france-blue-0);
+  --color-france-blue-3: var(--france-blue-3);
+  --color-france-blue-4: var(--france-blue-4);
+  --color-marianne-red: var(--marianne-red);
+  --color-marianne-red-0: var(--marianne-red-0);
+  --color-marianne-red-4: var(--marianne-red-4);
+  --color-slate-blue: var(--slate-blue);
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -150,7 +150,7 @@
   html {
     @apply font-sans;
   }
-  /* Focus toujours visible au clavier (RGAA 10.7). */
+  /* Focus always visible with the keyboard (RGAA 10.7). */
   :focus-visible {
     @apply outline-2 outline-offset-2 outline-ring;
   }

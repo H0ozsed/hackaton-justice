@@ -1,19 +1,19 @@
 # =============================================================================
-# docker-compose.yml: environnement de DÉVELOPPEMENT complet (app + base).
+# docker-compose.yml: full DEVELOPMENT environment (app + database).
 #
-#   docker compose up --build      # 1er lancement, ou après un changement de deps
-#   docker compose up              # lancements suivants
-#   docker compose down            # arrêter (les données de la base sont gardées)
+#   docker compose up --build      # first run, or after a dependency change
+#   docker compose up              # next runs
+#   docker compose down            # stop (database data is kept)
 #
-# Chaque valeur ${...} vient du fichier .env (voir .env.example).
-# La syntaxe ${VAR:?message} refuse de démarrer si la variable manque.
+# Every ${...} value comes from the .env file (see .env.example).
+# The ${VAR:?message} syntax refuses to start if the variable is missing.
 # =============================================================================
 
 name: hackaton-justice
 
 services:
   # ---------------------------------------------------------------------------
-  # app : le serveur Next.js en mode dev
+  # app: the Next.js server in dev mode
   # ---------------------------------------------------------------------------
   app:
     build:
@@ -21,29 +21,29 @@ services:
     image: hackaton-justice-dev
     env_file: .env
     environment:
-      # Dans le réseau Docker, la base s'appelle `db` (nom du service),
-      # pas `localhost` : on reconstruit donc l'URL ici.
+      # Inside the Docker network the database is called `db` (service name),
+      # not `localhost`: the URL is rebuilt here.
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
     ports:
       - '127.0.0.1:3000:3000'
     volumes:
-      # Ton code est monté dans le conteneur : hot reload à chaque sauvegarde.
+      # Your code is mounted into the container: hot reload on every save.
       - .:/app
-      # node_modules reste DANS le conteneur (volume anonyme) : sinon le montage
-      # ci-dessus le masquerait avec la copie de ta machine (absente ou
-      # compilée pour un autre OS). Après un changement de dépendances :
+      # node_modules stays INSIDE the container (anonymous volume): otherwise
+      # the mount above would hide it with your machine's copy (missing or
+      # built for another OS). After a dependency change:
       #   docker compose up --build --renew-anon-volumes
       - /app/node_modules
     depends_on:
       db:
-        # Attendre que Postgres ACCEPTE les connexions (healthcheck), pas
-        # seulement que son conteneur soit lancé : sinon les migrations échouent.
+        # Wait until Postgres ACCEPTS connections (healthcheck), not just until
+        # its container is started: otherwise migrations fail.
         condition: service_healthy
-    # En dev, un conteneur qui plante n'est pas relancé : on veut voir l'erreur.
+    # In dev, a crashing container is not restarted: we want to see the error.
     restart: 'no'
 
   # ---------------------------------------------------------------------------
-  # db : PostgreSQL 18
+  # db: PostgreSQL 18
   # ---------------------------------------------------------------------------
   db:
     image: postgres:18-alpine
@@ -53,13 +53,13 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is missing}
       POSTGRES_DB: ${POSTGRES_DB:?POSTGRES_DB is missing}
     ports:
-      # Accessible depuis TA machine uniquement (Prisma Studio, DBeaver, psql...).
+      # Reachable from YOUR machine only (Prisma Studio, DBeaver, psql...).
       - '127.0.0.1:5432:5432'
     volumes:
-      # Postgres 18+ : monter /var/lib/postgresql (et non .../data comme en <= 17).
+      # Postgres 18+: mount /var/lib/postgresql (not .../data as in <= 17).
       - pgdata:/var/lib/postgresql
     healthcheck:
-      # $$ échappe le $ : évalué DANS le conteneur, pas par Compose.
+      # $$ escapes the $: evaluated INSIDE the container, not by Compose.
       test: ['CMD-SHELL', 'pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}']
       interval: 5s
       timeout: 5s

@@ -1,41 +1,42 @@
-# Contenus du site
+# Site content
 
-Ce dossier contient tout le contenu « figé » du site : lexique, FAQ, infos pratiques,
-types de conflit, canaux d'orientation, quiz. **Tu ne modifies que les fichiers `data.ts`.**
+This folder holds all the static content of the site: glossary, FAQ, practical info,
+conflict types, orientation channels, quizzes. **Only edit the `data.ts` files.**
 
-| Contenu                                          | Fichier                                    |
-| ------------------------------------------------ | ------------------------------------------ |
-| Lexique                                          | `glossary/data.ts`                         |
-| FAQ                                              | `faq/data.ts`                              |
-| Infos pratiques                                  | `practical-info/data.ts`                   |
-| Types de conflit (simulation)                    | `simulation/data.ts` → `conflictTypesData` |
-| Canaux d'orientation (résultat de la simulation) | `simulation/data.ts` → `channelsData`      |
-| Quiz                                             | `quiz/data.ts`                             |
+Field names and comments are in English; the content itself is in French (it is what users
+read on the site).
 
-Les entrées actuelles sont des **EXEMPLES** à remplacer.
+| Content                                  | File                                       |
+| ---------------------------------------- | ------------------------------------------ |
+| Glossary                                 | `glossary/data.ts`                         |
+| FAQ                                      | `faq/data.ts`                              |
+| Practical info                           | `practical-info/data.ts`                   |
+| Conflict types (simulation)              | `simulation/data.ts` → `conflictTypesData` |
+| Orientation channels (simulation result) | `simulation/data.ts` → `channelsData`      |
+| Quizzes                                  | `quiz/data.ts`                             |
 
-## Ajouter une entrée
+The current entries are **examples** (prefixed `EXEMPLE`) to be replaced.
 
-1. Copie une entrée existante du fichier et modifie-la.
-2. Donne-lui un `slug` unique : minuscules, mots séparés par des tirets, sans accent
-   (`conciliateur-de-justice`). Il sert à faire référence à l'entrée ailleurs ; ne le change
-   plus une fois utilisé.
-3. Dans VS Code, l'autocomplétion propose les champs possibles et souligne en rouge ce qui
-   manque ou est mal écrit (survole le soulignement pour lire l'erreur).
-4. Vérifie avec `npm run content:check`. Ce contrôle tourne aussi automatiquement au commit
-   et au build : un contenu invalide les bloque, avec un message qui dit quelle entrée et
-   quel champ corriger.
+## Adding an entry
 
-## Points d'attention
+1. Copy an existing entry of the file and edit it.
+2. Give it a unique `slug`: lowercase, words separated by dashes, no accents
+   (`conciliateur-de-justice`). It is used to reference the entry elsewhere; do not change it
+   once it is used.
+3. In VS Code, autocompletion suggests the available fields and underlines in red what is
+   missing or wrong (hover the underline to read the error).
+4. Check with `npm run content:check`. This check also runs automatically on commit and on
+   build: invalid content blocks them, with a message naming the entry and the field to fix.
 
-- **Références** : dans le lexique (`related`) et les quiz (`glossary`), on cite des termes
-  du lexique par leur `slug`. Le terme cité doit exister.
-- **Types de conflit** : `lossKinds` liste les pertes à demander (`money`, `time`, `health`,
-  `relationship`) ; `followUpQuestions` ajoute des questions propres à ce type
-  (`kind: 'choice'`, `'number'` ou `'yesNo'`). Le formulaire s'adapte tout seul, validation
-  comprise. Une question est obligatoire sauf si tu mets `required: false`.
-- **Quiz** : une seule bonne réponse dans `correctChoiceIds` → boutons radio ; plusieurs →
-  cases à cocher.
-- **FAQ** : `pages` indique où la question s'affiche (`home` = accueil, `learn` = Apprendre).
+## Things to know
 
-Structure technique du dossier : [`docs/STRUCTURE.md`](../../docs/STRUCTURE.md).
+- **References**: in the glossary (`related`) and quizzes (`glossary`), glossary terms are
+  referenced by their `slug`. The referenced term must exist.
+- **Conflict types**: `lossKinds` lists the losses to ask about (`money`, `time`, `health`,
+  `relationship`); `followUpQuestions` adds questions specific to this type
+  (`kind: 'choice'`, `'number'` or `'yesNo'`). The form adapts by itself, validation
+  included. A question is required unless you set `required: false`.
+- **Quizzes**: one id in `correctChoiceIds` → radio buttons; several → checkboxes.
+- **FAQ**: `pages` says where the question is shown (`home` = home page, `learn` = `/apprendre`).
+
+Technical structure of this folder: [`docs/STRUCTURE.md`](../../docs/STRUCTURE.md).

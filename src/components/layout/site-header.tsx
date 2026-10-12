@@ -14,18 +14,18 @@ export function SiteHeader() {
   return (
     <header className="border-b">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
-        <Link href="/" className="text-lg font-bold text-bleu-france">
+        <Link href="/" className="text-lg font-bold text-france-blue">
           {SITE_NAME}
         </Link>
 
-        {/* Bouton du menu mobile : aria-expanded annonce l'état ouvert/fermé,
-            aria-controls relie le bouton à la liste qu'il affiche. */}
+        {/* Mobile menu button: aria-expanded announces the open/closed state,
+            aria-controls links the button to the list it shows. */}
         <Button
           variant="ghost"
           size="icon-lg"
           className="md:hidden"
           aria-expanded={menuOpen}
-          aria-controls="menu-principal"
+          aria-controls="main-menu"
           onClick={() => setMenuOpen((open) => !open)}
         >
           {menuOpen ? <XIcon aria-hidden /> : <MenuIcon aria-hidden />}
@@ -38,7 +38,7 @@ export function SiteHeader() {
       </div>
 
       {menuOpen && (
-        <nav id="menu-principal" aria-label="Menu principal" className="border-t md:hidden">
+        <nav id="main-menu" aria-label="Menu principal" className="border-t md:hidden">
           <NavList pathname={pathname} vertical onNavigate={() => setMenuOpen(false)} />
         </nav>
       )}
@@ -64,7 +64,7 @@ function NavList({
             <Link
               href={href}
               onClick={onNavigate}
-              // Page courante annoncée aux lecteurs d'écran, pas seulement par la couleur.
+              // Current page announced to screen readers, not only shown by color.
               aria-current={current ? 'page' : undefined}
               className={cn(
                 'block rounded-md px-3 py-2 font-medium hover:bg-accent hover:text-accent-foreground',

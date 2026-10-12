@@ -13,6 +13,7 @@ import type { ConflictType, Question } from './schema'
 //   number            → number within min/max      120
 //   yesNo             → 'yes' | 'no'               (strings: what radio inputs give)
 
+// Shown to users: French.
 const REQUIRED = 'Ce champ est obligatoire'
 
 /** zod schema of the answer to one question. */
