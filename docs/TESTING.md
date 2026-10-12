@@ -81,6 +81,7 @@ release ships the fix (16.4.1 / 16.5).
 
 | File | Shows |
 | --- | --- |
+| `tests/e2e/a11y-journeys.spec.ts` | E2E: every journey played, axe scan at each state (content-agnostic) |
 | `src/lib/content.test.ts` | unit tests of a helper, expected error messages |
 | `src/shared/quiz/index.test.ts` | unit tests of business rules |
 | `src/shared/simulation/answers.test.ts` | testing zod schemas built from config |
