@@ -4,7 +4,9 @@ import {
   createInitialState,
   currentScene,
   isFinished,
+  resolveHistory,
   rolePlayReducer,
+  scorePercent,
   scenarios,
   type RolePlayState,
   type Scenario,
@@ -34,5 +36,21 @@ describe.each(scenarios.all.map((s) => [s.slug, s] as const))('scenario "%s"', (
     const reached = new Set(allRuns(scenario).map((s) => s.sceneId))
     const endings = scenario.scenes.filter((s) => s.ending).map((s) => s.id)
     expect([...reached].sort()).toEqual(endings.sort())
+  })
+
+  it('offers a good choice in every scene, so each mistake has a correction', () => {
+    for (const scene of scenario.scenes.filter((s) => !s.ending)) {
+      expect(
+        scene.choices.some((c) => c.quality === 'good'),
+        `no good choice in scene "${scene.id}"`,
+      ).toBe(true)
+    }
+  })
+
+  it('can be won with 100 %', () => {
+    const scores = allRuns(scenario).map((state) =>
+      scorePercent(resolveHistory(scenario, state.history).map((s) => s.choice)),
+    )
+    expect(Math.max(...scores)).toBe(100)
   })
 })
