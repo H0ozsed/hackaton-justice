@@ -23,6 +23,7 @@ reloading the page starts over.
 | `steps.ts`            | **Registry** of the steps, in the order they are asked                       |
 | `demo-steps.tsx`      | Two temporary technical steps                                                |
 | `technical-recap.tsx` | Temporary result screen                                                      |
+| `*.test.ts(x)`        | Unit tests of the engine and registry, component tests of `SimulationForm`   |
 
 ## Add a step
 
@@ -79,3 +80,10 @@ audit (see #24).
 
 The page passes `ResultView: ComponentType<{ result, onRestart }>`. `result` only contains the
 answers of the active steps, keyed by step id. #16 provides the real screen.
+
+## Tests
+
+`npm test` runs them (see `docs/TESTING.md`): unit tests of `engine.ts`, a guard on the registry
+and component tests of `SimulationForm` (navigation, validation, focus, accessibility with
+Testing Library and axe-core). They define their own neutral steps and never rely on the demo
+steps, so replacing the demo steps does not break them.
