@@ -1,9 +1,18 @@
 import { defineConfig, devices } from '@playwright/test'
 
 // End-to-end tests: a real browser on the running app (see docs/TESTING.md).
-// Locally the dev server is started for you; in CI the production build is used.
+// The production build is tested, locally as in CI (CI builds in an earlier step).
+// E2E_DEV=1 uses the dev server instead: faster to iterate, but Next 16.4.0 dev
+// crashes on / (vercel/next.js#99789, see #46).
 const PORT = 3100
 const isCI = Boolean(process.env.CI)
+const useDevServer = Boolean(process.env.E2E_DEV)
+
+const serverCommand = useDevServer
+  ? `npm run dev -- -p ${PORT}`
+  : isCI
+    ? `npm run start -- -p ${PORT}`
+    : `npm run build && npm run start -- -p ${PORT}`
 
 export default defineConfig({
   testDir: './tests/e2e',
@@ -22,9 +31,10 @@ export default defineConfig({
     { name: 'mobile', use: { ...devices['Pixel 7'] } },
   ],
   webServer: {
-    command: isCI ? `npm run start -- -p ${PORT}` : `npm run dev -- -p ${PORT}`,
+    command: serverCommand,
     url: `http://localhost:${PORT}`,
     reuseExistingServer: !isCI,
-    timeout: 120_000,
+    // Locally the build runs first.
+    timeout: 300_000,
   },
 })
