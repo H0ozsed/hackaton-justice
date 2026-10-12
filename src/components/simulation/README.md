@@ -6,7 +6,8 @@ reloading the page starts over.
 
 > Current state: the `steps.ts` registry holds a **temporary** conflict type placeholder
 > (`demo-conflict-type-step.tsx`, replaced by #13) followed by the real losses and frequency step
-> (#14). The end screen is a temporary `TechnicalRecap`, replaced by the result of #16.
+> (#14) and the real openness to discussion step (#15). The end screen is a temporary
+> `TechnicalRecap`, replaced by the result of #16.
 
 ## Files
 
@@ -26,6 +27,8 @@ reloading the page starts over.
 | `loss-frequency.ts`           | Rules (zod) and options of the losses and frequency step (#14)                 |
 | `loss-frequency-fields.tsx`   | Fields of that step: one block per declared loss kind, then the frequency      |
 | `loss-frequency-step.tsx`     | `createLossFrequencyStep(conflictTypes)`: the step itself                      |
+| `openness.ts`                 | Rules, options and typed reader of the openness to discussion step (#15)       |
+| `openness-step.tsx`           | The openness to discussion step itself                                         |
 | `demo-conflict-type-step.tsx` | TEMPORARY placeholder for the conflict type step (#13)                         |
 | `technical-recap.tsx`         | Temporary result screen                                                        |
 | `*.test.ts(x)`                | Unit tests (engine, numbers, rules, registry), component tests (form, step)    |
@@ -123,6 +126,22 @@ Asked once a conflict type is chosen. It shows **only the loss kinds that confli
 - **Going back**: the in-progress input (even invalid) of the step being left is kept as a draft
   and restored on return; a draft is never an answer.
 
+## Openness to discussion step (#15)
+
+Always asked, whatever the conflict type. Two required questions, as radio buttons:
+
+| Field                | Question                                           | Values                          |
+| -------------------- | -------------------------------------------------- | ------------------------------- |
+| `userOpenness`       | Would you be willing to talk with the other party? | `yes`, `maybe`, `no`            |
+| `otherPartyOpenness` | Do you think the other party would be?             | `yes`, `maybe`, `no`, `unknown` |
+
+- A missing answer is refused with a message for that question. `unknown` ("Je ne sais pas") is
+  only offered for the other party: the person knows their own mind.
+- The result screen (#16) gets the answers under the step id `openness`. `getOpennessAnswers(result)`
+  reads and types them (it returns undefined if the step was not answered).
+- The wording is **provisional UI copy**, not legal content. It lives in `openness.ts` and
+  `openness-step.tsx` and can move to `src/shared/simulation` if the content team wants to own it.
+
 ## Accessibility (what is in place)
 
 A single `h1` (the page), one `h2` per step that receives the focus on every step change (never on
@@ -139,7 +158,7 @@ answers of the active steps, keyed by step id. #16 provides the real screen.
 ## Tests
 
 `npm test` runs them (see `docs/TESTING.md`): unit tests of the engine, the number parsing, the
-losses rules and the registry, and component tests of `SimulationForm` and of the losses step
-(conditional blocks, refused values, kept answers, focus, accessibility with Testing Library and
-axe-core). They define their own neutral steps and conflict types, and never rely on the
+losses and openness rules and the registry, and component tests of `SimulationForm`, of the losses
+step and of the openness step (conditional blocks, refused values, kept answers, focus,
+accessibility with Testing Library and axe-core). They define their own neutral steps and conflict types, and never rely on the
 temporary placeholder or on the shared example content.
