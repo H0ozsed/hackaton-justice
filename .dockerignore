@@ -1,7 +1,6 @@
 # Files excluded from the Docker build context.
 node_modules
 .next
-out
 src/generated
 
 # Secrets: must NEVER end up in an image
