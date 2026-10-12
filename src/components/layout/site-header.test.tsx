@@ -20,16 +20,16 @@ describe('SiteHeader', () => {
 
     const open = screen.getByRole('button', { name: 'Ouvrir le menu' })
     expect(open).toHaveAttribute('aria-expanded', 'false')
-    expect(document.getElementById('menu-principal')).toBeNull()
+    expect(document.getElementById('main-menu')).toBeNull()
 
     await user.click(open)
     const close = screen.getByRole('button', { name: 'Fermer le menu' })
     expect(close).toHaveAttribute('aria-expanded', 'true')
-    expect(close).toHaveAttribute('aria-controls', 'menu-principal')
-    expect(document.getElementById('menu-principal')).toBeInTheDocument()
+    expect(close).toHaveAttribute('aria-controls', 'main-menu')
+    expect(document.getElementById('main-menu')).toBeInTheDocument()
 
     await user.click(close)
-    expect(document.getElementById('menu-principal')).toBeNull()
+    expect(document.getElementById('main-menu')).toBeNull()
   })
 
   it('closes the mobile menu after choosing a link', async () => {
@@ -37,11 +37,11 @@ describe('SiteHeader', () => {
     render(<SiteHeader />)
     await user.click(screen.getByRole('button', { name: 'Ouvrir le menu' }))
 
-    const menu = document.getElementById('menu-principal')!
+    const menu = document.getElementById('main-menu')!
     const link = Array.from(menu.querySelectorAll('a')).find((a) => a.textContent === 'Apprendre')!
     link.addEventListener('click', (event) => event.preventDefault())
     await user.click(link)
 
-    expect(document.getElementById('menu-principal')).toBeNull()
+    expect(document.getElementById('main-menu')).toBeNull()
   })
 })

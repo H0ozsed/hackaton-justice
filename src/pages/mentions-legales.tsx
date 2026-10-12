@@ -1,6 +1,6 @@
 import { PageTitle } from '@/components/layout/page-title'
 
-export default function MentionsLegalesPage() {
+export default function LegalNoticePage() {
   return (
     <>
       <PageTitle title="Mentions légales" />

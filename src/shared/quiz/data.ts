@@ -1,6 +1,7 @@
 import type { QuizInput } from './schema'
 
-// EXEMPLES à remplacer par l'équipe contenu (voir src/shared/README.md).
+// EXAMPLES to be replaced by the content team (see src/shared/README.md).
+// Field names in English, content in French (shown to users).
 export const quizzesData: QuizInput[] = [
   {
     slug: 'bases',

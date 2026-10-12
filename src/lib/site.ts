@@ -1,5 +1,5 @@
-// Infos globales du site : une seule source pour la navbar, le footer,
-// les titres de page et (plus tard) les cartes de l'accueil.
+// Site-wide info: single source for the navbar, the footer, page titles
+// and (later) the home page cards. Labels are site content: in French.
 
 export const SITE_NAME = 'Hackaton Justice'
 
@@ -8,7 +8,7 @@ export type NavItem = {
   label: string
 }
 
-// Parcours principaux (docs/PARCOURS_UTILISATEURS.md).
+// Main journeys (docs/PARCOURS_UTILISATEURS.md).
 export const MAIN_NAV: NavItem[] = [
   { href: '/', label: 'Accueil' },
   { href: '/simulation', label: 'Simulation' },
@@ -16,7 +16,7 @@ export const MAIN_NAV: NavItem[] = [
   { href: '/apprendre', label: 'Apprendre' },
 ]
 
-// Liens réglementaires du pied de page (contenu : issue RGPD / RGAA).
+// Legal links of the footer (content: GDPR / RGAA issues).
 export const FOOTER_NAV: NavItem[] = [
   { href: '/mentions-legales', label: 'Mentions légales' },
   { href: '/confidentialite', label: 'Données personnelles' },

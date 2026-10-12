@@ -7,8 +7,8 @@ import { marianne, spectral } from '@/lib/fonts'
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
-      {/* Posé sur :root (et pas sur un wrapper) pour que les portails Radix
-          (dialog, popover...) rendus hors de l'arbre héritent aussi des polices. */}
+      {/* Set on :root (not on a wrapper) so that Radix portals (dialog, popover...)
+          rendered outside the tree inherit the fonts too. */}
       <style jsx global>{`
         :root {
           --font-marianne: ${marianne.style.fontFamily};

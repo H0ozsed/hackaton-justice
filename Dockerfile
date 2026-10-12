@@ -1,43 +1,43 @@
 # syntax=docker/dockerfile:1
 # =============================================================================
-# Dockerfile: image de DÉVELOPPEMENT de l'app Next.js.
-# Le code n'est pas copié dans l'image : il est monté depuis ta machine par
-# docker-compose.yml, pour que chaque sauvegarde recharge la page (hot reload).
+# Dockerfile: DEVELOPMENT image of the Next.js app.
+# The code is not copied into the image: docker-compose.yml mounts it from your
+# machine, so every save reloads the page (hot reload).
 # =============================================================================
 
-# Doit correspondre à "devEngines" dans package.json et à .nvmrc,
-# sinon npm refuse de s'exécuter (EBADDEVENGINES).
+# Must match "devEngines" in package.json and .nvmrc, otherwise npm refuses
+# to run (EBADDEVENGINES).
 ARG NODE_VERSION=24
 ARG NPM_VERSION=12.2.0
 
-# `slim` = Debian allégée (glibc) : les paquets npm avec binaires natifs
-# (Prisma, etc.) s'installent sans surprise, contrairement à Alpine (musl).
+# `slim` = trimmed-down Debian (glibc): npm packages shipping native binaries
+# (Prisma, etc.) install without surprises, unlike Alpine (musl).
 FROM node:${NODE_VERSION}-slim AS dev
 ARG NPM_VERSION
-# OpenSSL est requis par les moteurs Prisma.
+# OpenSSL is required by the Prisma engines.
 RUN apt-get update && apt-get install -y --no-install-recommends openssl \
     && rm -rf /var/lib/apt/lists/*
-# L'image Node embarque sa propre version de npm : on fixe celle du projet.
+# The Node image ships its own npm version: pin the project's one.
 RUN npm install -g npm@${NPM_VERSION} && npm cache clean --force
 
 WORKDIR /app
-# On tourne en tant que `node` (UID 1000) et pas root : les fichiers que Next
-# et Prisma écrivent dans le dossier monté (.next, src/generated) t'appartiennent.
+# Run as `node` (UID 1000), not root: files written by Next and Prisma into the
+# mounted folder (.next, src/generated) belong to you.
 RUN chown node:node /app
 USER node
 
-# Copier UNIQUEMENT les manifestes : tant qu'ils ne changent pas, Docker
-# réutilise cette couche en cache au lieu de tout réinstaller.
+# Copy ONLY the manifests: as long as they don't change, Docker reuses this
+# cached layer instead of reinstalling everything.
 COPY --chown=node:node package.json package-lock.json ./
-# --ignore-scripts : `prisma generate` (postinstall) a besoin du schéma, et
-# `husky` (prepare) du dépôt git, absents à ce stade. Ils tournent au démarrage.
+# --ignore-scripts: `prisma generate` (postinstall) needs the schema and `husky`
+# (prepare) needs the git repo, both missing at this point. They run at startup.
 RUN npm ci --ignore-scripts
 
 ENV NEXT_TELEMETRY_DISABLED=1
 EXPOSE 3000
 
-# Au DÉMARRAGE du conteneur (le code n'existe qu'une fois le volume monté) :
-# 1. client Prisma  2. migrations versionnées pas encore appliquées
-# 3. serveur de dev, à l'écoute de toutes les interfaces (sinon injoignable
-#    depuis l'extérieur du conteneur).
+# At container STARTUP (the code only exists once the volume is mounted):
+# 1. Prisma client  2. committed migrations not applied yet
+# 3. dev server, listening on all interfaces (otherwise unreachable from
+#    outside the container).
 CMD ["sh", "-c", "npx prisma generate && npx prisma migrate deploy && npm run dev -- -H 0.0.0.0"]

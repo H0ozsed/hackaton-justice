@@ -1,6 +1,6 @@
 import { PageTitle } from '@/components/layout/page-title'
 
-export default function ConfidentialitePage() {
+export default function PrivacyPage() {
   return (
     <>
       <PageTitle title="Données personnelles" />

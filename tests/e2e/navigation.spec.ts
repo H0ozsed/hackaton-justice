@@ -44,7 +44,7 @@ test('the skip link moves the keyboard focus to the main content', async ({ page
   await page.keyboard.press('Tab')
   await expect(page.getByRole('link', { name: 'Aller au contenu' })).toBeFocused()
   await page.keyboard.press('Enter')
-  await expect(page.locator('main#contenu')).toBeFocused()
+  await expect(page.locator('main#main-content')).toBeFocused()
 })
 
 test('the navbar leads to every journey', async ({ page, isMobile }) => {
