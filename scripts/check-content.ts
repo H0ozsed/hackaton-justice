@@ -5,6 +5,7 @@ import '@/shared/faq'
 import '@/shared/glossary'
 import '@/shared/practical-info'
 import '@/shared/quiz'
+import '@/shared/role-play'
 import '@/shared/simulation'
 
 // eslint-disable-next-line no-console -- CLI output
