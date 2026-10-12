@@ -34,7 +34,8 @@ docs/                     Specs (CDC, user journeys), design charter, RGAA, RGPD
 ```
 
 Current domains in `src/shared/`: `glossary`, `faq`, `practical-info`, `simulation`
-(conflict types + channels), `quiz`.
+(conflict types + channels), `quiz`, `role-play` (scenarios of `/mise-en-situation` and the
+pure game engine that plays them).
 
 ## Rule 1: the front never talks to the database
 
