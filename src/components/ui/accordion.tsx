@@ -26,31 +26,40 @@ function AccordionItem({
   )
 }
 
+// Customised (not in the shadcn original): `level` sets the heading tag around
+// the trigger (Radix always renders an h3), so the question headings follow the
+// page hierarchy (RGAA 9.1).
+type HeadingLevel = 2 | 3 | 4 | 5 | 6
+
 function AccordionTrigger({
   className,
   children,
+  level = 3,
   ...props
-}: React.ComponentProps<typeof AccordionPrimitive.Trigger>) {
+}: React.ComponentProps<typeof AccordionPrimitive.Trigger> & { level?: HeadingLevel }) {
+  const Heading = `h${level}` as const
   return (
-    <AccordionPrimitive.Header className="flex">
-      <AccordionPrimitive.Trigger
-        data-slot="accordion-trigger"
-        className={cn(
-          'group/accordion-trigger relative flex flex-1 items-start justify-between rounded-lg border border-transparent py-2.5 text-left text-sm font-medium transition-all outline-none hover:underline focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:after:border-ring disabled:pointer-events-none disabled:opacity-50 **:data-[slot=accordion-trigger-icon]:ml-auto **:data-[slot=accordion-trigger-icon]:size-4 **:data-[slot=accordion-trigger-icon]:text-muted-foreground',
-          className,
-        )}
-        {...props}
-      >
-        {children}
-        <ChevronDownIcon
-          data-slot="accordion-trigger-icon"
-          className="pointer-events-none shrink-0 group-aria-expanded/accordion-trigger:hidden"
-        />
-        <ChevronUpIcon
-          data-slot="accordion-trigger-icon"
-          className="pointer-events-none hidden shrink-0 group-aria-expanded/accordion-trigger:inline"
-        />
-      </AccordionPrimitive.Trigger>
+    <AccordionPrimitive.Header asChild className="flex">
+      <Heading>
+        <AccordionPrimitive.Trigger
+          data-slot="accordion-trigger"
+          className={cn(
+            'group/accordion-trigger relative flex flex-1 items-start justify-between rounded-lg border border-transparent py-2.5 text-left text-sm font-medium transition-all outline-none hover:underline focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:after:border-ring disabled:pointer-events-none disabled:opacity-50 **:data-[slot=accordion-trigger-icon]:ml-auto **:data-[slot=accordion-trigger-icon]:size-4 **:data-[slot=accordion-trigger-icon]:text-muted-foreground',
+            className,
+          )}
+          {...props}
+        >
+          {children}
+          <ChevronDownIcon
+            data-slot="accordion-trigger-icon"
+            className="pointer-events-none shrink-0 group-aria-expanded/accordion-trigger:hidden"
+          />
+          <ChevronUpIcon
+            data-slot="accordion-trigger-icon"
+            className="pointer-events-none hidden shrink-0 group-aria-expanded/accordion-trigger:inline"
+          />
+        </AccordionPrimitive.Trigger>
+      </Heading>
     </AccordionPrimitive.Header>
   )
 }
@@ -63,7 +72,8 @@ function AccordionContent({
   return (
     <AccordionPrimitive.Content
       data-slot="accordion-content"
-      className="overflow-hidden text-sm data-open:animate-accordion-down data-closed:animate-accordion-up"
+      // Customised: no open/close animation when the user asks for reduced motion.
+      className="overflow-hidden text-sm motion-reduce:animate-none data-open:animate-accordion-down data-closed:animate-accordion-up"
       {...props}
     >
       <div
@@ -78,4 +88,4 @@ function AccordionContent({
   )
 }
 
-export { Accordion, AccordionItem, AccordionTrigger, AccordionContent }
+export { Accordion, AccordionItem, AccordionTrigger, AccordionContent, type HeadingLevel }
