@@ -2,13 +2,22 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Mandatory reading
+
+**Before writing or moving any code, read [`docs/STRUCTURE.md`](docs/STRUCTURE.md) and [`docs/TESTING.md`](docs/TESTING.md).**
+
+- `docs/STRUCTURE.md`: folder layout, where each kind of code goes, and the two architecture rules enforced by ESLint (the front never imports server code / Prisma, it goes through `src/pages/api`; a domain in `src/shared/` is only imported through its `index.ts`).
+- `docs/TESTING.md`: which tests a change requires (unit / component / API integration / E2E + axe), where they live, how to run them. A PR that adds logic or interactive behaviour ships with its tests.
+
+Keep both files up to date when the structure or the testing setup changes.
+
 ## Project state
 
 Next.js 16 **Pages Router** app (`src/pages`, `@/*` alias), shadcn (radix) themed after `docs/CHARTE_GRAPHIQUE.pdf` in `src/styles/globals.css`. Shared layout (header/nav/footer, skip link) in `src/components/layout`, site name and nav links in `src/lib/site.ts`. Work is tracked in GitHub issues (milestones Phase 0/1/2).
 
 - Dev runs in Docker: `docker compose up --build` (services `app` + `db` Postgres 18), see README.
-- Commands: `npm run dev | build | lint | typecheck | format`, `npm run db:migrate | db:studio`.
-- Pre-commit: Husky + lint-staged (ESLint --fix, Prettier). Prettier: no semicolons, single quotes, width 100. `docs/` is not formatted.
+- Commands: `npm run dev | build | lint | typecheck | format | content:check | test | test:e2e`, `npm run db:migrate | db:studio`. Static content lives in `src/shared/<domain>/data.ts` and is validated by `content:check` (also run by `build` and pre-commit).
+- Pre-commit: Husky + lint-staged (ESLint --fix, Prettier, related Vitest tests). CI (`.github/workflows/ci.yml`) runs every check + build + E2E on each PR. Prettier: no semicolons, single quotes, width 100. `docs/` is not formatted.
 - RGAA matters: keep `aria-current`, a unique `<PageTitle>` and one `h1` per page.
 
 ## What this project is
