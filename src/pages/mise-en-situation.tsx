@@ -1,4 +1,6 @@
 import { PageTitle } from '@/components/layout/page-title'
+import { RolePlayGame } from '@/components/role-play/role-play-game'
+import { scenarios } from '@/shared/role-play'
 
 export default function RolePlayPage() {
   return (
@@ -8,6 +10,7 @@ export default function RolePlayPage() {
       <p className="mt-4 text-muted-foreground">
         Vivez un cas concret et découvrez les conséquences de vos choix.
       </p>
+      <RolePlayGame scenario={scenarios.all[0]} />
     </>
   )
 }
