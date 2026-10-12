@@ -5,8 +5,8 @@ provided by the page. Answers stay **in memory** (no database, no `localStorage`
 reloading the page starts over.
 
 > Current state: the `steps.ts` registry holds the conflict type step and its follow-up questions
-> (#13), the losses and frequency step (#14) and the openness to discussion step (#15). The end
-> screen is a temporary `TechnicalRecap`, replaced by the result of #16.
+> (#13), the losses and frequency step (#14) and the openness to discussion step (#15). The result
+> screen recommends a channel from the answers (#16).
 
 ## Files
 
@@ -32,7 +32,9 @@ reloading the page starts over.
 | `loss-frequency-step.tsx`   | `createLossFrequencyStep(conflictTypes)`: the step itself                      |
 | `openness.ts`               | Rules, options and typed reader of the openness to discussion step (#15)       |
 | `openness-step.tsx`         | The openness to discussion step itself                                         |
-| `technical-recap.tsx`       | Temporary result screen                                                        |
+| `recommend-channel.ts`      | Orientation rules (#16): pure `recommendChannel(answers, channels)`            |
+| `answers-summary.ts`        | `summarizeAnswers`: what the person answered, as { label, value } lines        |
+| `simulation-result.tsx`     | Result screen: recommended channel, why, other options, answers, start over    |
 | `*.test.ts(x)`              | Unit tests (engine, numbers, rules, registry), component tests (form, steps)   |
 
 ## Add a step
@@ -174,16 +176,49 @@ fields, errors linked to the field (`aria-invalid`, `aria-describedby`) and a `r
 summary that takes the focus, a `role="progressbar"` bar, colours from the charter tokens. This is
 not a full RGAA audit (see #24).
 
-## Result screen
+## Orientation and result screen (#16)
 
-The page passes `ResultView: ComponentType<{ result, onRestart }>`. `result` only contains the
-answers of the active steps, keyed by step id. #16 provides the real screen.
+The page passes `ResultView: ComponentType<{ result, onRestart }>` to `SimulationForm`; `result` only
+contains the answers of the active steps, keyed by step id. `SimulationResult`
+(`simulation-result.tsx`) is the real one, built by `createSimulationResult({ channels, conflictTypes })`
+(the content is a parameter so that tests can use their own).
+
+**Rules** (`recommend-channel.ts`, a pure function, no React): the route only depends on the two
+answers of the openness step.
+
+| The person would talk with the other party? | The other party seems willing? | Route      |
+| ------------------------------------------- | ------------------------------ | ---------- |
+| no                                          | any                            | `judicial` |
+| yes or maybe                                | yes                            | `direct`   |
+| yes or maybe                                | maybe, no or unknown           | `assisted` |
+
+- **Every combination of answers leads to a result**: a missing openness answer is read as the most
+  prudent one (maybe / unknown, so `assisted`), and the other answers (conflict type, losses) never
+  prevent a route. The table of cases is tested exhaustively (3 x 4 combinations).
+- The rules are written on the **attributes** of the channels of the content, not on their slugs:
+  `judicial` is a channel with `amicable: false`; `assisted` is an amicable channel **with contact
+  details** (an organisation to reach out to); `direct` is an amicable channel **without** contact
+  details (talking to the other party). Free channels come first. When no channel fits, the closest
+  one is used (any amicable channel, then any channel). A guard test checks that the channels of the
+  content leave no route without a channel: if the content team replaces the examples and a route
+  is left empty, it fails with a clear message.
+- The rules are **provisional**: they say how the answers lean towards an amicable solution or not,
+  they are not legal advice, and the content / legal team is expected to review and refine them.
+- The screen says why (what the person answered, what the route means, whether the channel is
+  free), lists the other channels, recalls the answers (`summarizeAnswers`), gives the contact
+  details (the website opens in a new window, said in the link text) and says the orientation is
+  indicative. "Recommencer la simulation" starts over (`onRestart`).
 
 ## Tests
 
 `npm test` runs them (see `docs/TESTING.md`): unit tests of the engine, the number parsing, the
-losses, follow-up and openness rules and the registry, and component tests of `SimulationForm`, of
-the conflict type, follow-up, losses and openness steps (conditional blocks, one case per kind of
+losses, follow-up and openness rules, the orientation rules and the registry, and component tests of
+`SimulationForm`, of every step and of the result screen (conditional blocks, one case per kind of
 question, refused values, kept answers, focus, accessibility with Testing Library and axe-core).
-They define their own neutral steps and conflict types, and never rely on the shared example
-content.
+They define their own neutral steps, conflict types and channels, and never rely on the shared
+example content, except the guard on the channels of the content.
+
+The whole journey, from the conflict type to the orientation, is covered end to end by
+`tests/e2e/simulation.spec.ts` (desktop and mobile, with the axe scan). It is written without
+knowing the content: every question gets the first possible answer, so it keeps working when the
+content team replaces the examples.
