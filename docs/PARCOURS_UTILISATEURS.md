@@ -34,7 +34,7 @@
 
 ### `/`apprendre
 
-* Chatbot
+* Chatbot (pas encore décidé : non intégré)
 * Questionnaires évaluatif
 * FAQ
 * Infos pratiques
@@ -42,4 +42,5 @@
   * Page dédiée `/apprendre/lexique` (lien depuis `/apprendre`, « Apprendre » reste la page courante dans la navbar)
   * Recherche sans tenir compte des accents ni des majuscules (terme et variantes), nombre de résultats annoncé
   * Index alphabétique, termes groupés par lettre, ancre par terme (`/apprendre/lexique#mediation`), liens « Voir aussi » vers les termes liés
+* Sommaire en haut de page : liens vers chaque section (Questionnaires, Lexique, Questions fréquentes, Infos pratiques)
 

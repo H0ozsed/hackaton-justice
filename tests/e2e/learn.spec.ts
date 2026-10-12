@@ -1,0 +1,57 @@
+import AxeBuilder from '@axe-core/playwright'
+import { expect, test, type Page } from '@playwright/test'
+
+// /apprendre: the learning hub assembles the quizzes, the FAQ and the practical info.
+// Written without knowing the content (placeholders today), so it survives content changes.
+
+const expectNoAxeViolation = async (page: Page) => {
+  const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze()
+  expect(results.violations).toEqual([])
+}
+
+test('the hub sections follow the h1 > h2 heading order', async ({ page }) => {
+  await page.goto('/apprendre')
+  await expect(page.getByRole('heading', { level: 1, name: 'Apprendre' })).toBeVisible()
+  await expect(page.getByRole('heading', { level: 2 })).toHaveText([
+    'Questionnaires',
+    'Lexique',
+    'Questions fréquentes',
+    'Infos pratiques',
+  ])
+})
+
+test('the table of contents leads to each section', async ({ page }) => {
+  await page.goto('/apprendre')
+  const toc = page.getByRole('navigation', { name: 'Sommaire' })
+  for (const name of ['Questionnaires', 'Lexique', 'Questions fréquentes', 'Infos pratiques']) {
+    await toc.getByRole('link', { name }).click()
+    await expect(page.getByRole('heading', { level: 2, name })).toBeInViewport()
+  }
+})
+
+test('a quiz can be answered up to its score, then restarted', async ({ page }) => {
+  await page.goto('/apprendre')
+  const quizzes = page.getByRole('region', { name: 'Questionnaires' })
+  const quiz = quizzes.getByRole('region').first()
+
+  // Answer every question with its first choice until the score shows.
+  const score = quiz.getByRole('heading', { name: /^Votre score : / })
+  for (let i = 0; i < 20 && !(await score.isVisible()); i++) {
+    const question = quiz.getByRole('group').first()
+    await question.getByRole('radio').or(question.getByRole('checkbox')).first().check()
+    await quiz.getByRole('button', { name: 'Valider' }).click()
+    await quiz.getByRole('button', { name: /^(Question suivante|Voir mon score)$/ }).click()
+  }
+  await expect(score).toBeVisible()
+  await expectNoAxeViolation(page)
+
+  await quiz.getByRole('button', { name: 'Recommencer' }).click()
+  await expect(quiz.getByRole('group').first()).toBeVisible()
+})
+
+test('no automatic accessibility violation with the FAQ open', async ({ page }) => {
+  await page.goto('/apprendre')
+  const faq = page.getByRole('region', { name: 'Questions fréquentes' })
+  await faq.getByRole('button').first().click()
+  await expectNoAxeViolation(page)
+})
