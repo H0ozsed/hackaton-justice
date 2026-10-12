@@ -1,12 +1,50 @@
 # =============================================================================
-# docker-compose.yml: local PostgreSQL 18 for development.
-#   npm run db:up   (= docker compose up -d db)
-# Every ${...} value comes from the .env file (see .env.example).
+# docker-compose.yml: environnement de DÉVELOPPEMENT complet (app + base).
+#
+#   docker compose up --build      # 1er lancement, ou après un changement de deps
+#   docker compose up              # lancements suivants
+#   docker compose down            # arrêter (les données de la base sont gardées)
+#
+# Chaque valeur ${...} vient du fichier .env (voir .env.example).
+# La syntaxe ${VAR:?message} refuse de démarrer si la variable manque.
 # =============================================================================
 
 name: hackaton-justice
 
 services:
+  # ---------------------------------------------------------------------------
+  # app : le serveur Next.js en mode dev
+  # ---------------------------------------------------------------------------
+  app:
+    build:
+      context: .
+    image: hackaton-justice-dev
+    env_file: .env
+    environment:
+      # Dans le réseau Docker, la base s'appelle `db` (nom du service),
+      # pas `localhost` : on reconstruit donc l'URL ici.
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+    ports:
+      - '127.0.0.1:3000:3000'
+    volumes:
+      # Ton code est monté dans le conteneur : hot reload à chaque sauvegarde.
+      - .:/app
+      # node_modules reste DANS le conteneur (volume anonyme) : sinon le montage
+      # ci-dessus le masquerait avec la copie de ta machine (absente ou
+      # compilée pour un autre OS). Après un changement de dépendances :
+      #   docker compose up --build --renew-anon-volumes
+      - /app/node_modules
+    depends_on:
+      db:
+        # Attendre que Postgres ACCEPTE les connexions (healthcheck), pas
+        # seulement que son conteneur soit lancé : sinon les migrations échouent.
+        condition: service_healthy
+    # En dev, un conteneur qui plante n'est pas relancé : on veut voir l'erreur.
+    restart: 'no'
+
+  # ---------------------------------------------------------------------------
+  # db : PostgreSQL 18
+  # ---------------------------------------------------------------------------
   db:
     image: postgres:18-alpine
     restart: unless-stopped
@@ -15,12 +53,13 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is missing}
       POSTGRES_DB: ${POSTGRES_DB:?POSTGRES_DB is missing}
     ports:
-      # Published on 127.0.0.1 only: reachable from this machine, not the network.
+      # Accessible depuis TA machine uniquement (Prisma Studio, DBeaver, psql...).
       - '127.0.0.1:5432:5432'
     volumes:
-      # Postgres 18+: mount /var/lib/postgresql (not .../data as in <= 17).
+      # Postgres 18+ : monter /var/lib/postgresql (et non .../data comme en <= 17).
       - pgdata:/var/lib/postgresql
     healthcheck:
+      # $$ échappe le $ : évalué DANS le conteneur, pas par Compose.
       test: ['CMD-SHELL', 'pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}']
       interval: 5s
       timeout: 5s
