@@ -33,8 +33,10 @@ function fakeOllama({ down = false } = {}) {
       return Response.json({ embeddings: vectors })
     }
     if (url.endsWith('/api/chat')) {
+      // Like the real run that leaked: reasoning in clear, ended by an orphan </think>.
       const lines = [
-        { message: { content: 'Selon le site, ' } },
+        { message: { content: "Okay, let's see. The user is asking…\n" } },
+        { message: { content: '</think>\n\nSelon le site, ' } },
         { message: { content: 'la médiation est possible.' } },
         { done: true, message: { content: '' } },
       ]
@@ -115,22 +117,22 @@ describe('POST /api/chatbot', () => {
     expect(fetchMock).not.toHaveBeenCalled()
   })
 
-  it('streams the sources, the answer and the end as NDJSON', async () => {
+  it('streams the steps, then one answer without any reasoning, as NDJSON', async () => {
     vi.stubGlobal('fetch', fakeOllama())
     const res = await call('POST', { question: 'C’est quoi la médiation ?' })
 
     expect(res.statusCode).toBe(200)
     expect(res.headers['content-type']).toMatch(/application\/x-ndjson/)
     const events = res.events()
-    expect(events[0].type).toBe('sources')
-    expect(events[0].sources.length).toBeGreaterThan(0)
-    expect(
-      events
-        .filter((e) => e.type === 'token')
-        .map((e) => e.text)
-        .join(''),
-    ).toBe('Selon le site, la médiation est possible.')
-    expect(events.at(-1).type).toBe('done')
+    expect(events.slice(0, 2)).toEqual([
+      { type: 'status', step: 'search' },
+      { type: 'status', step: 'read', count: expect.any(Number) },
+    ])
+    const answer = events.at(-1)
+    expect(answer.type).toBe('answer')
+    expect(answer.text).toBe('Selon le site, la médiation est possible.')
+    expect(answer.sources.length).toBeGreaterThan(0)
+    expect(res.chunks.join('')).not.toMatch(/Okay|think/)
     expect(res.ended).toBe(true)
   })
 
@@ -139,16 +141,23 @@ describe('POST /api/chatbot', () => {
     vi.stubGlobal('fetch', fetchMock)
     const res = await call('POST', { question: 'Quelle est la capitale du Pérou ?' })
 
-    expect(res.events()).toEqual([{ type: 'no-answer', text: IRIS.noAnswer, suggestions: [] }])
+    expect(res.events().at(-1)).toEqual({
+      type: 'no-answer',
+      text: IRIS.noAnswer,
+      suggestions: [],
+    })
     expect(fetchMock.mock.calls.some(([url]) => String(url).endsWith('/api/chat'))).toBe(false)
   })
 
   it('reports IRIS as unavailable when Ollama is down', async () => {
     clearAnswerCache()
     vi.stubGlobal('fetch', fakeOllama({ down: true }))
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
     const res = await call('POST', { question: 'Une autre question sur la médiation' })
     expect(res.statusCode).toBe(200)
-    expect(res.events()).toEqual([{ type: 'error', code: 'unavailable' }])
+    expect(res.events().at(-1)).toEqual({ type: 'error', code: 'unavailable' })
+    expect(warn).toHaveBeenCalledWith(expect.stringMatching(/not reachable.*docker compose/))
+    warn.mockRestore()
   })
 
   it('limits the number of questions per client', async () => {

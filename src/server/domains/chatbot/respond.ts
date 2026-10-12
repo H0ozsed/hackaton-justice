@@ -11,22 +11,33 @@ import {
 } from './knowledge'
 import {
   chat,
+  cleanAnswer,
   embed,
+  explainOllamaError,
+  isInsideThinking,
   ollamaConfig,
   OllamaUnavailableError,
   type ChatMessage,
+  type ChatPart,
   type OllamaConfig,
 } from './ollama'
 import { buildMessages, searchQueries } from './prompt'
 
-// One question → a stream of events for the widget:
-//   no relevant content → "no-answer" (the model is NOT called)
-//   otherwise           → "sources", then the answer token by token, then "done"
+// One question → status events while IRIS works, then ONE final event:
+//   nothing relevant on the site → "no-answer" (the model is NOT called)
+//   otherwise → the model rephrases the extracts; its output is buffered and
+//   cleaned of any reasoning before anything is shown → "answer"
+// Buffering costs the word-by-word display, but guarantees that the model's
+// reasoning can never reach the visitor, whatever the model does.
 
 /** Follow-up questions offered after an answer. */
 const SUGGESTION_COUNT = 2
 /** Results looked at for follow-ups (wider than what the model receives). */
 const SUGGESTION_POOL = 8
+/** Extracts kept: within this distance of the best score (drops loosely related ones). */
+const RELATIVE_MARGIN = 0.08
+/** Source links shown under an answer. */
+const MAX_SOURCES = 3
 const CACHE_SIZE = 50
 
 export type RespondDeps = {
@@ -37,7 +48,7 @@ export type RespondDeps = {
     messages: ChatMessage[],
     config: OllamaConfig,
     signal?: AbortSignal,
-  ) => AsyncIterable<string>
+  ) => AsyncIterable<ChatPart>
 }
 
 const defaultDeps = (): RespondDeps => ({
@@ -47,8 +58,8 @@ const defaultDeps = (): RespondDeps => ({
   chat,
 })
 
-type CachedAnswer = { sources: ChatSource[]; text: string; suggestions: string[] }
-const answerCache = new Map<string, CachedAnswer>()
+type FinalEvent = Extract<ChatStreamEvent, { type: 'answer' | 'no-answer' }>
+const answerCache = new Map<string, FinalEvent>()
 
 /** For tests: start from an empty answer cache. */
 export function clearAnswerCache() {
@@ -67,6 +78,15 @@ function searchAll(index: KnowledgeIndex, vectors: number[][], question: string,
   return [...best.values()].sort((a, b) => b.score - a.score).slice(0, limit)
 }
 
+/** Relevant extracts close to the best one: what the model reads. */
+function focusedResults(results: readonly SearchResult[]) {
+  const relevant = relevantResults(results)
+  if (relevant.length === 0) return []
+  return relevant
+    .filter((r) => r.score >= relevant[0].score - RELATIVE_MARGIN)
+    .slice(0, SEARCH_LIMIT)
+}
+
 /** One link per page and title, in the order of relevance. */
 function sourcesOf(results: readonly SearchResult[]): ChatSource[] {
   const seen = new Set<string>()
@@ -78,6 +98,7 @@ function sourcesOf(results: readonly SearchResult[]): ChatSource[] {
       seen.add(key)
       return true
     })
+    .slice(0, MAX_SOURCES)
 }
 
 /** Related FAQ questions found by the search, other than the one just asked. */
@@ -89,6 +110,11 @@ function followUps(results: readonly SearchResult[], question: string) {
     .slice(0, SUGGESTION_COUNT)
 }
 
+/** The model said it has no information (rule 2 of the prompt). */
+function isNoInformation(answer: string) {
+  return /^je n[’']ai pas cette information/i.test(answer)
+}
+
 export async function* respond(
   request: ChatRequest,
   signal?: AbortSignal,
@@ -96,7 +122,9 @@ export async function* respond(
 ): AsyncGenerator<ChatStreamEvent> {
   const { question, history } = request
   try {
+    yield { type: 'status', step: 'search' }
     const index = await deps.getIndex(deps.config)
+
     // Same question, no context, same content: the answer cannot differ (temperature 0).
     const cacheKey =
       history.length === 0
@@ -104,42 +132,50 @@ export async function* respond(
         : undefined
     const cached = cacheKey ? answerCache.get(cacheKey) : undefined
     if (cached) {
-      yield { type: 'sources', sources: cached.sources }
-      yield { type: 'token', text: cached.text }
-      yield { type: 'done', suggestions: cached.suggestions }
+      yield cached
       return
     }
 
     const vectors = await deps.embed(searchQueries(question, history), deps.config)
     const results = searchAll(index, vectors, question, SUGGESTION_POOL)
-    const relevant = relevantResults(results).slice(0, SEARCH_LIMIT)
+    const extracts = focusedResults(results)
     const suggestions = followUps(results, question)
 
-    if (relevant.length === 0) {
-      yield { type: 'no-answer', text: IRIS.noAnswer, suggestions }
-      return
+    let final: FinalEvent
+    if (extracts.length === 0) {
+      final = { type: 'no-answer', text: IRIS.noAnswer, suggestions }
+    } else {
+      yield { type: 'status', step: 'read', count: extracts.length }
+      const messages = buildMessages(question, history, extracts, { model: deps.config.chatModel })
+
+      let raw = ''
+      let step: 'think' | 'write' | undefined
+      for await (const part of deps.chat(messages, deps.config, signal)) {
+        if (part.kind === 'text') raw += part.text
+        const now = part.kind === 'thinking' || isInsideThinking(raw) ? 'think' : 'write'
+        if (now !== step) {
+          step = now
+          yield { type: 'status', step }
+        }
+      }
+
+      const text = cleanAnswer(raw)
+      final =
+        !text || isNoInformation(text)
+          ? { type: 'no-answer', text: IRIS.noAnswer, suggestions }
+          : { type: 'answer', text, sources: sourcesOf(extracts), suggestions }
     }
 
-    const sources = sourcesOf(relevant)
-    yield { type: 'sources', sources }
-    let text = ''
-    for await (const piece of deps.chat(
-      buildMessages(question, history, relevant),
-      deps.config,
-      signal,
-    )) {
-      text += piece
-      yield { type: 'token', text: piece }
-    }
-    yield { type: 'done', suggestions }
-
-    if (cacheKey && text.trim()) {
+    if (signal?.aborted) return
+    yield final
+    if (cacheKey) {
       if (answerCache.size >= CACHE_SIZE) answerCache.delete(answerCache.keys().next().value!)
-      answerCache.set(cacheKey, { sources, text, suggestions })
+      answerCache.set(cacheKey, final)
     }
   } catch (error) {
     if (signal?.aborted) return
     if (!(error instanceof OllamaUnavailableError)) throw error
+    console.warn(`[IRIS] ${explainOllamaError(error, deps.config)}`)
     yield { type: 'error', code: 'unavailable' }
   }
 }

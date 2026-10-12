@@ -7,7 +7,11 @@ export type Segment = { text: string; slug?: string }
  * definition. Only the first occurrence of each term is marked: a page full of
  * buttons would be hard to read and to navigate with a keyboard.
  */
-export function glossarySegments(text: string): Segment[] {
+export function glossarySegments(
+  text: string,
+  /** Terms already marked elsewhere in the same answer (shared across calls). */
+  usedSlugs = new Set<string>(),
+): Segment[] {
   // Every spelling of every term, longest first ("médiatrice" before "médiation").
   const spellings = glossary.all
     .flatMap((t) => [t.term, ...t.aliases].map((value) => ({ value, slug: t.slug })))
@@ -18,7 +22,6 @@ export function glossarySegments(text: string): Segment[] {
   // a French word letter by letter, so positions can be mapped back.
   const haystack = normalizeLetters(text)
   const found: { start: number; end: number; slug: string }[] = []
-  const usedSlugs = new Set<string>()
 
   for (const { value, slug } of spellings) {
     if (usedSlugs.has(slug)) continue

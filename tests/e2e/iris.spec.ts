@@ -5,9 +5,15 @@ import { expect, test, type Page } from '@playwright/test'
 // (CI has no Ollama; the API itself is covered by src/pages/api/chatbot.int.test.ts).
 
 const ANSWER = [
-  { type: 'sources', sources: [{ title: 'Médiation', url: '/apprendre/lexique#mediation' }] },
-  { type: 'token', text: 'La médiation est une démarche amiable.' },
-  { type: 'done', suggestions: ['La médiation est-elle payante ?'] },
+  { type: 'status', step: 'search' },
+  { type: 'status', step: 'read', count: 1 },
+  { type: 'status', step: 'write' },
+  {
+    type: 'answer',
+    text: 'La médiation est une démarche **amiable** :\n- gratuite\n- confidentielle',
+    sources: [{ title: 'Médiation', url: '/apprendre/lexique#mediation' }],
+    suggestions: ['La médiation est-elle payante ?'],
+  },
 ]
 
 async function mockIris(page: Page, events: unknown[] = ANSWER) {
@@ -33,7 +39,8 @@ for (const path of ['/', '/apprendre']) {
       await iris.getByRole('button', { name: 'Envoyer' }).click()
 
       const conversation = iris.getByRole('list', { name: 'Conversation avec IRIS' })
-      await expect(conversation).toContainText('est une démarche amiable.')
+      await expect(conversation).toContainText('est une démarche amiable')
+      await expect(conversation.getByText('gratuite', { exact: true })).toBeVisible()
       await iris.getByRole('link', { name: 'Médiation' }).click()
       await expect(page).toHaveURL('/apprendre/lexique#mediation')
     })

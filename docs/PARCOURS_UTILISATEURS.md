@@ -12,6 +12,8 @@
   * Répond uniquement à partir du contenu du site (FAQ, infos pratiques, lexique, types de conflit, interlocuteurs, quiz), avec ses sources
   * Rien de pertinent → « Je n'ai pas cette information », sans appeler le modèle
   * Informe et oriente, ne garantit rien, pas de conseil juridique personnalisé
+  * Étapes affichées en direct (recherche, lecture des extraits, rédaction), réponse courte et mise en forme (listes, gras), jamais le raisonnement du modèle
+  * Arrêter une réponse, la copier, réessayer après une erreur, compteur de caractères
   * Questions suggérées, relances comprises (historique), termes du lexique cliquables
   * Conversation gardée dans l'onglet uniquement (sessionStorage), rien stocké côté serveur
   * Modèle local (Ollama dans Docker) ; site utilisable si IRIS est indisponible
