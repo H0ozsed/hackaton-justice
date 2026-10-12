@@ -1,0 +1,15 @@
+# Fichiers exclus du contexte de build Docker.
+node_modules
+.next
+out
+src/generated
+
+# Secrets : ne doivent JAMAIS finir dans une image
+.env
+.env.*
+!.env.example
+
+.git
+.vscode
+.idea
+*.log

@@ -1,6 +1,7 @@
 import '@/styles/globals.css'
 import type { AppProps } from 'next/app'
 
+import { SiteLayout } from '@/components/layout/site-layout'
 import { marianne, spectral } from '@/lib/fonts'
 
 export default function App({ Component, pageProps }: AppProps) {
@@ -14,7 +15,9 @@ export default function App({ Component, pageProps }: AppProps) {
           --font-spectral: ${spectral.style.fontFamily};
         }
       `}</style>
-      <Component {...pageProps} />
+      <SiteLayout>
+        <Component {...pageProps} />
+      </SiteLayout>
     </>
   )
 }
