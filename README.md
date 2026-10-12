@@ -54,7 +54,7 @@ shown to users, which is in French.
 | ------------------------------------------ | -------------------------------------------------------------------------------------------- |
 | `dev` / `build` / `start`                  | Next.js                                                                                      |
 | `lint`                                     | ESLint                                                                                       |
-| `typecheck`                                | Generates Next route types, then `tsc`                                                       |
+| `typecheck`                                | Generates Next route types, then `tsc` with `tsconfig.build.json` (ignores `.next/dev`)      |
 | `format` / `format:check`                  | Prettier (write / check)                                                                     |
 | `content:check`                            | Validates all content in `src/shared/` (also run on build and commit)                        |
 | `test` / `test:watch`                      | Unit and component tests (Vitest)                                                            |
