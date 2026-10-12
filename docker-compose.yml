@@ -1,5 +1,5 @@
 # =============================================================================
-# docker-compose.yml: full DEVELOPMENT environment (app + database).
+# docker-compose.yml: full DEVELOPMENT environment (app + database + Ollama).
 #
 #   docker compose up --build      # first run, or after a dependency change
 #   docker compose up              # next runs
@@ -24,6 +24,8 @@ services:
       # Inside the Docker network the database is called `db` (service name),
       # not `localhost`: the URL is rebuilt here.
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      # Same for Ollama: called `ollama` inside the Docker network.
+      OLLAMA_URL: http://ollama:11434
     ports:
       - '127.0.0.1:3000:3000'
     volumes:
@@ -65,5 +67,44 @@ services:
       timeout: 5s
       retries: 10
 
+  # ---------------------------------------------------------------------------
+  # ollama: local LLM server for the IRIS chatbot (no external API, no GPU needed)
+  # The site works without it: IRIS then says it is unavailable.
+  # ---------------------------------------------------------------------------
+  ollama:
+    image: ollama/ollama:latest
+    restart: unless-stopped
+    environment:
+      # Keep the chat model loaded between questions (faster answers).
+      OLLAMA_KEEP_ALIVE: 30m
+    ports:
+      # Reachable from YOUR machine only, for `npm run dev` outside Docker.
+      - '127.0.0.1:11434:11434'
+    volumes:
+      # Downloaded models survive `docker compose down`.
+      - ollama:/root/.ollama
+    healthcheck:
+      test: ['CMD', 'ollama', 'list']
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  # ---------------------------------------------------------------------------
+  # ollama-models: downloads the models once, then exits (already there = instant)
+  # Override them in .env: OLLAMA_CHAT_MODEL, OLLAMA_EMBED_MODEL.
+  # ---------------------------------------------------------------------------
+  ollama-models:
+    image: ollama/ollama:latest
+    depends_on:
+      ollama:
+        condition: service_healthy
+    environment:
+      OLLAMA_HOST: http://ollama:11434
+      CHAT_MODEL: ${OLLAMA_CHAT_MODEL:-qwen3:4b}
+      EMBED_MODEL: ${OLLAMA_EMBED_MODEL:-bge-m3}
+    entrypoint: ['sh', '-c', 'ollama pull "$$CHAT_MODEL" && ollama pull "$$EMBED_MODEL"']
+    restart: 'no'
+
 volumes:
   pgdata:
+  ollama:

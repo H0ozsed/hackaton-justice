@@ -15,7 +15,8 @@ Vitest + Playwright.
 
 ## Run in dev (Docker)
 
-Two containers: `app` (Next.js, hot reload) and `db` (PostgreSQL 18).
+Three containers: `app` (Next.js, hot reload), `db` (PostgreSQL 18) and `ollama` (local LLM for
+the IRIS chatbot, see below).
 
 ```bash
 cp .env.example .env     # then fill in the values
@@ -29,12 +30,26 @@ docker compose up --build
 - Command inside the container: `docker compose exec app npx prisma migrate dev`.
 - The container runs as UID 1000: if `id -u` prints something else, generated files (`.next`, `src/generated`) may have permission issues.
 
+### IRIS chatbot (Ollama)
+
+IRIS answers from the site content only, with a model that runs locally (no external API).
+
+- First `docker compose up`: the `ollama-models` service downloads the models (about 4 GB,
+  once; they are kept in the `ollama` volume), then stops. Progress:
+  `docker compose logs -f ollama-models`.
+- Default models run without a GPU, on Linux and macOS: `qwen3:4b` (chat) and `bge-m3`
+  (embeddings). With more RAM, set `OLLAMA_CHAT_MODEL=qwen3:8b` in `.env`.
+- Ollama URL: `http://ollama:11434` from the containers, `http://localhost:11434` from your
+  machine (`OLLAMA_URL` in `.env`, for `npm run dev` outside Docker).
+- The site works without Ollama: IRIS then says it is unavailable.
+
 ## Run the app without Docker
 
 ```bash
 npm install              # installs deps, generates the Prisma client, enables Husky hooks
 cp .env.example .env     # then fill in the values
 npm run db:up            # starts only PostgreSQL 18 in Docker
+docker compose up -d ollama ollama-models   # optional: the IRIS chatbot
 npm run db:migrate       # applies Prisma migrations
 npm run dev              # http://localhost:3000
 ```
