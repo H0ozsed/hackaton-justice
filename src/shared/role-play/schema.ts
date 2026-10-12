@@ -42,7 +42,11 @@ export type ChoiceQuality = z.infer<typeof choiceQualitySchema>
 
 export const choiceSchema = z.object({
   id: slugSchema,
-  label: richTextSchema,
+  /** Plain text: a choice is a button, it cannot hold a glossary link (another button). */
+  label: z
+    .string()
+    .min(1)
+    .refine((t) => !t.includes('[['), 'no glossary markup in a choice label (it is a button)'),
   /** Id of the scene this choice leads to. */
   next: slugSchema,
   quality: choiceQualitySchema,

@@ -30,10 +30,10 @@ export const scenariosData: ScenarioInput[] = [
           },
           {
             id: 'courrier',
-            label: 'EXEMPLE — Envoyer une [[mise-en-demeure]]',
+            label: 'EXEMPLE — Envoyer une mise en demeure',
             next: 'fin-tension',
             quality: 'bad',
-            feedback: 'EXEMPLE — Trop tôt : la relation se dégrade.',
+            feedback: 'EXEMPLE — Une [[mise-en-demeure]] trop tôt dégrade la relation.',
             losses: { money: 10, relationship: 2 },
           },
         ],
