@@ -4,7 +4,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project state
 
-This repository currently contains **only planning documentation** — no application code, `package.json`, or build tooling exists yet. Before running any build/lint/test command, check whether the scaffolding has since been created; if not, scaffolding the app (per the stack below) is likely the actual task.
+Next.js 16 **Pages Router** app (`src/pages`, `@/*` alias), shadcn (radix) themed after `docs/CHARTE_GRAPHIQUE.pdf` in `src/styles/globals.css`. Shared layout (header/nav/footer, skip link) in `src/components/layout`, site name and nav links in `src/lib/site.ts`. Work is tracked in GitHub issues (milestones Phase 0/1/2).
+
+- Dev runs in Docker: `docker compose up --build` (services `app` + `db` Postgres 18), see README.
+- Commands: `npm run dev | build | lint | typecheck | format`, `npm run db:migrate | db:studio`.
+- Pre-commit: Husky + lint-staged (ESLint --fix, Prettier). Prettier: no semicolons, single quotes, width 100. `docs/` is not formatted.
+- RGAA matters: keep `aria-current`, a unique `<PageTitle>` and one `h1` per page.
 
 ## What this project is
 
