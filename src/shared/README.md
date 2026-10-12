@@ -46,7 +46,9 @@ The current entries are **examples** (prefixed `EXEMPLE`) to be replaced.
   `relationship` in points). Every scene must be reachable from `startSceneId` and a scene
   cannot come back later in the same run (no loop): the check names the faulty scene.
   To link a glossary term in a line, the intro or a feedback (not in a choice `label`), write `[[slug]]` (shows the glossary term) or
-  `[[slug|texte affiché]]` (shows another spelling): `Envoyez une [[mise-en-demeure]]`.
+  `[[slug|texte affiché]]` (shows another spelling): `Envoyez une [[mise-en-demeure|mise en demeure]]`.
+  `[[slug]]` shows the term with its glossary capital letter: in the middle of a sentence,
+  give the text in lowercase.
 - **FAQ**: `pages` says where the question is shown (`home` = home page, `learn` = `/apprendre`).
 
 Technical structure of this folder: [`docs/STRUCTURE.md`](../../docs/STRUCTURE.md).
