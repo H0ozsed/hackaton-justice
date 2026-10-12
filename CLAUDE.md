@@ -19,7 +19,7 @@ Next.js 16 **Pages Router** app (`src/pages`, `@/*` alias), shadcn (radix) theme
 - Commands: `npm run dev | build | lint | typecheck | format | content:check | test | test:e2e`, `npm run db:migrate | db:studio`. Static content lives in `src/shared/<domain>/data.ts` and is validated by `content:check` (also run by `build` and pre-commit).
 - Pre-commit: Husky + lint-staged (ESLint --fix, Prettier, related Vitest tests). CI (`.github/workflows/ci.yml`) runs every check + build + E2E on each PR. Prettier: no semicolons, single quotes, width 100. `docs/` is not formatted.
 - Language: everything in English (code, comments, docs, commits, issues, PRs) except the site content shown to users (page text, labels, aria-labels, content in `src/shared/*/data.ts`, URLs), which is French.
-- RGAA matters: keep `aria-current`, a unique `<PageTitle>` and one `h1` per page.
+- RGAA matters: keep `aria-current`, a unique `<PageTitle>` and one `h1` per page. Self-assessment and remaining work in `docs/RGAA_AUDIT.md`; every journey state is scanned by `tests/e2e/a11y-journeys.spec.ts`.
 
 ## What this project is
 

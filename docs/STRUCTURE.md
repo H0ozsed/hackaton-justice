@@ -31,7 +31,7 @@ scripts/                  Node scripts run with tsx (e.g. check-content.ts).
 tests/e2e/                Playwright end-to-end tests (unit/component tests sit next to the code).
 .github/workflows/        CI (lint, types, content, tests, build, E2E on every PR).
 prisma/                   Prisma schema and migrations.
-docs/                     Specs (CDC, user journeys), design charter, RGAA, RGPD, this file, TESTING.md.
+docs/                     Specs (CDC, user journeys), design charter, RGAA, RGPD, this file, TESTING.md, RGAA_AUDIT.md.
 ```
 
 Current domains in `src/shared/`: `glossary`, `faq`, `practical-info`, `simulation`
