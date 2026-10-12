@@ -26,6 +26,7 @@ src/
   lib/                    Generic helpers with no domain knowledge (cn, fonts, site, content).
   styles/globals.css      Tailwind + shadcn theme (from docs/CHARTE_GRAPHIQUE.pdf).
   generated/              Prisma client output. Git-ignored, never edit.
+postcss.config.mjs        Tailwind CSS through PostCSS (dev on Webpack, build on Turbopack, see #46).
 scripts/                  Node scripts run with tsx (e.g. check-content.ts).
 tests/e2e/                Playwright end-to-end tests (unit/component tests sit next to the code).
 .github/workflows/        CI (lint, types, content, tests, build, E2E on every PR).

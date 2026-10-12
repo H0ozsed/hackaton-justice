@@ -79,8 +79,9 @@ shown to users, which is in French.
 
 On commit, Husky runs lint-staged: ESLint `--fix`, Prettier and the tests related to the staged files. On every PR, GitHub CI runs all checks, the build and the E2E tests.
 
-> **Known issue (#46)**: with Next 16.4.0, `npm run dev` can crash a page in the browser
-> ("module factory is not available", Turbopack bug
-> [vercel/next.js#99789](https://github.com/vercel/next.js/issues/99789)): today `/` and
-> `/apprendre`. The production build works. To check these pages locally:
-> `npm run build && npm run start`.
+> **Dev server runs on Webpack (#46)**: `npm run dev` is `next dev --webpack`. Next 16.4.0's
+> Turbopack dev mode crashes some pages in the browser ("module factory is not available",
+> [vercel/next.js#99789](https://github.com/vercel/next.js/issues/99789)). The production build
+> still uses Turbopack and is not affected. Tailwind goes through PostCSS (`postcss.config.mjs`),
+> which works with both bundlers. Go back to plain `next dev` once a stable Next release ships
+> the fix (16.4.1 / 16.5).
