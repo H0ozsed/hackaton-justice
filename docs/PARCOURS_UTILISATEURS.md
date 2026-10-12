@@ -41,7 +41,7 @@
 
 ### `/`apprendre
 
-* Chatbot (pas encore décidé : non intégré)
+* Chatbot : IRIS, comme sur `/` (questions suggérées tirées de la FAQ de cette page)
 * Questionnaires évaluatif
 * FAQ
 * Infos pratiques

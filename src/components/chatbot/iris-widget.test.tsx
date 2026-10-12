@@ -66,6 +66,15 @@ describe('IrisWidget', () => {
     }
   })
 
+  it('suggests the FAQ questions of the page it is on', async () => {
+    const user = userEvent.setup()
+    render(<IrisWidget page="learn" />)
+    await user.click(screen.getByRole('button', { name: 'Poser une question à IRIS' }))
+    for (const question of starterQuestions('learn')) {
+      expect(screen.getByRole('button', { name: question })).toBeInTheDocument()
+    }
+  })
+
   it('shows the streamed answer with its sources and follow-up questions', async () => {
     const user = await openIris()
     await ask(user, 'C’est quoi la médiation ?')

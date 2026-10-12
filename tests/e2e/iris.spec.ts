@@ -20,33 +20,40 @@ async function mockIris(page: Page, events: unknown[] = ANSWER) {
   )
 }
 
-test('asks IRIS a question and follows a source', async ({ page }) => {
-  await mockIris(page)
-  await page.goto('/')
-  await page.getByRole('button', { name: 'Poser une question à IRIS' }).click()
+// IRIS is on the home page and on the learn page.
+for (const path of ['/', '/apprendre']) {
+  test.describe(path, () => {
+    test('asks IRIS a question and follows a source', async ({ page }) => {
+      await mockIris(page)
+      await page.goto(path)
+      await page.getByRole('button', { name: 'Poser une question à IRIS' }).click()
 
-  const iris = page.getByRole('dialog', { name: 'IRIS' })
-  await iris.getByLabel('Votre question').fill('C’est quoi la médiation ?')
-  await iris.getByRole('button', { name: 'Envoyer' }).click()
+      const iris = page.getByRole('dialog', { name: 'IRIS' })
+      await iris.getByLabel('Votre question').fill('C’est quoi la médiation ?')
+      await iris.getByRole('button', { name: 'Envoyer' }).click()
 
-  const conversation = iris.getByRole('list', { name: 'Conversation avec IRIS' })
-  await expect(conversation).toContainText('est une démarche amiable.')
-  await iris.getByRole('link', { name: 'Médiation' }).click()
-  await expect(page).toHaveURL('/apprendre/lexique#mediation')
-})
+      const conversation = iris.getByRole('list', { name: 'Conversation avec IRIS' })
+      await expect(conversation).toContainText('est une démarche amiable.')
+      await iris.getByRole('link', { name: 'Médiation' }).click()
+      await expect(page).toHaveURL('/apprendre/lexique#mediation')
+    })
 
-test('IRIS has no automatic accessibility violation, with an answer shown', async ({ page }) => {
-  await mockIris(page)
-  await page.goto('/')
-  await page.getByRole('button', { name: 'Poser une question à IRIS' }).click()
-  const iris = page.getByRole('dialog', { name: 'IRIS' })
-  await iris.getByLabel('Votre question').fill('C’est quoi la médiation ?')
-  await iris.getByLabel('Votre question').press('Enter')
-  await expect(iris.getByRole('link', { name: 'Médiation' })).toBeVisible()
+    test('IRIS has no automatic accessibility violation, with an answer shown', async ({
+      page,
+    }) => {
+      await mockIris(page)
+      await page.goto(path)
+      await page.getByRole('button', { name: 'Poser une question à IRIS' }).click()
+      const iris = page.getByRole('dialog', { name: 'IRIS' })
+      await iris.getByLabel('Votre question').fill('C’est quoi la médiation ?')
+      await iris.getByLabel('Votre question').press('Enter')
+      await expect(iris.getByRole('link', { name: 'Médiation' })).toBeVisible()
 
-  const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze()
-  expect(results.violations).toEqual([])
-})
+      const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze()
+      expect(results.violations).toEqual([])
+    })
+  })
+}
 
 test('IRIS opens and closes from the keyboard', async ({ page, isMobile }) => {
   test.skip(isMobile, 'keyboard navigation is tested on desktop')

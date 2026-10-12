@@ -1,5 +1,6 @@
 import Link from 'next/link'
 
+import { IrisWidget } from '@/components/chatbot/iris-widget'
 import { FaqSection } from '@/components/faq/faq-section'
 import { PageTitle } from '@/components/layout/page-title'
 import { PracticalInfoSection } from '@/components/practical-info/practical-info'
@@ -7,7 +8,7 @@ import { QuizPlayer } from '@/components/quiz/quiz-player'
 import { glossary } from '@/shared/glossary'
 import { quizzes } from '@/shared/quiz'
 
-// Learning hub (docs/PARCOURS_UTILISATEURS.md). The chatbot is not decided yet.
+// Learning hub (docs/PARCOURS_UTILISATEURS.md), with the IRIS chatbot.
 // The glossary has its own page (/apprendre/lexique, #22): the hub links to it.
 
 // Anchors of the page sections, listed in the table of contents (long page, RGAA 12.6).
@@ -77,6 +78,8 @@ export default function LearnPage() {
       <div id="infos-pratiques" className="scroll-mt-4">
         <PracticalInfoSection />
       </div>
+
+      <IrisWidget page="learn" />
     </>
   )
 }
