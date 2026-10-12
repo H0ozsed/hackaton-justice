@@ -39,3 +39,13 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+!.env.example
+
+# prisma generated client
+/src/generated
+
+# editor: keep the shared config only
+.idea
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json

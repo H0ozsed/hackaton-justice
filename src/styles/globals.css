@@ -1,26 +1,157 @@
-@import "tailwindcss";
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+
+@custom-variant dark (&:is(.dark *));
+
+/* =============================================================================
+   Thème : charte graphique de l'État (docs/CHARTE_GRAPHIQUE.pdf, chap. VII).
+   - Couleurs principales (p. 46) : Bleu France, Blanc, Rouge Marianne.
+   - Couleurs complémentaires (p. 47) : teinte 1 = pure, 2/3/4 = 50/25/10 %
+     mélangée au blanc, 0 = ombre (+10 % de noir).
+   - Règle d'usage (p. 48) : teintes claires en fond, couleurs fortes pour le texte.
+   Contrastes vérifiés (RGAA 3.2/3.3 : texte >= 4,5:1, composants d'interface >= 3:1),
+   ratios notés en commentaire. La charte ne définit pas de mode sombre.
+   ============================================================================= */
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* ---- Palette de la charte (valeurs brutes, utilisables en classes Tailwind) ---- */
+  --bleu-france: #000091; /* p. 46 */
+  --bleu-france-0: #000082; /* ombre */
+  --bleu-france-3: #bfbfe4; /* 25 % */
+  --bleu-france-4: #e6e6f4; /* 10 % */
+  --rouge-marianne: #e1000f; /* p. 46 */
+  --rouge-marianne-0: #ca000e; /* ombre */
+  --rouge-marianne-4: #fce6e7; /* 10 % */
+  --noir: #000000; /* Q1 */
+  --noir-2: #808080; /* Q2, 50 % */
+  --noir-4: #e6e6e6; /* Q4, 10 % */
+  --gris-bleu: #484d7a; /* G1 */
+  --blanc: #ffffff;
+
+  /* ---- Tokens shadcn ---- */
+  --background: var(--blanc);
+  --foreground: var(--noir); /* 21:1 */
+  --card: var(--blanc);
+  --card-foreground: var(--noir);
+  --popover: var(--blanc);
+  --popover-foreground: var(--noir);
+
+  /* Action principale : Bleu France, texte blanc (14,9:1). */
+  --primary: var(--bleu-france);
+  --primary-foreground: var(--blanc);
+
+  /* Fond clair + texte fort, comme le préconise la p. 48 (12,1:1). */
+  --secondary: var(--bleu-france-4);
+  --secondary-foreground: var(--bleu-france);
+
+  /* Texte secondaire : G1, seul gris de la charte assez foncé (8:1 sur blanc).
+     Le noir 50 % (Q2) ne fait que 3,9:1 : interdit pour du texte. */
+  --muted: var(--noir-4);
+  --muted-foreground: var(--gris-bleu); /* 6,4:1 sur --muted */
+
+  /* Survol de menus / items actifs. */
+  --accent: var(--bleu-france-4);
+  --accent-foreground: var(--bleu-france);
+
+  /* Erreurs : Rouge Marianne (5:1 sur blanc, texte blanc dessus OK). */
+  --destructive: var(--rouge-marianne);
+
+  /* Bordures décoratives en noir 10 %, mais bordures de champs en noir 50 %
+     pour atteindre 3:1 (RGAA 3.3, composants d'interface). */
+  --border: var(--noir-4);
+  --input: var(--noir-2); /* 3,95:1 */
+  --ring: var(--bleu-france); /* focus visible, 14,9:1 */
+
+  /* Graphiques : couleurs complémentaires harmonieuses (p. 49). */
+  --chart-1: var(--bleu-france);
+  --chart-2: #5770be; /* F1 */
+  --chart-3: #00ac8c; /* E1 */
+  --chart-4: #ff9940; /* M1 */
+  --chart-5: #ff8d7e; /* H1 */
+
+  /* La charte ne fixe pas d'arrondi : angles sobres, proches du DSFR. */
+  --radius: 0.25rem;
+
+  --sidebar: var(--blanc);
+  --sidebar-foreground: var(--noir);
+  --sidebar-primary: var(--bleu-france);
+  --sidebar-primary-foreground: var(--blanc);
+  --sidebar-accent: var(--bleu-france-4);
+  --sidebar-accent-foreground: var(--bleu-france);
+  --sidebar-border: var(--noir-4);
+  --sidebar-ring: var(--bleu-france);
 }
 
 @theme inline {
+  /* Polices chargées dans src/lib/fonts.ts, injectées sur :root par _app.tsx. */
+  --font-sans: var(--font-marianne), arial, sans-serif;
+  --font-serif: var(--font-spectral), georgia, serif;
+  --font-heading: var(--font-marianne), arial, sans-serif;
+  --font-mono: ui-monospace, sfmono-regular, menlo, monospace;
+
+  /* Palette de la charte exposée en classes : bg-bleu-france, text-rouge-marianne... */
+  --color-bleu-france: var(--bleu-france);
+  --color-bleu-france-0: var(--bleu-france-0);
+  --color-bleu-france-3: var(--bleu-france-3);
+  --color-bleu-france-4: var(--bleu-france-4);
+  --color-rouge-marianne: var(--rouge-marianne);
+  --color-rouge-marianne-0: var(--rouge-marianne-0);
+  --color-rouge-marianne-4: var(--rouge-marianne-4);
+  --color-gris-bleu: var(--gris-bleu);
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
   }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+  /* Focus toujours visible au clavier (RGAA 10.7). */
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-ring;
+  }
 }

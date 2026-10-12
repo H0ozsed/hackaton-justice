@@ -1,0 +1,16 @@
+{
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "bradlc.vscode-tailwindcss",
+    "prisma.prisma",
+    "yoavbls.pretty-ts-errors",
+    "dsznajder.es7-react-js-snippets",
+    "formulahendry.auto-rename-tag",
+    "ms-azuretools.vscode-containers",
+    "docker.docker",
+    "redhat.vscode-yaml",
+    "dotenv.dotenv-vscode",
+    "usernamehw.errorlens"
+  ]
+}
