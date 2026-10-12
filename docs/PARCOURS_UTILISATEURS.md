@@ -39,4 +39,7 @@
 * FAQ
 * Infos pratiques
 * Lexique
+  * Page dédiée `/apprendre/lexique` (lien depuis `/apprendre`, « Apprendre » reste la page courante dans la navbar)
+  * Recherche sans tenir compte des accents ni des majuscules (terme et variantes), nombre de résultats annoncé
+  * Index alphabétique, termes groupés par lettre, ancre par terme (`/apprendre/lexique#mediation`), liens « Voir aussi » vers les termes liés
 

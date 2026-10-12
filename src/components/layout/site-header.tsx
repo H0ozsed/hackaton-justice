@@ -58,7 +58,9 @@ function NavList({
   return (
     <ul className={cn('flex gap-1', vertical ? 'flex-col px-4 py-2' : 'items-center')}>
       {MAIN_NAV.map(({ href, label }) => {
-        const current = pathname === href
+        // A journey stays current on its sub-pages (/apprendre/lexique → Apprendre).
+        const current =
+          href === '/' ? pathname === '/' : pathname === href || pathname.startsWith(`${href}/`)
         return (
           <li key={href}>
             <Link
