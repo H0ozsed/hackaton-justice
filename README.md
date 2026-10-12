@@ -38,15 +38,20 @@ npm run db:migrate       # applique les migrations Prisma
 npm run dev              # http://localhost:3000
 ```
 
+## Structure du code
+
+À lire avant de coder : [`docs/STRUCTURE.md`](docs/STRUCTURE.md). Pour écrire du contenu (lexique, FAQ, quiz…) : [`src/shared/README.md`](src/shared/README.md).
+
 ## Scripts
 
-| Script                                     | Rôle                                            |
-| ------------------------------------------ | ----------------------------------------------- |
-| `dev` / `build` / `start`                  | Next.js                                         |
-| `lint`                                     | ESLint                                          |
-| `typecheck`                                | Génère les types de routes Next puis `tsc`      |
-| `format` / `format:check`                  | Prettier (écrit / vérifie)                      |
-| `db:up`                                    | Démarre le conteneur PostgreSQL                 |
-| `db:migrate` / `db:studio` / `db:generate` | Prisma : migrations, interface web, client typé |
+| Script                                     | Rôle                                                                          |
+| ------------------------------------------ | ----------------------------------------------------------------------------- |
+| `dev` / `build` / `start`                  | Next.js                                                                       |
+| `lint`                                     | ESLint                                                                        |
+| `typecheck`                                | Génère les types de routes Next puis `tsc`                                    |
+| `format` / `format:check`                  | Prettier (écrit / vérifie)                                                    |
+| `content:check`                            | Valide tous les contenus de `src/shared/` (lancé aussi au build et au commit) |
+| `db:up`                                    | Démarre le conteneur PostgreSQL                                               |
+| `db:migrate` / `db:studio` / `db:generate` | Prisma : migrations, interface web, client typé                               |
 
 Au commit, Husky lance lint-staged : ESLint `--fix` + Prettier sur les fichiers stagés.
