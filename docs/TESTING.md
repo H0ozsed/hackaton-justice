@@ -86,3 +86,4 @@ release ships the fix (16.4.1 / 16.5).
 | `src/shared/simulation/answers.test.ts` | testing zod schemas built from config |
 | `src/components/layout/site-header.test.tsx` | component test: roles, aria attributes, user clicks, mocking `next/router` |
 | `tests/e2e/navigation.spec.ts` | E2E: titles, navigation desktop + mobile, keyboard, axe scan |
+| `tests/e2e/responsive.spec.ts` | E2E: no horizontal scroll from 320 px at 100 % and 200 % text, touch target size |
