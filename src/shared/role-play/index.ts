@@ -20,10 +20,7 @@ export function glossaryReferences(scenario: Scenario) {
     ...refs('intro', scenario.intro),
     ...scenario.scenes.flatMap((scene) => [
       ...scene.lines.flatMap((line, i) => refs(`"${scene.id}".lines.${i}`, line.text)),
-      ...scene.choices.flatMap((c) => [
-        ...refs(`"${scene.id}" > "${c.id}".label`, c.label),
-        ...refs(`"${scene.id}" > "${c.id}".feedback`, c.feedback),
-      ]),
+      ...scene.choices.flatMap((c) => refs(`"${scene.id}" > "${c.id}".feedback`, c.feedback)),
     ]),
   ]
 }

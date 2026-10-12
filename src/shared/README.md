@@ -45,7 +45,7 @@ The current entries are **examples** (prefixed `EXEMPLE`) to be replaced.
   shown in the results) and its `losses` (`money` in €, `time` in hours, `health` and
   `relationship` in points). Every scene must be reachable from `startSceneId` and a scene
   cannot come back later in the same run (no loop): the check names the faulty scene.
-  To link a glossary term in any text, write `[[slug]]` (shows the glossary term) or
+  To link a glossary term in a line, the intro or a feedback (not in a choice `label`), write `[[slug]]` (shows the glossary term) or
   `[[slug|texte affiché]]` (shows another spelling): `Envoyez une [[mise-en-demeure]]`.
 - **FAQ**: `pages` says where the question is shown (`home` = home page, `learn` = `/apprendre`).
 

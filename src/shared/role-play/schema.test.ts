@@ -88,6 +88,21 @@ describe('scenarioSchema', () => {
     expect(errors(base([end('start'), end('start')]))).toContain('scene ids must be unique')
   })
 
+  it('rejects glossary markup in a choice label, which is a button', () => {
+    expect(
+      errors(
+        base([
+          {
+            id: 'start',
+            lines: [{ text: 'x' }],
+            choices: [{ ...choice('a', 'end'), label: 'Une [[mise-en-demeure]]' }],
+          },
+          end('end'),
+        ]),
+      ),
+    ).toContain('no glossary markup in a choice label (it is a button)')
+  })
+
   it('rejects malformed glossary markup', () => {
     expect(
       errors(base([{ ...end('start'), lines: [{ text: 'Une [[mise-en-demeure' }] }])),
