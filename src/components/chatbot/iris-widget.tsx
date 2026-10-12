@@ -6,6 +6,7 @@ import { Definition } from '@/components/glossary/definition'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { IRIS, IRIS_ERRORS, MAX_QUESTION_LENGTH, starterQuestions } from '@/shared/chatbot'
+import type { FaqPage } from '@/shared/faq'
 
 import { glossarySegments } from './glossary-segments'
 import { useIris, type IrisMessage } from './use-iris'
@@ -17,7 +18,12 @@ import { useIris, type IrisMessage } from './use-iris'
  * works too), and each finished answer is announced once by a live region (the
  * streamed text itself is not live: it would be read word by word).
  */
-export function IrisWidget() {
+export function IrisWidget({
+  page = 'home',
+}: {
+  /** Page the widget is on: its FAQ provides the questions suggested at start. */
+  page?: FaqPage
+}) {
   const [open, setOpen] = useState(false)
   const { messages, busy, ask, reset } = useIris()
   const [question, setQuestion] = useState('')
@@ -82,7 +88,7 @@ export function IrisWidget() {
 
   const suggestions =
     messages.length === 0
-      ? starterQuestions()
+      ? starterQuestions(page)
       : last?.status !== 'streaming'
         ? (last?.suggestions ?? [])
         : []
