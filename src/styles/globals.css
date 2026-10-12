@@ -146,6 +146,10 @@
   }
   body {
     @apply bg-background text-foreground;
+    /* Long words wrap instead of overflowing on narrow screens or with enlarged text
+       (RGAA 10.4 / 10.11, #26). `anywhere` also lets flex and grid items shrink. */
+    overflow-wrap: anywhere;
+    hyphens: auto;
   }
   html {
     @apply font-sans;

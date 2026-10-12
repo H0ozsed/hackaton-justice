@@ -182,7 +182,7 @@ function ChoiceGroup({
                 value={option.value}
                 aria-invalid={!isRadio && error ? true : undefined}
                 aria-describedby={option.description ? descriptionId : undefined}
-                className="mt-3.5 size-5 shrink-0 accent-primary"
+                className="mt-2.5 size-6 shrink-0 accent-primary"
                 {...register(name)}
               />
               <div className="flex-1 py-3">
