@@ -1,0 +1,11 @@
+// Prisma schema: https://pris.ly/d/prisma-schema
+// The connection URL lives in prisma.config.ts (DATABASE_URL from .env).
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}

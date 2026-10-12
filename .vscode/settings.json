@@ -21,13 +21,12 @@
   "typescript.tsdk": "node_modules/typescript/lib",
   "typescript.enablePromptUseWorkspaceTsdk": true,
 
-  // Tailwind IntelliSense, including Nuxt UI's `ui` prop (Nuxt UI docs).
+  // Tailwind IntelliSense, including classes passed to cn() / cva() (shadcn).
   "files.associations": {
     "*.css": "tailwindcss"
   },
   "editor.quickSuggestions": {
     "strings": "on"
   },
-  "tailwindCSS.classAttributes": ["class", "ui"],
-  "tailwindCSS.experimental.classRegex": [["ui:\\s*{([^)]*)\\s*}", "(?:'|\"|`)([^']*)(?:'|\"|`)"]]
+  "tailwindCSS.classFunctions": ["cn", "cva"]
 }
