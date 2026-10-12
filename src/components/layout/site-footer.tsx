@@ -11,7 +11,10 @@ export function SiteFooter() {
           <ul className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
             {FOOTER_NAV.map(({ href, label }) => (
               <li key={href}>
-                <Link href={href} className="underline underline-offset-4 hover:text-france-blue">
+                <Link
+                  href={href}
+                  className="inline-block py-1 underline underline-offset-4 hover:text-france-blue"
+                >
                   {label}
                 </Link>
               </li>
