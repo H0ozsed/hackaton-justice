@@ -60,6 +60,25 @@ export function resolveFlow(steps: SimulationStep[], answers: SimulationAnswers)
 }
 
 /**
+ * Answers of the active steps that come before `stepId`: what that step may depend on (its
+ * `schema` function and its `Fields`). Never contains answers of inactive steps.
+ */
+export function getPreviousAnswers(
+  steps: SimulationStep[],
+  answers: SimulationAnswers,
+  stepId: string,
+): SimulationResult {
+  const { active, effective } = resolveFlow(steps, answers)
+  const previous: SimulationResult = {}
+  for (const step of active) {
+    if (step.id === stepId) break
+    const values = effective[step.id]
+    if (values) previous[step.id] = values
+  }
+  return previous
+}
+
+/**
  * Step to display: the current step if it is active, else the next active one in registry order,
  * else the last active one. `null` when no step is active.
  */

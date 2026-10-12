@@ -3,6 +3,7 @@ import { z } from 'zod'
 
 import {
   assertValidSteps,
+  getPreviousAnswers,
   goBack,
   initialState,
   resolveCurrentStepId,
@@ -209,10 +210,38 @@ describe('resolveCurrentStepId', () => {
   })
 })
 
+describe('getPreviousAnswers', () => {
+  it('gives the answers of the active steps before the step, and nothing else', () => {
+    const answers = { a: { go: 'yes' }, b: { go: 'yes' }, c: { value: 1 } }
+
+    expect(getPreviousAnswers(steps, answers, 'a')).toEqual({})
+    expect(getPreviousAnswers(steps, answers, 'b')).toEqual({ a: { go: 'yes' } })
+    expect(getPreviousAnswers(steps, answers, 'c')).toEqual({
+      a: { go: 'yes' },
+      b: { go: 'yes' },
+    })
+  })
+
+  it('leaves out the answer of an inactive step', () => {
+    // b is inactive (a is "no"): c, if asked, must not see b's kept answer.
+    const answers = { a: { go: 'no' }, b: { go: 'yes' } }
+    const alwaysAsked = step('after')
+
+    expect(getPreviousAnswers([a, b, alwaysAsked], answers, 'after')).toEqual({ a: { go: 'no' } })
+  })
+
+  it('leaves out the steps that have no answer yet', () => {
+    expect(getPreviousAnswers(steps, { a: { go: 'yes' } }, 'c')).toEqual({ a: { go: 'yes' } })
+  })
+})
+
 describe('restart', () => {
   it('clears every answer and draft and goes back to the first step', () => {
     let state = submitStep(steps, initialState(steps), 'a', { go: 'yes' })
     state = goBack(steps, state, { note: 'draft' })
+    // Something to clear: one validated answer and one draft.
+    expect(state.answers).toEqual({ a: { go: 'yes' } })
+    expect(state.drafts).toEqual({ b: { note: 'draft' } })
 
     expect(restart(steps)).toEqual({
       answers: {},

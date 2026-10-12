@@ -6,7 +6,7 @@ import { z } from 'zod'
 
 import { RadioGroupField, TextField } from './form-fields'
 import { SimulationForm } from './simulation-form'
-import type { ResultViewProps, SimulationStep } from './types'
+import type { ResultViewProps, SimulationStep, StepFieldsProps } from './types'
 
 // Neutral fixture steps and result screen: the form is tested through its behaviour, never
 // through the temporary demo steps. The texts below are fixtures, not site content.
@@ -43,6 +43,34 @@ const secondStep: SimulationStep = {
   Fields: NoteFields,
 }
 
+// A step whose rules and fields depend on the answer of the first step: with "yes" it needs 5
+// characters, otherwise 1.
+const codeLength = (previous: Record<string, Record<string, unknown> | undefined>) =>
+  previous.first?.extra === 'yes' ? 5 : 1
+
+function DependentFields({ answers }: StepFieldsProps) {
+  return (
+    <>
+      <p>Choix précédent : {String(answers.first?.extra)}</p>
+      <TextField name="code" label="Code" />
+    </>
+  )
+}
+
+const dependentStep: SimulationStep = {
+  id: 'dependent',
+  title: 'Question dépendante',
+  schema: (previous) =>
+    z.object({
+      code: z
+        .string()
+        .trim()
+        .min(codeLength(previous), { error: `${codeLength(previous)} caractères au moins.` }),
+    }),
+  isActive: (answers) => answers.first !== undefined,
+  Fields: DependentFields,
+}
+
 function ResultFixture({ result, onRestart }: ResultViewProps) {
   return (
     <div>
@@ -55,9 +83,9 @@ function ResultFixture({ result, onRestart }: ResultViewProps) {
   )
 }
 
-function renderForm() {
+function renderForm(steps: SimulationStep[] = [firstStep, secondStep]) {
   const user = userEvent.setup()
-  const view = render(<SimulationForm steps={[firstStep, secondStep]} ResultView={ResultFixture} />)
+  const view = render(<SimulationForm steps={steps} ResultView={ResultFixture} />)
   return { user, ...view }
 }
 
@@ -200,6 +228,41 @@ describe('SimulationForm', () => {
     expect(screen.getByRole('radio', { name: 'Oui' })).not.toBeChecked()
     expect(screen.getByRole('radio', { name: 'Non' })).not.toBeChecked()
     expect(screen.queryByRole('region', { name: 'Résultat' })).not.toBeInTheDocument()
+  })
+
+  describe('a step that depends on the previous answers', () => {
+    it('gives its fields the answers of the steps before it', async () => {
+      const { user } = renderForm([firstStep, dependentStep])
+      await user.click(screen.getByRole('radio', { name: 'Oui' }))
+      await user.click(screen.getByRole('button', { name: 'Suivant' }))
+
+      await stepHeading(/Question dépendante/)
+      expect(screen.getByText('Choix précédent : yes')).toBeInTheDocument()
+    })
+
+    it('builds its validation rules from the previous answers', async () => {
+      const { user } = renderForm([firstStep, dependentStep])
+      await user.click(screen.getByRole('radio', { name: 'Oui' }))
+      await user.click(screen.getByRole('button', { name: 'Suivant' }))
+      await stepHeading(/Question dépendante/)
+
+      await user.type(screen.getByRole('textbox', { name: 'Code' }), 'abc')
+      await user.click(screen.getByRole('button', { name: 'Terminer' }))
+      expect(await screen.findByRole('alert')).toHaveTextContent('5 caractères au moins.')
+    })
+
+    it('applies other rules when the earlier answer is different', async () => {
+      const { user } = renderForm([firstStep, dependentStep])
+      await user.click(screen.getByRole('radio', { name: 'Non' }))
+      await user.click(screen.getByRole('button', { name: 'Suivant' }))
+      await stepHeading(/Question dépendante/)
+
+      await user.type(screen.getByRole('textbox', { name: 'Code' }), 'a')
+      await user.click(screen.getByRole('button', { name: 'Terminer' }))
+      expect(await screen.findByRole('region', { name: 'Résultat' })).toHaveTextContent(
+        '"code":"a"',
+      )
+    })
   })
 
   describe('accessibility', () => {
