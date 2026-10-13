@@ -8,12 +8,14 @@ read on the site).
 
 | Content                                    | File                                       |
 | ------------------------------------------ | ------------------------------------------ |
+| Home page: explainer, orientation, about   | `home/data.ts`                             |
 | Glossary                                   | `glossary/data.ts`                         |
 | FAQ                                        | `faq/data.ts`                              |
 | Practical info                             | `practical-info/data.ts`                   |
 | Conflict types (simulation)                | `simulation/data.ts` → `conflictTypesData` |
 | Orientation channels (simulation result)   | `simulation/data.ts` → `channelsData`      |
 | Quizzes                                    | `quiz/data.ts`                             |
+| Amicable guides (`/demarches`)             | `amicable/data.ts`                         |
 | Role-play scenarios (`/mise-en-situation`) | `role-play/data.ts`                        |
 
 The content is real and sourced (sources in a comment at the top of each `data.ts`); it must be
@@ -32,12 +34,24 @@ proofread by the legal / content team before the demo.
 
 ## Things to know
 
+- **Home page** (`home/data.ts`): the « L'amiable en 1 minute » cards (`body` can link
+  glossary terms with `[[slug]]` or `[[slug|displayed text]]`), the « Par où commencer ? »
+  answers (`journey`: `/simulation`, `/mise-en-situation` or `/apprendre`; the journey's
+  description and button text come from `src/lib/site.ts`), the « À propos »
+  texts and the questions IRIS suggests on the home page. Legal facts there are drafts until
+  validated (#120): they are marked `TO VALIDATE` in the file.
+
 - **References**: in the glossary (`related`) and quizzes (`glossary`), glossary terms are
   referenced by their `slug`. The referenced term must exist.
 - **Conflict types**: `lossKinds` lists the losses to ask about (`money`, `time`, `health`,
   `relationship`); `followUpQuestions` adds questions specific to this type
   (`kind: 'choice'`, `'number'` or `'yesNo'`). The form adapts by itself, validation
   included. A question is required unless you set `required: false`.
+  `mandatoryAmicableAttempt` (`always` or `up-to-5000`) shows on the result that the law requires
+  an amicable attempt before court (art. 750-1 CPC); with `up-to-5000`, the amount is read from
+  the follow-up question whose id is `montant`.
+- **Channels**: `conflictTypes` (slugs) limits a channel to some conflict types (omitted: all).
+  The result recommends the most specific channel of the route first.
 - **Quizzes**: one id in `correctChoiceIds` → radio buttons; several → checkboxes.
 - **Role-play scenarios**: a scenario is a set of `scenes`. Each scene has `lines` of
   dialogue (`speaker` = a character `id`, omitted for the narrator), then either `choices`

@@ -10,6 +10,7 @@ const PAGES = [
   '/mise-en-situation',
   '/apprendre',
   '/apprendre/lexique',
+  '/demarches',
   '/mentions-legales',
   '/confidentialite',
   '/accessibilite',
