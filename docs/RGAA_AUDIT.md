@@ -34,7 +34,7 @@ Legend: ✅ checked, no issue found · ⚠️ issue or limit · 👤 needs a hum
 
 | # | Theme | Status | Notes |
 | --- | --- | --- | --- |
-| 1 | Images | ✅ | No `<img>`. Icons are decorative and hidden from assistive tech (`aria-hidden`). The pixel-art role-play (stage, sprites, building cut-away, effects) is decorative SVG hidden with `aria-hidden`: scene heading, dialogue box and life gauges in text carry all the information; character sprites come with their visible name and role. |
+| 1 | Images | ✅ | No `<img>`. Icons are decorative and hidden from assistive tech (`aria-hidden`). The pixel-art role-play (stage, sprites, opening shots, choice animations, effects) is decorative SVG hidden with `aria-hidden`: the scene heading, the speech bubbles and captions (real text over the picture) and the life gauges in text carry all the information. |
 | 2 | Frames | — | No `<iframe>`. |
 | 3 | Colours | ✅ | Theme contrasts checked (`src/styles/globals.css`, ratios in comments): text ≥ 4.5:1, UI components ≥ 3:1. Information never by colour alone (quiz and role-play results use text + icon). axe `color-contrast` passes in every state. |
 | 4 | Multimedia | ✅ | No video. Role-play animations are decorative and turned off with `prefers-reduced-motion`. Role-play 8-bit sounds are optional, off by default, switched by a "Son" button (`aria-pressed`, 4.10) and never carry information. |
@@ -46,7 +46,7 @@ Legend: ✅ checked, no issue found · ⚠️ issue or limit · 👤 needs a hum
 | 10 | Presentation | ✅ | Focus always visible (RGAA 10.7). Reflow from 320 px and text at 200 % without horizontal scroll (#26). Content readable without CSS order issues. |
 | 11 | Forms | ✅ 👤 | Labels bound to fields, related fields grouped in `fieldset` + `legend` (simulation, quiz), required fields indicated, errors visible, starting with "Erreur", bound with `aria-describedby`, error summary focused (simulation). 👤 Check the error messages are clear for users. |
 | 12 | Navigation | ⚠️ | Skip link first (12.7), consistent menu with current page (`aria-current`), sub-pages keep their journey current. **12.1 not met: only one navigation system** (main menu). Fix: add a site map page linked from the footer. |
-| 13 | Consultation | ✅ 👤 | No time limit, no automatic redirection, no flashing content, no download. Progressive text in the role-play can be skipped ("Tout afficher") and is instant with reduced motion. The role-play scene title card is decorative, non-blocking and lasts under 2 s (not shown with reduced motion); no effect flashes more than 3 times per second. 👤 IRIS answers are AI-generated: their clarity cannot be guaranteed (listed in the statement). |
+| 13 | Consultation | ✅ 👤 | No time limit, no automatic redirection, no flashing content, no download. Progressive text in the role-play can be skipped ("Tout afficher") and is instant with reduced motion. The role-play scene title card is decorative, non-blocking and lasts under 2 s (not shown with reduced motion); no effect flashes more than 3 times per second. Opening captions and choice animations can be skipped ("Suivant", "Commencer"); choice animations are not played with reduced motion. 👤 IRIS answers are AI-generated: their clarity cannot be guaranteed (listed in the statement). |
 
 ## To do
 
