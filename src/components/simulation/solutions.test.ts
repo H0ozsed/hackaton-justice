@@ -53,25 +53,17 @@ describe('groupByFamily', () => {
 })
 
 describe('solutionsFor', () => {
-  it('offers the solutions of the chosen type, without the ones a judge starts', () => {
+  it('leads to an amicable agreement only: conciliation then mediation, for the chosen type', () => {
+    const groups = solutionsFor(typeAnswer('b'), channels)
+    expect(groups.map((g) => g.family)).toEqual(['mediation'])
+    expect(groups.flatMap((g) => g.channels.map((c) => c.slug))).toEqual(['mediator'])
+  })
+
+  it('never offers talking, the judge, or what only a judge starts', () => {
     const slugs = solutionsFor(typeAnswer('a'), channels).flatMap((g) =>
       g.channels.map((c) => c.slug),
     )
-    expect(slugs).toEqual(['talk', 'conciliator', 'court'])
-  })
-
-  it('never offers a solution meant for another conflict type', () => {
-    const slugs = solutionsFor(typeAnswer('b'), channels).flatMap((g) =>
-      g.channels.map((c) => c.slug),
-    )
-    expect(slugs).not.toContain('conciliator')
-    expect(slugs).toContain('mediator')
-  })
-
-  it('makes no choice for the person: no channel is marked as recommended', () => {
-    for (const group of solutionsFor(typeAnswer('a'), channels)) {
-      expect(group).not.toHaveProperty('recommended')
-    }
+    expect(slugs).toEqual(['conciliator'])
   })
 })
 
@@ -113,15 +105,12 @@ describe('the real content', () => {
   const slugsFor = (type: string) =>
     solutionsFor(typeAnswer(type), content.all).flatMap((g) => g.channels.map((c) => c.slug))
 
-  it('offers at least one amicable solution and the judge for every conflict type', () => {
+  it('offers at least one conciliation or mediation, and only those, for every conflict type', () => {
     for (const type of conflictTypes.all) {
       const offered = solutionsFor(typeAnswer(type.slug), content.all).flatMap((g) => g.channels)
+      expect(offered.length, type.slug).toBeGreaterThan(0)
       expect(
-        offered.some((c) => c.amicable),
-        type.slug,
-      ).toBe(true)
-      expect(
-        offered.some((c) => c.family === 'judge'),
+        offered.every((c) => c.family === 'conciliation' || c.family === 'mediation'),
         type.slug,
       ).toBe(true)
     }
@@ -132,7 +121,7 @@ describe('the real content', () => {
     expect(slugsFor('famille')).toContain('mediation-familiale')
     expect(slugsFor('logement')).toContain('commission-departementale-de-conciliation')
     expect(slugsFor('travail')).toContain('conciliation-prud-hommes')
-    expect(slugsFor('administration')).toContain('defenseur-des-droits')
+    expect(slugsFor('administration')).toContain('mediateurs-des-administrations')
     expect(slugsFor('scolaire')).toContain('mediateur-education')
   })
 

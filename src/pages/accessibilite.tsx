@@ -10,7 +10,7 @@ import { PUBLISHER, SITE_NAME } from '@/lib/site'
 
 const TESTED_PAGES = [
   ['Accueil', '/'],
-  ['Ma situation ?', '/simulation'],
+  ['J’ai un conflit ?', '/simulation'],
   ['Mise en situation', '/mise-en-situation'],
   ['Apprendre', '/apprendre'],
   ['Lexique', '/apprendre/lexique'],
@@ -50,7 +50,7 @@ export default function AccessibilityPage() {
         <ul>
           <li>
             Tests automatiques (axe-core, règles WCAG 2.1 niveaux A et AA) sur toutes les pages et à
-            chaque étape des parcours : « Ma situation ? », mise en situation, questionnaires,
+            chaque étape des parcours : « J’ai un conflit ? », mise en situation, questionnaires,
             lexique, foire aux questions, assistante IRIS, menu mobile. Aucune erreur détectée.
           </li>
           <li>

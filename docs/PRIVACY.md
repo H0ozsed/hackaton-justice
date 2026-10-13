@@ -14,7 +14,7 @@ declares one the code does not use, or sets a cookie.
 
 ```
 Browser ──────────────────────────────────────────────────────────────── stays here
-  simulation answers, letter, quiz / game / role-play choices   (React state, lost on reload)
+  simulation answers, quiz / game / role-play choices   (React state, lost on reload)
   IRIS conversation, role-play best score and sound             (session/localStorage, below)
 
 Browser ──POST /api/chatbot──► Next.js server ──► Ollama (same Docker stack) ──► answer back
@@ -48,7 +48,7 @@ CNIL-exempt analytics setup, and an update of `/cookies`.
 | Where | Data | Leaves the device? | Kept |
 | --- | --- | --- | --- |
 | `/demarches` amicable letter (`components/amicable/letter-generator.tsx`) | sender name, recipient name, facts, request, delay | No: built, copied or printed in the browser | Until the page is left or reloaded |
-| `/simulation` (`components/simulation/use-simulation.ts`) | conflict type, losses, frequency, willingness to talk | No: React state only | Until the page is left or reloaded |
+| `/simulation` (`components/simulation/use-simulation.ts`) | conflict type, follow-up answers, losses, frequency | No: React state only | Until the page is left or reloaded |
 | `/mise-en-situation`, quizzes, `/apprendre` games | choices, scores | No: React state only | Until the page is left, except the best role-play score in `localStorage` (below) |
 | IRIS chatbot (`pages/api/chatbot.ts`) | question + conversation history | Yes: `POST /api/chatbot`, answered by the local Ollama model | Not stored, not logged (only errors are logged, without the question) |
 

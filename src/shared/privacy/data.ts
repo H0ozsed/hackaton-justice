@@ -16,8 +16,8 @@ export const processingsData: ProcessingInput[] = [
   },
   {
     slug: 'simulation',
-    title: 'Simulation',
-    data: 'Vos réponses : type de conflit, pertes estimées, fréquence, envie d’échanger.',
+    title: 'J’ai un conflit ?',
+    data: 'Vos réponses : type de conflit, précisions, pertes estimées, fréquence.',
     purpose: 'Vous orienter vers la solution amiable la plus adaptée.',
     legalBasis: 'Aucune transmission : les réponses restent sur votre appareil.',
     location: 'device',

@@ -35,7 +35,7 @@ describe('Orientation', () => {
       />,
     )
     expect(screen.getByRole('link')).toHaveAccessibleName(
-      `Je vis un conflit Parcours Ma situation ? : ${journeyFor('/simulation').description} ${journeyFor('/simulation').cta}`,
+      `Je vis un conflit Parcours J’ai un conflit ? : ${journeyFor('/simulation').description} ${journeyFor('/simulation').cta}`,
     )
   })
 })

@@ -2,10 +2,12 @@ import { ExternalLinkIcon } from 'lucide-react'
 import Link from 'next/link'
 import type { ComponentType } from 'react'
 
+import { SolutionDetails } from '@/components/solutions/solution-details'
 import { Button } from '@/components/ui/button'
 import {
   channels as channelsContent,
   conflictTypes as conflictTypesContent,
+  AMICABLE_FAMILY_INTROS,
   freeInformation,
   type Channel,
   type ConflictType,
@@ -13,13 +15,13 @@ import {
 
 import { summarizeAnswers } from './answers-summary'
 import { getChosenConflictType } from './conflict-type'
-import { SolutionPicker } from './solution-picker'
 import { mandatoryAttemptNotice, solutionsFor } from './solutions'
 import type { ResultViewProps } from './types'
 
-// Result screen of the simulation (#16): what to know first, whether an amicable attempt is
-// mandatory, then the solutions for the conflict, for the person to choose from (no automatic
-// recommendation, coaching feedback of 13 Oct 2026), free information, and the answers given.
+// Result screen of « J'ai un conflit ? » (#16): what to know first, whether an amicable attempt is
+// mandatory, then the conciliation and mediation third parties for the conflict, all shown with
+// their details (law first) and nothing to click (feedback of 13 Oct 2026), free information, and
+// the answers given.
 // The channels and conflict types are parameters so that tests can use their own;
 // `SimulationResult` below is the real one.
 export function createSimulationResult({
@@ -68,24 +70,49 @@ export function createSimulationResult({
         )}
 
         {groups.length > 0 ? (
-          <section aria-labelledby="result-solutions" className="space-y-4">
+          <section aria-labelledby="result-solutions" className="space-y-6">
             <h3 id="result-solutions" className="text-xl font-bold">
-              Qui peut vous aider ?
+              Vers un accord à l’amiable
             </h3>
             <p>
-              Voici les solutions possibles pour votre conflit, de la discussion au juge. C’est à
-              vous de choisir celle qui correspond à votre situation.
+              {conflictType ? `Pour « ${conflictType.label} », voici` : 'Voici'} les solutions de
+              conciliation et de médiation qui vous correspondent. Dans tous les cas, une personne
+              neutre vous aide à trouver un accord, et c’est vous qui décidez.
             </p>
-            <SolutionPicker groups={groups} />
+            {groups.map((group) => (
+              <section
+                key={group.family}
+                aria-labelledby={`result-${group.family}`}
+                className="space-y-4"
+              >
+                <h4 id={`result-${group.family}`} className="text-lg font-bold">
+                  {group.label}
+                </h4>
+                <p className="text-muted-foreground">
+                  {AMICABLE_FAMILY_INTROS[group.family as keyof typeof AMICABLE_FAMILY_INTROS]}
+                </p>
+                {group.channels.map((channel) => (
+                  <article
+                    key={channel.slug}
+                    aria-labelledby={`result-${channel.slug}`}
+                    className="space-y-4 rounded-lg border-2 border-primary p-5"
+                  >
+                    <h5 id={`result-${channel.slug}`} className="text-lg font-bold">
+                      {channel.name}
+                    </h5>
+                    <SolutionDetails channel={channel} />
+                  </article>
+                ))}
+              </section>
+            ))}
             <p>
-              Il existe d’autres conciliateurs et médiateurs (familial, de la consommation, de
-              l’éducation, des administrations…) : seuls ceux qui traitent votre type de conflit
-              sont proposés ici.{' '}
+              Pour en savoir plus sur tous les conciliateurs et médiateurs, et sur les autres
+              recours :{' '}
               <Link
                 href="/apprendre#qui-peut-vous-aider"
                 className="font-medium text-france-blue underline underline-offset-4 hover:decoration-2"
               >
-                Voir tous les conciliateurs et médiateurs
+                voir tous les conciliateurs et médiateurs
               </Link>
             </p>
           </section>

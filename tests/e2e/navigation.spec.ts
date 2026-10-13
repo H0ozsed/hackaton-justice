@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test'
 
 const PAGES = [
   { path: '/', title: 'Hackaton Justice', nav: 'Accueil' },
-  { path: '/simulation', title: 'Ma situation ? | Hackaton Justice', nav: 'Ma situation ?' },
+  { path: '/simulation', title: 'J’ai un conflit ? | Hackaton Justice', nav: 'J’ai un conflit ?' },
   {
     path: '/mise-en-situation',
     title: 'Mise en situation | Hackaton Justice',

@@ -59,7 +59,6 @@ const full = {
     relationship: 'none',
     frequency: 'weekly',
   },
-  openness: { userOpenness: 'maybe', otherPartyOpenness: 'unknown' },
 }
 
 const lines = (answers: Record<string, Record<string, unknown>>) =>
@@ -78,8 +77,6 @@ describe('summarizeAnswers', () => {
       'Bien-être = Fort',
       'Relations = Aucun effet',
       'Fréquence du conflit = Une ou plusieurs fois par semaine',
-      'Prêt(e) à discuter avec l’autre partie = Peut-être, cela dépend',
-      'L’autre partie serait prête à discuter = Je ne sais pas',
     ])
   })
 
@@ -140,17 +137,5 @@ describe('summarizeAnswers', () => {
       })
       expect(result).toEqual(['Type de conflit = Type argent'])
     })
-  })
-
-  it('writes the openness answers even without a known conflict type', () => {
-    expect(lines({ openness: { userOpenness: 'yes', otherPartyOpenness: 'no' } })).toEqual([
-      'Prêt(e) à discuter avec l’autre partie = Oui',
-      'L’autre partie serait prête à discuter = Non',
-    ])
-  })
-
-  it('falls back on the raw value when a label is not found', () => {
-    const result = lines({ openness: { userOpenness: 'sure', otherPartyOpenness: 'yes' } })
-    expect(result[0]).toBe('Prêt(e) à discuter avec l’autre partie = sure')
   })
 })

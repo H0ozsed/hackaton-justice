@@ -55,3 +55,14 @@ export const CHANNEL_FAMILY_LABELS: Record<ChannelFamily, string> = {
   other: 'Autres recours amiables',
   judge: 'Le juge',
 }
+
+/** The families « J'ai un conflit ? » leads to: an amicable agreement, nothing else. */
+export const AMICABLE_FAMILIES = ['conciliation', 'mediation'] as const satisfies ChannelFamily[]
+
+/** One sentence per amicable family, shown above its third parties on the result. */
+export const AMICABLE_FAMILY_INTROS: Record<(typeof AMICABLE_FAMILIES)[number], string> = {
+  conciliation:
+    'Un tiers neutre reçoit les parties, les aide à trouver un accord et peut proposer des solutions. C’est souvent gratuit.',
+  mediation:
+    'Un tiers neutre aide les parties à renouer le dialogue et à construire elles-mêmes leur accord. Il ne propose pas de solution à leur place.',
+}
