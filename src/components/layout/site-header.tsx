@@ -9,6 +9,7 @@ import { MAIN_NAV, SITE_NAME } from '@/lib/site'
 import { cn } from '@/lib/utils'
 
 const BLOC_MARQUE_ALT = 'Ministère de la Justice. Liberté, Égalité, Fraternité'
+import { ThemeToggle } from './theme-toggle'
 
 export function SiteHeader() {
   const { pathname } = useRouter()
@@ -44,23 +45,27 @@ export function SiteHeader() {
           </Link>
         </div>
 
-        {/* Mobile menu button: aria-expanded announces the open/closed state,
-            aria-controls links the button to the list it shows. */}
-        <Button
-          variant="ghost"
-          size="icon-lg"
-          className="md:hidden"
-          aria-expanded={menuOpen}
-          aria-controls="main-menu"
-          onClick={() => setMenuOpen((open) => !open)}
-        >
-          {menuOpen ? <XIcon aria-hidden /> : <MenuIcon aria-hidden />}
-          <span className="sr-only">{menuOpen ? 'Fermer le menu' : 'Ouvrir le menu'}</span>
-        </Button>
+        <div className="flex items-center gap-1">
+          <nav aria-label="Menu principal" className="hidden md:block">
+            <NavList pathname={pathname} />
+          </nav>
 
-        <nav aria-label="Menu principal" className="hidden md:block">
-          <NavList pathname={pathname} />
-        </nav>
+          <ThemeToggle />
+
+          {/* Mobile menu button: aria-expanded announces the open/closed state,
+              aria-controls links the button to the list it shows. */}
+          <Button
+            variant="ghost"
+            size="icon-lg"
+            className="md:hidden"
+            aria-expanded={menuOpen}
+            aria-controls="main-menu"
+            onClick={() => setMenuOpen((open) => !open)}
+          >
+            {menuOpen ? <XIcon aria-hidden /> : <MenuIcon aria-hidden />}
+            <span className="sr-only">{menuOpen ? 'Fermer le menu' : 'Ouvrir le menu'}</span>
+          </Button>
+        </div>
       </div>
 
       {menuOpen && (

@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import type { ReactNode } from 'react'
 
 import { Popover, PopoverContent, PopoverTitle, PopoverTrigger } from '@/components/ui/popover'
@@ -46,6 +47,14 @@ export function Definition({ slug, term, children }: DefinitionProps) {
       <PopoverContent aria-label={`Définition : ${entry.term}`} className="text-left">
         <PopoverTitle className="font-bold">{entry.term}</PopoverTitle>
         <p>{entry.definition}</p>
+        {/* Full entry (aliases, related terms): each term has an anchor equal to its slug. */}
+        <Link
+          href={`/apprendre/lexique#${entry.slug}`}
+          className="self-start text-primary underline underline-offset-4"
+        >
+          Voir dans le lexique
+          <span className="sr-only"> : {entry.term}</span>
+        </Link>
       </PopoverContent>
     </Popover>
   )
