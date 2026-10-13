@@ -16,6 +16,7 @@ const PAGES = [
   '/demarches',
   '/mentions-legales',
   '/confidentialite',
+  '/cookies',
   '/accessibilite',
 ]
 const WIDTHS = [320, 375, 768, 1280]

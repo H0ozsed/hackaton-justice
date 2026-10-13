@@ -47,6 +47,7 @@ When scaffolding, use these choices rather than substituting alternatives (e.g. 
 - `docs/CDC.md` — cahier des charges (spec): stack and feature overview.
 - `docs/PARCOURS_UTILISATEURS.md` — detailed user journeys per route, the source of truth for expected pages/flows.
 - `docs/BENCHMARK.md` — existing services for amicable settlement, what they miss, our angle, sourced key figures.
+- `docs/PRIVACY.md` — GDPR inventory of the data the site handles; new data is declared in `src/shared/privacy/data.ts` first.
 - `docs/PITCH.md` — pitch arguments, 5-minute demo path, likely questions with answers, roadmap.
 
 - `docs/CHARTE_GRAPHIQUE.pdf`, `docs/RGAA.pdf`, `docs/RGPD.pdf` — design charter and accessibility (RGAA) / data-privacy (RGPD) constraints the UI and data handling must respect.

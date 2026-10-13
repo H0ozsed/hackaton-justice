@@ -10,7 +10,7 @@ Update this file when a page or a journey changes, and re-run the checks below.
 ## Scope and method
 
 **Pages**: `/`, `/simulation`, `/mise-en-situation`, `/apprendre`, `/apprendre/lexique`,
-`/mentions-legales`, `/confidentialite`, `/accessibilite`.
+`/mentions-legales`, `/confidentialite`, `/cookies`, `/accessibilite`.
 
 **States** (not only page load): mobile menu open, FAQ answer open, IRIS chat widget open,
 simulation (error state, every step, result), role-play (every scene and choice, ending, results,
@@ -53,7 +53,7 @@ Legend: ✅ checked, no issue found · ⚠️ issue or limit · 👤 needs a hum
 - [ ] **Site map page** (`/plan-du-site`, linked from the footer) → meets 12.1 (two navigation systems)
 - [ ] **Screen reader pass** (NVDA + Firefox, VoiceOver + Safari) on the 3 journeys and IRIS
 - [ ] Validate the HTML of each page (W3C validator)
-- [ ] Fill in the `[À compléter : ...]` fields of `/accessibilite` (publisher, site address, date, contact), same information as the legal notice (#25)
+- [x] Fill in the publisher, date and contact of `/accessibilite`, same information as `/mentions-legales` and `/confidentialite` (#25); the site address remains to be added once the domain is known
 - [ ] Full RGAA audit (106 criteria) if the site goes live, to replace "non conforme" with a real status and rate
 
 ## Re-running the checks

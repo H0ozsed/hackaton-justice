@@ -31,7 +31,7 @@ scripts/                  Node scripts run with tsx (e.g. check-content.ts).
 tests/e2e/                Playwright end-to-end tests (unit/component tests sit next to the code).
 .github/workflows/        CI (lint, types, content, tests, build, E2E on every PR).
 prisma/                   Prisma schema and migrations.
-docs/                     Specs (CDC, user journeys), design charter, RGAA, RGPD, this file, TESTING.md, RGAA_AUDIT.md.
+docs/                     Specs (CDC, user journeys), design charter, RGAA, RGPD, this file, TESTING.md, RGAA_AUDIT.md, PRIVACY.md.
 ```
 
 Current domains in `src/shared/`: `home` (home page explainer, « Par où commencer ? »
@@ -42,7 +42,9 @@ orientation, « À propos » and IRIS starter questions; its texts may link glos
 (conflict types + channels), `quiz`, `role-play` (scenarios of `/mise-en-situation` and the
 pure game engine that plays them, and the life gauges; its pixel-art stage, sprites and sounds
 live in `src/components/role-play/pixel`), `chatbot` (IRIS request/stream schemas and fixed texts; its
-server side is `src/server/domains/chatbot`, its route `src/pages/api/chatbot.ts`).
+server side is `src/server/domains/chatbot`, its route `src/pages/api/chatbot.ts`), `privacy`
+(personal data inventory rendered by `/confidentialite` and `/cookies`; see
+[`PRIVACY.md`](PRIVACY.md): new data collected or stored in the browser is declared there first).
 
 Test files never go in `src/pages`: Next would serve them as routes. API route tests live next
 to the service they exercise (e.g. `src/server/domains/chatbot/route.int.test.ts`).
