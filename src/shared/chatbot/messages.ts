@@ -11,8 +11,23 @@ export const IRIS = {
     'Bonjour, je suis IRIS. Je réponds à vos questions sur les solutions amiables à partir du contenu de ce site.',
   notice:
     'Information générale, pas un conseil juridique. Ne partagez pas d’informations personnelles.',
-  noAnswer:
-    'Je n’ai pas cette information sur le site. Vous pouvez consulter la FAQ ou reformuler votre question.',
+  // No answer on the site: never a dead end, IRIS says who can help (#135).
+  // TO VALIDATE (#120, #94): role of the point-justice, emergency numbers.
+  noAnswer: `Je n’ai pas la réponse sur ce site. Pour une question précise ou personnelle, un professionnel pourra vous aider :
+- un **point-justice**, pour être informé gratuitement sur vos droits ;
+- un **conciliateur de justice** ou un **médiateur**, pour chercher un accord avec l’autre personne.
+
+En cas de danger, appelez le **17** ou le **112**.`,
+  // Sensitive question (violence, danger, distress): fixed answer, no search, no model (#135).
+  // TO VALIDATE (#120): numbers and their scope.
+  sensitive: `Votre situation mérite l’aide d’un professionnel : je ne peux pas y répondre ici.
+- En cas de danger immédiat : le **17** (police) ou le **112** (urgences).
+- Violences conjugales ou sexuelles : le **3919**, gratuit et anonyme.
+- Enfant en danger : le **119**.
+- Détresse, idées suicidaires : le **3114**.
+- Pour vos droits et vos démarches : un **point-justice**, gratuitement.
+
+Ces services peuvent vous écouter et vous orienter.`,
 } as const
 
 export const IRIS_ERRORS: Record<ChatErrorCode, string> = {

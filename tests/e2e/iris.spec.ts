@@ -74,3 +74,25 @@ test('IRIS opens and closes from the keyboard', async ({ page, isMobile }) => {
   await expect(page.getByRole('dialog', { name: 'IRIS' })).toBeHidden()
   await expect(page.getByRole('button', { name: 'Poser une question à IRIS' })).toBeFocused()
 })
+
+test('without an answer, IRIS points to professionals and to their contacts (#135)', async ({
+  page,
+}) => {
+  await mockIris(page, [
+    { type: 'status', step: 'search' },
+    {
+      type: 'no-answer',
+      text: 'Je n’ai pas la réponse sur ce site. Un professionnel pourra vous aider :\n- un **point-justice** ;\n- un **conciliateur de justice**.',
+      suggestions: [],
+    },
+  ])
+  await page.goto('/')
+  await page.getByRole('button', { name: 'Poser une question à IRIS' }).click()
+  const iris = page.getByRole('dialog', { name: 'IRIS' })
+  await iris.getByLabel('Votre question').fill('Quelle est la capitale du Pérou ?')
+  await iris.getByRole('button', { name: 'Envoyer' }).click()
+
+  await expect(iris.getByText('un point-justice ;', { exact: true })).toBeVisible()
+  await iris.getByRole('link', { name: 'Trouver de l’aide près de chez vous' }).click()
+  await expect(page).toHaveURL('/apprendre#infos-pratiques')
+})

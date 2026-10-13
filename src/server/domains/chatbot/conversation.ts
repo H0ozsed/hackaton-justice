@@ -38,6 +38,34 @@ const SHORT: [Exclude<SmallTalk, 'about'>, RegExp][] = [
   ['goodbye', /^(au revoir|bye|a bientot|bonne (journee|soiree))\b/],
 ]
 
+// Sensitive questions (#135): violence, danger, distress. IRIS does not answer them from
+// the site content: it gives emergency contacts and professionals right away. Matched on
+// the normalized text (lowercase, no accents). Missing one only means the usual answer.
+const SENSITIVE = [
+  String.raw`violen(?:ce|ces|t|te|ts|tes)`,
+  String.raw`frapp\w*`,
+  String.raw`battu(?:e|es|s)?`,
+  String.raw`tabass\w*`,
+  String.raw`agress(?:e|ee|es|ees|ion|ions|eur|eurs)`,
+  // « viols », « violée », not « il viole le contrat ».
+  String.raw`viols?|violees?`,
+  String.raw`harcel\w*`,
+  String.raw`maltrait\w*`,
+  String.raw`menaces? de mort`,
+  String.raw`(?:en|danger de) (?:danger|mort)`,
+  String.raw`peur pour (?:ma|sa|leur|notre) vie`,
+  String.raw`suicid\w*`,
+  String.raw`me (?:tuer|suicider|faire du mal)`,
+  String.raw`mettre fin a (?:mes|ma) (?:jours|vie)`,
+  String.raw`(?:plus|pas) envie de vivre`,
+]
+const SENSITIVE_PATTERN = new RegExp(String.raw`\b(?:${SENSITIVE.join('|')})\b`)
+
+/** The question touches violence, danger or distress: professionals, not the site. */
+export function isSensitive(text: string) {
+  return SENSITIVE_PATTERN.test(normalize(text))
+}
+
 /**
  * What kind of fixed answer the message calls for, if any. A real question after a
  * greeting ("Bonjour, c'est quoi la médiation ?") is left to the search.

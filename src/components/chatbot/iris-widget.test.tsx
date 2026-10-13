@@ -179,7 +179,11 @@ describe('IrisWidget', () => {
     )
     const user = await openIris()
     await ask(user, 'Quelle est la capitale du Pérou ?')
-    expect(await within(conversation()).findByText(IRIS.noAnswer)).toBeInTheDocument()
+    // Never a dead end: the professionals who can help, and a way to their contacts.
+    expect(await within(conversation()).findByText('point-justice')).toBeInTheDocument()
+    expect(
+      within(conversation()).getByRole('link', { name: 'Trouver de l’aide près de chez vous' }),
+    ).toHaveAttribute('href', '/apprendre#infos-pratiques')
     expect(within(conversation()).queryByText('Sources')).toBeNull()
     expect(within(conversation()).queryByRole('button', { name: 'Copier la réponse' })).toBeNull()
   })

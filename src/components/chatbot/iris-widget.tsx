@@ -324,6 +324,12 @@ function MessageView({
     <div className="mr-8 rounded-lg bg-muted px-3 py-2 text-sm">
       <span className="sr-only">IRIS : </span>
       <FormattedAnswer text={message.content} />
+      {message.status === 'no-answer' && (
+        // No answer on the site: a way to the contacts, never a dead end (#135).
+        <Link href="/apprendre#infos-pratiques" className="mt-2 inline-block underline">
+          Trouver de l’aide près de chez vous
+        </Link>
+      )}
       {message.sources && message.sources.length > 0 && (
         <div className="mt-2 border-t border-border pt-2">
           <p className="text-xs font-medium">Sources</p>
