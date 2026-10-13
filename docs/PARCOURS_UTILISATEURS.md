@@ -45,6 +45,16 @@
   * \* définition mot pas facile
     * Termes liés au lexique dans les répliques (`<Definition>`, popover au clic / clavier)
 
+### `/`demarches
+
+* Régler un litige à l'amiable (nuit #80)
+  * Chiffres clés sourcés (Infostat Justice) : demandes aux conciliateurs, taux d'accord, nombre de conciliateurs, gratuité
+  * Est-ce obligatoire ? Tentative amiable préalable (art. 750-1 CPC) : sommes ≤ 5 000 €, troubles de voisinage, exceptions, garder une preuve
+  * Comparer les solutions : discussion, conciliation, médiation, médiation de la consommation, juge (qui aide, coût, qui décide, durée, valeur de l'issue)
+  * Pas à pas : conciliateur, médiateur de la consommation, médiation, médiation familiale (étapes numérotées, bon à savoir, sources)
+  * Liste « Préparer son rendez-vous » à cocher (rien enregistré), imprimable
+  * Liens vers la simulation, la mise en situation et le lexique
+
 ### `/`apprendre
 
 * Chatbot : IRIS, comme sur `/` (questions suggérées tirées de la FAQ de cette page)

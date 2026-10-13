@@ -34,7 +34,8 @@ prisma/                   Prisma schema and migrations.
 docs/                     Specs (CDC, user journeys), design charter, RGAA, RGPD, this file, TESTING.md, RGAA_AUDIT.md.
 ```
 
-Current domains in `src/shared/`: `glossary`, `faq`, `practical-info`, `simulation`
+Current domains in `src/shared/`: `glossary`, `faq`, `practical-info`, `amicable` (practical guides of
+`/demarches`: key figures, routes compared, step-by-step guides, checklist), `simulation`
 (conflict types + channels), `quiz`, `role-play` (scenarios of `/mise-en-situation` and the
 pure game engine that plays them, and the life gauges; its pixel-art stage, sprites and sounds
 live in `src/components/role-play/pixel`), `chatbot` (IRIS request/stream schemas and fixed texts; its
