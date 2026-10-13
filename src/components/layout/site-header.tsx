@@ -1,4 +1,5 @@
 import { MenuIcon, XIcon } from 'lucide-react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
@@ -7,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { MAIN_NAV, SITE_NAME } from '@/lib/site'
 import { cn } from '@/lib/utils'
 
+const BLOC_MARQUE_ALT = 'Ministère de la Justice. Liberté, Égalité, Fraternité'
 import { ThemeToggle } from './theme-toggle'
 
 export function SiteHeader() {
@@ -16,9 +18,32 @@ export function SiteHeader() {
   return (
     <header className="border-b">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
-        <Link href="/" className="text-lg font-bold text-france-blue">
-          {SITE_NAME}
-        </Link>
+        <div className="flex items-center gap-3 sm:gap-4">
+          {/* Bloc-marque of the Ministère de la Justice (#143): the State identity, in its
+              light version or its white-text version for the dark theme (#132). Small PNGs,
+              served as they are. */}
+          <Image
+            src="/images/bloc-marque-justice.png"
+            alt={BLOC_MARQUE_ALT}
+            width={309}
+            height={240}
+            unoptimized
+            priority
+            className="h-12 w-auto sm:h-14 dark:hidden"
+          />
+          <Image
+            src="/images/bloc-marque-justice-sombre.png"
+            alt={BLOC_MARQUE_ALT}
+            width={309}
+            height={240}
+            unoptimized
+            className="hidden h-12 w-auto sm:h-14 dark:block"
+          />
+          <span aria-hidden className="h-10 border-l border-border" />
+          <Link href="/" className="text-lg font-bold text-france-blue">
+            {SITE_NAME}
+          </Link>
+        </div>
 
         <div className="flex items-center gap-1">
           <nav aria-label="Menu principal" className="hidden md:block">
