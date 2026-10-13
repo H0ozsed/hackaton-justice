@@ -74,7 +74,6 @@ protection act (strictly necessary for a service the visitor asked for, or a pre
 | Key | Storage | Purpose | Kept |
 | --- | --- | --- | --- |
 | `iris-conversation` | sessionStorage | keep the IRIS conversation across pages | until the tab is closed |
-| `iris-opened` | sessionStorage | stop animating the IRIS button once opened | until the tab is closed |
 | `role-play-progress` | localStorage | best score per role-play scenario | until erased |
 | `role-play-sound` | localStorage | sound on/off in the role-play | until erased |
 

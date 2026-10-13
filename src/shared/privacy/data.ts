@@ -68,13 +68,6 @@ export const browserStorageData: BrowserStorageInput[] = [
     retention: 'Jusqu’à la fermeture de l’onglet.',
   },
   {
-    slug: 'iris-ouverte',
-    key: 'iris-opened',
-    storage: 'sessionStorage',
-    purpose: 'Se souvenir que vous avez déjà ouvert IRIS, pour ne plus animer son bouton.',
-    retention: 'Jusqu’à la fermeture de l’onglet.',
-  },
-  {
     slug: 'progression-mise-en-situation',
     key: 'role-play-progress',
     storage: 'localStorage',
