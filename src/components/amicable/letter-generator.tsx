@@ -249,7 +249,7 @@ export function LetterGenerator({ today = () => new Date() }: { today?: () => Da
           </div>
         </div>
 
-        <Button type="submit" className="self-start">
+        <Button type="submit" className="h-auto self-start py-2 whitespace-normal">
           Écrire mon courrier
         </Button>
       </form>
@@ -272,11 +272,21 @@ export function LetterGenerator({ today = () => new Date() }: { today?: () => Da
             {letter}
           </div>
           <div className="flex flex-wrap gap-2">
-            <Button type="button" variant="outline" onClick={copy}>
+            <Button
+              type="button"
+              variant="outline"
+              className="h-auto py-2 whitespace-normal"
+              onClick={copy}
+            >
               <CopyIcon aria-hidden />
               Copier le courrier
             </Button>
-            <Button type="button" variant="outline" onClick={printLetter}>
+            <Button
+              type="button"
+              variant="outline"
+              className="h-auto py-2 whitespace-normal"
+              onClick={printLetter}
+            >
               <PrinterIcon aria-hidden />
               Imprimer le courrier
             </Button>
