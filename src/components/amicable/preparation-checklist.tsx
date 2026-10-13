@@ -61,7 +61,12 @@ export function PreparationChecklist({
         {done.size} sur {items.length} prêt{done.size > 1 ? 's' : ''}
         {done.size === items.length && ' : vous êtes prêt(e) pour votre rendez-vous.'}
       </p>
-      <Button type="button" variant="outline" onClick={printList}>
+      <Button
+        type="button"
+        variant="outline"
+        className="h-auto self-start py-2 whitespace-normal"
+        onClick={printList}
+      >
         <PrinterIcon aria-hidden />
         Imprimer la liste
       </Button>
