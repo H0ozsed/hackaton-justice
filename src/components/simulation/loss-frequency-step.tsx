@@ -20,7 +20,7 @@ export function createLossFrequencyStep(types: readonly ConflictType[]): Simulat
 
   return {
     id: LOSS_FREQUENCY_STEP_ID,
-    title: 'Pertes et fréquence',
+    title: 'Ce que le conflit vous coûte',
     description:
       'Estimez ce que le conflit vous coûte et à quelle fréquence il se produit. Une estimation approximative suffit.',
     isActive: (answers) => getChosenConflictType(answers, types) !== undefined,

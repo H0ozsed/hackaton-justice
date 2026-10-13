@@ -3,22 +3,31 @@ import Link from 'next/link'
 
 import { isExternalLink, practicalInfo, type PracticalInfo } from '@/shared/practical-info'
 
-// "Practical info" block, used on / and /apprendre. Renders its own h2, so it
-// must sit directly under the page h1 (RGAA 9.1).
+// "Practical info" block, used on / and /apprendre. Its heading level follows the page outline
+// (h2 under the h1 by default, h3 inside a step of /apprendre), entries one level below (RGAA 9.1).
 export function PracticalInfoSection({
   entries = practicalInfo.all,
+  headingLevel = 2,
+  className = 'mt-12',
 }: {
   entries?: readonly PracticalInfo[]
+  headingLevel?: 2 | 3
+  className?: string
 }) {
+  const Heading = `h${headingLevel}` as const
+  const EntryHeading = `h${headingLevel + 1}` as 'h3' | 'h4'
   return (
-    <section aria-labelledby="infos-pratiques-titre" className="mt-12">
-      <h2 id="infos-pratiques-titre" className="text-2xl font-bold">
+    <section aria-labelledby="infos-pratiques-titre" className={className}>
+      <Heading id="infos-pratiques-titre" className="text-2xl font-bold">
         Infos pratiques
-      </h2>
+      </Heading>
+      <p className="mt-2 text-muted-foreground">
+        Où trouver de l’aide, comment se préparer et quels délais respecter.
+      </p>
       <ul className="mt-6 grid gap-6 md:grid-cols-2">
         {entries.map(({ slug, title, body, links }) => (
           <li key={slug} className="min-w-0 rounded-lg border-2 border-border bg-card p-6">
-            <h3 className="text-xl font-bold">{title}</h3>
+            <EntryHeading className="text-xl font-bold">{title}</EntryHeading>
             <p className="mt-2 whitespace-pre-line">{body}</p>
             {links.length > 0 && (
               <ul className="mt-4 flex flex-col gap-2">

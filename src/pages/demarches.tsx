@@ -12,10 +12,10 @@ import { PageTitle } from '@/components/layout/page-title'
 // Content in src/shared/amicable.
 
 const SECTIONS = [
-  { id: 'chiffres', label: 'En chiffres' },
-  { id: 'obligatoire', label: 'Est-ce obligatoire ?' },
+  { id: 'chiffres', label: 'La conciliation en chiffres' },
+  { id: 'obligatoire', label: 'Faut-il tenter l’amiable avant le juge ?' },
   { id: 'comparer', label: 'Comparer les solutions' },
-  { id: 'pas-a-pas', label: 'Pas à pas' },
+  { id: 'pas-a-pas', label: 'Les démarches étape par étape' },
   { id: 'preparer', label: 'Préparer son rendez-vous' },
 ] as const
 
@@ -45,9 +45,12 @@ export default function ProceduresPage() {
       </nav>
 
       <section id="chiffres" aria-labelledby="chiffres-titre" className="mt-12 scroll-mt-4">
-        <h2 id="chiffres-titre" className="mb-6 text-2xl font-bold">
-          En chiffres
+        <h2 id="chiffres-titre" className="text-2xl font-bold">
+          La conciliation en chiffres
         </h2>
+        <p className="mt-2 mb-6 text-muted-foreground">
+          Des chiffres officiels pour savoir à quoi vous attendre.
+        </p>
         <KeyFigures />
       </section>
 
@@ -57,7 +60,7 @@ export default function ProceduresPage() {
         className="mt-12 max-w-3xl scroll-mt-4"
       >
         <h2 id="obligatoire-titre" className="text-2xl font-bold">
-          Est-ce obligatoire ?
+          Faut-il tenter l’amiable avant le juge ?
         </h2>
         <p className="mt-4">
           Pour certains litiges, la loi impose de tenter une solution amiable (conciliation par un
@@ -88,16 +91,23 @@ export default function ProceduresPage() {
       </section>
 
       <section id="comparer" aria-labelledby="comparer-titre" className="mt-12 scroll-mt-4">
-        <h2 id="comparer-titre" className="mb-6 text-2xl font-bold">
+        <h2 id="comparer-titre" className="text-2xl font-bold">
           Comparer les solutions
         </h2>
+        <p className="mt-2 mb-6 text-muted-foreground">
+          De la discussion au juge : qui vous aide, ce que ça coûte, combien de temps ça prend et
+          qui décide.
+        </p>
         <RoutesComparison />
       </section>
 
       <section id="pas-a-pas" aria-labelledby="pas-a-pas-titre" className="mt-12 scroll-mt-4">
-        <h2 id="pas-a-pas-titre" className="mb-6 text-2xl font-bold">
-          Pas à pas
+        <h2 id="pas-a-pas-titre" className="text-2xl font-bold">
+          Les démarches étape par étape
         </h2>
+        <p className="mt-2 mb-6 text-muted-foreground">
+          Comment saisir un conciliateur ou un médiateur, du premier contact à l’accord.
+        </p>
         <GuideList />
       </section>
 

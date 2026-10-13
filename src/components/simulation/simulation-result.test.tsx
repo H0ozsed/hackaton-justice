@@ -281,7 +281,7 @@ describe('from the form to the result', () => {
   async function answerAll(user: ReturnType<typeof userEvent.setup>) {
     await user.click(screen.getByRole('radio', { name: 'Type commerce' }))
     await user.click(screen.getByRole('button', { name: 'Suivant' }))
-    await screen.findByRole('heading', { level: 2, name: /Pertes et fréquence/ })
+    await screen.findByRole('heading', { level: 2, name: /Ce que le conflit vous coûte/ })
     await user.type(screen.getByRole('textbox', { name: 'Montant estimé, en euros (€)' }), '150')
     await user.click(screen.getByRole('radio', { name: 'Une seule fois' }))
     await user.click(screen.getByRole('button', { name: 'Terminer' }))

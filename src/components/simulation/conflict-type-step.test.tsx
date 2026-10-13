@@ -192,7 +192,7 @@ describe('conflict type step', () => {
     await user.click(screen.getByRole('radio', { name: 'Type beta' }))
     await next(user)
 
-    expect(await heading(/Pertes et fréquence/)).toHaveFocus()
+    expect(await heading(/Ce que le conflit vous coûte/)).toHaveFocus()
     expect(screen.queryByRole('heading', { name: /Précisions sur votre situation/ })).toBeNull()
   })
 })
