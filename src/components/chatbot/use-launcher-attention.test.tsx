@@ -2,7 +2,7 @@ import { act, renderHook } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { STORAGE_KEY } from './use-iris'
-import { ATTENTION_MS, OPENED_KEY, useLauncherAttention } from './use-launcher-attention'
+import { ATTENTION_MS, useLauncherAttention } from './use-launcher-attention'
 
 beforeEach(() => {
   sessionStorage.clear()
@@ -19,24 +19,19 @@ describe('useLauncherAttention', () => {
     expect(result.current).toBe(false)
   })
 
-  it('stops as soon as IRIS is opened, and remembers it for the tab', () => {
+  it('stops as soon as IRIS is opened', () => {
     const { result, rerender } = renderHook(({ open }) => useLauncherAttention(open), {
       initialProps: { open: false },
     })
     rerender({ open: true })
     expect(result.current).toBe(false)
-    expect(sessionStorage.getItem(OPENED_KEY)).toBe('1')
   })
 
-  it('does not catch the eye once IRIS was opened in this tab', () => {
-    sessionStorage.setItem(OPENED_KEY, '1')
-    const { result } = renderHook(() => useLauncherAttention(false))
-    expect(result.current).toBe(false)
-  })
-
-  it('does not catch the eye while a conversation is going on', () => {
+  it('catches the eye again on every page load, even during a conversation', () => {
     sessionStorage.setItem(STORAGE_KEY, '[]')
-    const { result } = renderHook(() => useLauncherAttention(false))
-    expect(result.current).toBe(false)
+    const first = renderHook(() => useLauncherAttention(false))
+    first.rerender()
+    first.unmount()
+    expect(renderHook(() => useLauncherAttention(false)).result.current).toBe(true)
   })
 })

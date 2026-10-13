@@ -85,10 +85,9 @@ test.describe('launcher on arrival (#133)', () => {
     await page.getByRole('button', { name: 'Poser une question à IRIS' }).click()
     await expect(teaser(page)).toBeHidden()
 
-    // Same tab: IRIS was already opened, the launcher stays quiet on the next page.
-    await page.goto('/apprendre')
-    await expect(page.getByRole('button', { name: 'Poser une question à IRIS' })).toBeVisible()
-    await expect(teaser(page)).toBeHidden()
+    // Every page load catches the eye again, even after IRIS was opened.
+    await page.reload()
+    await expect(teaser(page)).toBeVisible()
   })
 
   test('the ring stops moving after 3 pulses (under 5 s)', async ({ page }) => {
