@@ -9,6 +9,20 @@ export const scenariosData: ScenarioInput[] = [
     title: 'Le voisin du dessus',
     intro:
       'Vous êtes Camille et vous louez un appartement au deuxième étage. Depuis quelques semaines, votre voisin du dessus joue de la batterie tard le soir. Vous dormez mal et la fatigue s’accumule. À vous de choisir comment réagir face à ce [[trouble-anormal-de-voisinage|trouble de voisinage]].',
+    opening: [
+      {
+        shot: 'street',
+        text: 'Un mardi soir, dans un immeuble tranquille. Vous êtes Camille, locataire au deuxième étage.',
+      },
+      {
+        shot: 'cutaway',
+        text: 'Depuis quelques semaines, votre voisin du dessus joue de la batterie tard le soir.',
+      },
+      {
+        shot: 'bedroom',
+        text: 'Vous dormez mal et la fatigue s’accumule. À vous de choisir comment réagir face à ce [[trouble-anormal-de-voisinage|trouble de voisinage]].',
+      },
+    ],
     characters: [
       { id: 'camille', name: 'Camille', role: 'Vous, locataire', avatar: 'player' },
       { id: 'martin', name: 'M. Martin', role: 'Votre voisin du dessus', avatar: 'neighbor' },
@@ -43,6 +57,7 @@ export const scenariosData: ScenarioInput[] = [
         choices: [
           {
             id: 'parler-demain',
+            action: 'talk',
             label: 'Aller le voir demain pour en parler calmement',
             next: 'discussion',
             quality: 'good',
@@ -51,6 +66,7 @@ export const scenariosData: ScenarioInput[] = [
           },
           {
             id: 'balai',
+            action: 'broom',
             label: 'Taper au plafond avec un balai',
             next: 'le-ton-monte',
             quality: 'bad',
@@ -60,6 +76,7 @@ export const scenariosData: ScenarioInput[] = [
           },
           {
             id: 'police',
+            action: 'phone',
             label: 'Appeler la police pour tapage nocturne',
             next: 'apres-la-police',
             quality: 'ok',
@@ -100,6 +117,7 @@ export const scenariosData: ScenarioInput[] = [
         choices: [
           {
             id: 'arrangement',
+            action: 'agree',
             label: 'Proposer un arrangement précis : pas de batterie après 21 h',
             next: 'fin-calme',
             quality: 'good',
@@ -108,6 +126,7 @@ export const scenariosData: ScenarioInput[] = [
           },
           {
             id: 'promesse',
+            action: 'wait',
             label: 'Le remercier et se contenter de sa promesse de faire attention',
             next: 'ca-recommence',
             quality: 'ok',
@@ -142,6 +161,7 @@ export const scenariosData: ScenarioInput[] = [
         choices: [
           {
             id: 'excuses',
+            action: 'talk',
             label: 'S’excuser pour le balai et expliquer calmement la gêne',
             next: 'ca-recommence',
             quality: 'good',
@@ -150,6 +170,7 @@ export const scenariosData: ScenarioInput[] = [
           },
           {
             id: 'menace',
+            action: 'threaten',
             label: 'Le menacer de lui envoyer une mise en demeure',
             next: 'dialogue-rompu',
             quality: 'bad',
@@ -178,6 +199,7 @@ export const scenariosData: ScenarioInput[] = [
         choices: [
           {
             id: 'mot',
+            action: 'letter',
             label: 'Lui laisser un mot pour proposer d’en parler',
             next: 'ca-recommence',
             quality: 'good',
@@ -186,6 +208,7 @@ export const scenariosData: ScenarioInput[] = [
           },
           {
             id: 'attendre',
+            action: 'wait',
             label: 'Ne rien faire et attendre de voir',
             next: 'dialogue-rompu',
             quality: 'bad',
@@ -221,6 +244,7 @@ export const scenariosData: ScenarioInput[] = [
         choices: [
           {
             id: 'courrier-conciliateur',
+            action: 'letter',
             label: 'Lui écrire un courrier amiable et proposer de voir le conciliateur',
             next: 'conciliation',
             quality: 'good',
@@ -230,6 +254,7 @@ export const scenariosData: ScenarioInput[] = [
           },
           {
             id: 'avocat',
+            action: 'letter',
             label: 'Faire envoyer une mise en demeure par un avocat',
             next: 'conciliation',
             quality: 'ok',
@@ -239,6 +264,7 @@ export const scenariosData: ScenarioInput[] = [
           },
           {
             id: 'tribunal-direct',
+            action: 'court',
             label: 'Faire constater le bruit par un commissaire de justice et saisir le tribunal',
             next: 'fin-irrecevable',
             quality: 'bad',
@@ -271,6 +297,7 @@ export const scenariosData: ScenarioInput[] = [
         choices: [
           {
             id: 'conciliateur',
+            action: 'appointment',
             label: 'Prendre rendez-vous avec le conciliateur de justice',
             next: 'conciliation',
             quality: 'good',
@@ -280,6 +307,7 @@ export const scenariosData: ScenarioInput[] = [
           },
           {
             id: 'tribunal',
+            action: 'court',
             label: 'Saisir directement le tribunal',
             next: 'fin-irrecevable',
             quality: 'bad',
@@ -289,6 +317,7 @@ export const scenariosData: ScenarioInput[] = [
           },
           {
             id: 'demenager',
+            action: 'move',
             label: 'Déménager pour ne plus l’entendre',
             next: 'fin-demenagement',
             quality: 'bad',
@@ -325,6 +354,7 @@ export const scenariosData: ScenarioInput[] = [
         choices: [
           {
             id: 'compromis',
+            action: 'agree',
             label:
               'Proposer un compromis : répétitions jusqu’à 21 h en semaine et un tapis anti-bruit',
             next: 'fin-accord',
@@ -334,6 +364,7 @@ export const scenariosData: ScenarioInput[] = [
           },
           {
             id: 'silence-total',
+            action: 'threaten',
             label: 'Exiger qu’il arrête complètement la batterie',
             next: 'fin-echec',
             quality: 'bad',
