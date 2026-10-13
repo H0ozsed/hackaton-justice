@@ -83,6 +83,36 @@ const HEADS: Record<Avatar, string[]> = {
     '....SSSSSSSS....',
     '......SSSS......',
   ],
+  // A customer service adviser: ponytail and headset.
+  clerk: [
+    '......HHHH......',
+    '....HHHHHHHH....',
+    '...HHHHHHHHHH...',
+    '..AHHHHHHHHHHA..',
+    '..AHSSSSSSSSHA..',
+    '..ASSSSSSSSSSAHH',
+    '...SSSSSSSSSS.HH',
+    '...SSSSSSSSSS..H',
+    '..ASSSSSSSSSS...',
+    '...ASSSSSSSSS...',
+    '....SSSSSSSS....',
+    '......SSSS......',
+  ],
+  // A mediator: short grey hair and a moustache.
+  mediator: [
+    '................',
+    '....HHHHHHHH....',
+    '...HHHHHHHHHH...',
+    '...HSSSSSSSSH...',
+    '...SSSSSSSSSS...',
+    '..SSSSSSSSSSSS..',
+    '...SSSSSSSSSS...',
+    '...SSSSSSSSSS...',
+    '...SSHHHHHHSS...',
+    '...SSSSSSSSSS...',
+    '....SSSSSSSS....',
+    '......SSSS......',
+  ],
 }
 
 const BODY = [
@@ -227,6 +257,43 @@ const LOOKS: Record<Avatar, Look> = {
       [8, 15, 'C'],
       [7, 16, 'C'],
       [8, 16, 'C'],
+    ],
+  },
+  clerk: {
+    body: BODY,
+    colors: {
+      H: PALETTE.m1,
+      S: PALETTE.i2,
+      T: PALETTE.marianneRed,
+      t: PALETTE.p1,
+      C: PALETTE.white,
+      B: PALETTE.q1,
+      O: PALETTE.black,
+      A: PALETTE.ink,
+    },
+    // Company badge.
+    extras: [
+      [10, 16, 'C'],
+      [11, 16, 'C'],
+    ],
+  },
+  mediator: {
+    body: BODY,
+    colors: {
+      H: PALETTE.q3,
+      S: PALETTE.r1,
+      T: PALETTE.a1,
+      t: PALETTE.p1,
+      C: PALETTE.f2,
+      B: PALETTE.g1,
+      O: PALETTE.p0,
+    },
+    // Shirt in the open cardigan.
+    extras: [
+      [7, 14, 'C'],
+      [8, 14, 'C'],
+      [7, 15, 'C'],
+      [8, 15, 'C'],
     ],
   },
   professional: {

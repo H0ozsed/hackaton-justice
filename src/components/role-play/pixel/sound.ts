@@ -13,6 +13,8 @@ const VOICES: Record<Avatar | 'narrator', number> = {
   player: 620,
   neighbor: 220,
   relative: 520,
+  clerk: 700,
+  mediator: 260,
   official: 440,
   professional: 300,
 }

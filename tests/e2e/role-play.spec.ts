@@ -1,6 +1,9 @@
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test, type Page } from '@playwright/test'
 
+// The first scenario (the list of scenarios is /mise-en-situation).
+const SCENARIO = '/mise-en-situation/voisin-du-dessus'
+
 // Full runs of /mise-en-situation. Written without knowing the scenario: a run takes
 // always the first or always the last choice, so it keeps working when the content changes.
 
@@ -41,7 +44,7 @@ async function playRun(page: Page, pick: 'first' | 'last', { axe = false } = {})
 }
 
 test('a full run up to the results, then play again', async ({ page }) => {
-  await page.goto('/mise-en-situation')
+  await page.goto(SCENARIO)
   await expectNoAxeViolation(page)
   await playRun(page, 'first', { axe: true })
   await expectNoAxeViolation(page)
@@ -61,7 +64,7 @@ test('a full run up to the results, then play again', async ({ page }) => {
 })
 
 test('the results list the choices that were not the best', async ({ page }) => {
-  await page.goto('/mise-en-situation')
+  await page.goto(SCENARIO)
   const chosen = await playRun(page, 'last')
   await page.getByRole('button', { name: 'Voir mon bilan' }).click()
 
@@ -80,14 +83,14 @@ test('the results list the choices that were not the best', async ({ page }) => 
 
 test('with reduced motion, the text is shown at once', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
-  await page.goto('/mise-en-situation')
+  await page.goto(SCENARIO)
   await page.getByRole('button', { name: 'Commencer' }).click()
   await expect(page.getByRole('button', { name: /^(Suivant|Continuer)$/ })).toBeVisible()
   await expect(page.getByRole('button', { name: 'Tout afficher' })).toHaveCount(0)
 })
 
 test('the scene is played on a decorative stage, with life gauges in text', async ({ page }) => {
-  await page.goto('/mise-en-situation')
+  await page.goto(SCENARIO)
   await expect(page.getByTestId('opening').locator('svg').first()).toHaveAttribute(
     'aria-hidden',
     'true',
@@ -110,11 +113,41 @@ test('the scene is played on a decorative stage, with life gauges in text', asyn
 })
 
 test('the sound switch is off by default and keeps its name', async ({ page }) => {
-  await page.goto('/mise-en-situation')
+  await page.goto(SCENARIO)
   const sound = page.getByRole('button', { name: 'Son' })
   await expect(sound).toHaveAttribute('aria-pressed', 'false')
   await sound.click()
   await expect(sound).toHaveAttribute('aria-pressed', 'true')
   await page.reload()
   await expect(page.getByRole('button', { name: 'Son' })).toHaveAttribute('aria-pressed', 'true')
+})
+
+test('the list of scenarios leads to each one, and remembers the best score', async ({ page }) => {
+  await page.goto('/mise-en-situation')
+  await expectNoAxeViolation(page)
+  const play = page.getByRole('link', { name: /^(Jouer|Rejouer) : / })
+  const count = await play.count()
+  expect(count).toBeGreaterThan(1)
+
+  await page.getByRole('link', { name: 'Jouer : Le voisin du dessus' }).click()
+  await expect(page).toHaveURL(SCENARIO)
+  await playRun(page, 'first')
+  await page.getByRole('button', { name: 'Voir mon bilan' }).click()
+  await page.getByRole('link', { name: 'Toutes les mises en situation' }).click()
+  await expect(page.getByText(/Terminé, meilleur score : \d+ %/)).toBeVisible()
+  await expect(page.getByRole('link', { name: 'Rejouer : Le voisin du dessus' })).toBeVisible()
+})
+
+test('every scenario of the list can be played to its results', async ({ page }) => {
+  test.setTimeout(180_000)
+  await page.goto('/mise-en-situation')
+  const hrefs = await page
+    .getByRole('link', { name: /^(Jouer|Rejouer) : / })
+    .evaluateAll((links) => links.map((link) => link.getAttribute('href')!))
+  for (const [i, href] of hrefs.entries()) {
+    await page.goto(href)
+    await playRun(page, i % 2 === 0 ? 'last' : 'first', { axe: true })
+    await page.getByRole('button', { name: 'Voir mon bilan' }).click()
+    await expect(page.getByRole('heading', { name: 'Votre bilan' })).toBeFocused()
+  }
 })

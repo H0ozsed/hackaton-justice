@@ -1,6 +1,9 @@
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test, type Page } from '@playwright/test'
 
+// The first scenario (the list of scenarios is /mise-en-situation).
+const SCENARIO = '/mise-en-situation/voisin-du-dessus'
+
 // Accessibility of the interactive states (#24): every journey is played and the axe scan
 // (WCAG 2.1 A/AA, the basis of RGAA 4) runs at each state, not only on page load.
 // Content-agnostic on purpose: it answers whatever questions the content team writes.
@@ -82,7 +85,7 @@ test('simulation: error state, every step and the result', async ({ page }) => {
 })
 
 test('role-play: a full game until the results', async ({ page }) => {
-  await page.goto('/mise-en-situation')
+  await page.goto(SCENARIO)
   await page.getByRole('button', { name: 'Commencer' }).click()
   await expectNoViolations(page, 'first scene')
 

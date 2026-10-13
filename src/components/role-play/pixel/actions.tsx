@@ -134,18 +134,18 @@ const DOTS = sprite(
   },
 )
 
-function Talk({ partner }: { partner?: Avatar }) {
+function Talk({ partner, player }: { partner?: Avatar; player: Avatar }) {
   if (!partner)
     return (
       <>
-        <Walker avatar="player" from={26} to={130} duration={1.8} emotion="neutral" />
+        <Walker avatar={player} from={26} to={130} duration={1.8} emotion="neutral" />
         <Word text="TOC TOC" x={112} y={22} still={false} once delay={2} />
       </>
     )
   // Someone is there: Camille walks up to them, they talk in turn.
   return (
     <>
-      <Walker avatar="player" from={26} to={92} duration={1.2} emotion="neutral" />
+      <Walker avatar={player} from={26} to={92} duration={1.2} emotion="neutral" />
       <Walker avatar={partner} from={142} emotion="neutral" flip />
       <g transform="translate(100 44)">
         <Pop delay={1.3}>
@@ -161,10 +161,10 @@ function Talk({ partner }: { partner?: Avatar }) {
   )
 }
 
-function Broom() {
+function Broom({ player }: { player: Avatar }) {
   return (
     <>
-      <Walker avatar="player" from={70} emotion="angry" />
+      <Walker avatar={player} from={70} emotion="angry" />
       <motion.g
         animate={{ y: [0, -6, 0, -6, 0, -6, 0] }}
         transition={{ duration: 1.8, delay: 0.3 }}
@@ -177,10 +177,10 @@ function Broom() {
   )
 }
 
-function Phone() {
+function Phone({ player }: { player: Avatar }) {
   return (
     <>
-      <Walker avatar="player" from={60} emotion="surprised" talking />
+      <Walker avatar={player} from={60} emotion="surprised" talking />
       <motion.g
         animate={{ x: [-1, 1, -1, 1, 0] }}
         transition={{ duration: 0.4, repeat: 3, repeatDelay: 0.2 }}
@@ -193,10 +193,10 @@ function Phone() {
   )
 }
 
-function Letter() {
+function Letter({ player }: { player: Avatar }) {
   return (
     <>
-      <Walker avatar="player" from={26} to={60} duration={1} emotion="neutral" />
+      <Walker avatar={player} from={26} to={60} duration={1} emotion="neutral" />
       <motion.g
         initial={{ x: 0, y: 0, rotate: 0, opacity: 0 }}
         animate={{ x: [0, 50, 100], y: [0, -16, 10], rotate: [0, 180, 360], opacity: 1 }}
@@ -209,12 +209,12 @@ function Letter() {
   )
 }
 
-function Wait() {
+function Wait({ player }: { player: Avatar }) {
   const cx = 96
   const cy = 26
   return (
     <>
-      <Walker avatar="player" from={60} emotion="tired" />
+      <Walker avatar={player} from={60} emotion="tired" />
       {/* Clock: face, then two hands spinning around its centre. */}
       <rect x={cx - 9} y={cy - 9} width={18} height={18} fill={P.ink} />
       <rect x={cx - 8} y={cy - 8} width={16} height={16} fill={P.white} />
@@ -259,10 +259,10 @@ function Wait() {
   )
 }
 
-function Agree({ partner }: { partner: Avatar }) {
+function Agree({ partner, player }: { partner: Avatar; player: Avatar }) {
   return (
     <>
-      <Walker avatar="player" from={30} to={72} duration={1.2} emotion="happy" />
+      <Walker avatar={player} from={30} to={72} duration={1.2} emotion="happy" />
       <Walker avatar={partner} from={150} to={104} duration={1.2} emotion="happy" flip />
       <g transform="translate(88 40)">
         <Pop delay={1.4}>
@@ -274,14 +274,14 @@ function Agree({ partner }: { partner: Avatar }) {
   )
 }
 
-function Threaten({ partner }: { partner: Avatar }) {
+function Threaten({ partner, player }: { partner: Avatar; player: Avatar }) {
   return (
     <>
       <motion.g
         animate={{ x: [0, -2, 2, -2, 2, 0] }}
         transition={{ duration: 0.5, delay: 0.4, repeat: 2 }}
       >
-        <Walker avatar="player" from={60} emotion="angry" talking />
+        <Walker avatar={player} from={60} emotion="angry" talking />
       </motion.g>
       <Walker avatar={partner} from={140} emotion="surprised" flip />
       <Word text="!!" x={74} y={44} size={3} still={false} once delay={0.4} color={P.marianneRed} />
@@ -290,10 +290,10 @@ function Threaten({ partner }: { partner: Avatar }) {
   )
 }
 
-function Court() {
+function Court({ player }: { player: Avatar }) {
   return (
     <>
-      <Walker avatar="player" from={30} emotion="neutral" />
+      <Walker avatar={player} from={30} emotion="neutral" />
       {/* Sound block, then the gavel striking it three times. */}
       <rect x={92} y={62} width={22} height={6} fill={P.ink} />
       <rect x={93} y={63} width={20} height={4} fill={P.p1} />
@@ -313,10 +313,10 @@ function Court() {
   )
 }
 
-function Appointment() {
+function Appointment({ player }: { player: Avatar }) {
   return (
     <>
-      <Walker avatar="player" from={30} emotion="happy" />
+      <Walker avatar={player} from={30} emotion="happy" />
       <g transform="translate(84 18) scale(3)">
         <Pop delay={0.3}>
           <PixelSprite sprite={CALENDAR} />
@@ -332,7 +332,7 @@ function Appointment() {
   )
 }
 
-function Move() {
+function Move({ player }: { player: Avatar }) {
   return (
     <>
       <PixelSprite sprite={BOX} x={150} y={88} />
@@ -343,7 +343,7 @@ function Move() {
         animate={{ x: 190 }}
         transition={{ duration: 2.6, delay: 0.3, ease: 'easeIn' }}
       >
-        <Walker avatar="player" from={26} emotion="sad" />
+        <Walker avatar={player} from={26} emotion="sad" />
         <PixelSprite sprite={BOX} x={30} y={78} />
       </motion.g>
       <Word text="AU REVOIR" x={60} y={18} still={false} once delay={1.6} color={P.white} />
@@ -352,18 +352,27 @@ function Move() {
 }
 
 /** Animation of an action; `partner` is the other character of the scene, if any. */
-export function ActionArt({ action, partner }: { action: Action; partner?: Avatar }) {
+export function ActionArt({
+  action,
+  partner,
+  player = 'player',
+}: {
+  action: Action
+  partner?: Avatar
+  /** Look of the character played by the user. */
+  player?: Avatar
+}) {
   const art: Record<Action, React.ReactNode> = {
-    talk: <Talk partner={partner} />,
-    broom: <Broom />,
-    phone: <Phone />,
-    letter: <Letter />,
-    wait: <Wait />,
-    agree: <Agree partner={partner ?? 'neighbor'} />,
-    threaten: <Threaten partner={partner ?? 'neighbor'} />,
-    court: <Court />,
-    appointment: <Appointment />,
-    move: <Move />,
+    talk: <Talk partner={partner} player={player} />,
+    broom: <Broom player={player} />,
+    phone: <Phone player={player} />,
+    letter: <Letter player={player} />,
+    wait: <Wait player={player} />,
+    agree: <Agree partner={partner ?? 'neighbor'} player={player} />,
+    threaten: <Threaten partner={partner ?? 'neighbor'} player={player} />,
+    court: <Court player={player} />,
+    appointment: <Appointment player={player} />,
+    move: <Move player={player} />,
   }
   return <g data-action={action}>{art[action]}</g>
 }

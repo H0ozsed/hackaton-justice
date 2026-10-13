@@ -28,6 +28,9 @@
 
 ### `/`mise-en-situation
 
+* Liste des mises en situation par niveau (nuit #80) : niveau 1 découvrir, 2 approfondir, 3 maîtriser ; chaque carte donne le point de vue (vous subissez le trouble / on vous reproche le trouble / vous êtes le médiateur), un résumé sans spoiler, une vignette en pixel art et le meilleur score gardé sur l'appareil (localStorage)
+  * Le voisin du dessus (niveau 1, vous subissez) ; Le batteur du dessus (niveau 1, on vous reproche le bruit) ; Le colis fantôme (niveau 2, litige de consommation, médiateur de la consommation) ; La médiation du dépôt de garantie (niveau 3, vous êtes le médiateur : cadre, reformulation, besoins, accord écrit)
+* Chaque mise en situation a sa page : `/mise-en-situation/[slug]`
 * Pokemon like
   * Autonomie pendant la demo
     * Intro (personnages) → scènes : dialogues en texte progressif (passable, instantané si `prefers-reduced-motion`) → choix → scène suivante → fin

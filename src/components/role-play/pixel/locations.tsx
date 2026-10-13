@@ -435,6 +435,123 @@ function NewHome({ period }: { period: Period }) {
   )
 }
 
+function MusicRoom({ period }: { period: Period }) {
+  return (
+    <Rects
+      rects={[
+        ...room({ wall: P.g2, wallShade: P.g1, floor: P.p1, floorLine: P.p0 }),
+        ...windowFrame(16, 16, 24, 26, period),
+        // Band poster and a guitar on the wall.
+        [52, 14, 20, 26, P.ink],
+        [53, 15, 18, 24, P.marianneRed],
+        [56, 19, 12, 2, P.l1],
+        [58, 24, 8, 10, P.ink],
+        [84, 18, 2, 28, P.p0],
+        [80, 44, 10, 10, P.ink],
+        [81, 45, 8, 8, P.m1],
+        [84, 47, 2, 2, P.ink],
+        // Amplifier.
+        [96, 58, 18, 20, P.ink],
+        [97, 59, 16, 18, P.q1],
+        [99, 61, 12, 12, P.q2],
+        [103, 65, 4, 4, P.ink],
+        // Drum kit: cymbals, toms, snare, bass drum with its pedal.
+        [126, 34, 16, 2, P.l1],
+        [133, 36, 2, 42, P.ink],
+        [164, 30, 16, 2, P.l1],
+        [171, 32, 2, 46, P.ink],
+        [138, 46, 12, 7, P.ink],
+        [139, 47, 10, 5, P.marianneRed],
+        [154, 46, 12, 7, P.ink],
+        [155, 47, 10, 5, P.marianneRed],
+        [128, 56, 12, 6, P.ink],
+        [129, 57, 10, 4, P.q4],
+        [140, 54, 26, 24, P.ink],
+        [141, 55, 24, 23, P.marianneRed],
+        [144, 58, 18, 17, P.white],
+        [150, 64, 6, 5, P.ink],
+        // Rug under the kit.
+        [118, 80, 66, 8, P.ink],
+        [119, 81, 64, 6, P.a1],
+      ]}
+    />
+  )
+}
+
+function Shop({ period }: { period: Period }) {
+  return (
+    <Rects
+      rects={[
+        ...room({ wall: P.f3, wallShade: P.f2, floor: P.q4, floorLine: P.q3, tiles: true }),
+        // Shop window on the street.
+        ...windowFrame(12, 14, 40, 34, period),
+        // Shelves with boxes of products.
+        [124, 12, 60, 50, P.ink],
+        [125, 13, 58, 48, P.q3],
+        ...[0, 1, 2].flatMap((row) =>
+          [P.e1, P.m1, P.f1, P.l1, P.h1, P.e0, P.franceBlue].map((color, i): Rect => [
+            127 + i * 8,
+            16 + row * 16,
+            7,
+            12,
+            color,
+          ]),
+        ),
+        [125, 28, 58, 2, P.q2],
+        [125, 44, 58, 2, P.q2],
+        // Customer service counter, its screen and a sign.
+        [62, 20, 48, 10, P.ink],
+        [63, 21, 46, 8, P.franceBlue],
+        [66, 24, 40, 2, P.white],
+        [58, 56, 60, 22, P.ink],
+        [59, 57, 58, 21, P.r1],
+        [59, 57, 58, 3, P.p0],
+        [80, 46, 14, 10, P.ink],
+        [81, 47, 12, 8, P.f2],
+        [86, 56, 2, 1, P.ink],
+        // Parcel on the counter.
+        [100, 48, 12, 8, P.ink],
+        [101, 49, 10, 7, P.l1],
+        [105, 49, 2, 7, P.a2],
+      ]}
+    />
+  )
+}
+
+function Office({ period }: { period: Period }) {
+  return (
+    <Rects
+      rects={[
+        ...room({ wall: P.e2, wallShade: P.e1, floor: P.a2, floorLine: P.a1 }),
+        ...windowFrame(150, 14, 30, 30, period),
+        // Whiteboard with a few notes.
+        [20, 14, 52, 32, P.ink],
+        [21, 15, 50, 30, P.white],
+        [25, 20, 30, 1, P.franceBlue],
+        [25, 25, 22, 1, P.franceBlue],
+        [25, 30, 34, 1, P.marianneRed],
+        [25, 35, 18, 1, P.franceBlue],
+        [21, 46, 50, 2, P.q2],
+        // Round table, seen from the side, with a jug and cups.
+        [70, 60, 56, 4, P.ink],
+        [71, 61, 54, 2, P.p1],
+        [96, 64, 4, 14, P.ink],
+        [88, 76, 20, 2, P.ink],
+        [92, 52, 6, 8, P.ink],
+        [93, 53, 4, 6, P.f2],
+        [80, 56, 4, 4, P.white],
+        [112, 56, 4, 4, P.white],
+        // Plant.
+        [132, 64, 12, 14, P.ink],
+        [133, 65, 10, 13, P.r1],
+        [134, 48, 8, 16, P.e0],
+        [130, 52, 6, 8, P.e1],
+        [140, 50, 6, 9, P.e1],
+      ]}
+    />
+  )
+}
+
 /** Neutral room when a scene has no location. */
 function Neutral({ period }: { period: Period }) {
   return (
@@ -455,6 +572,9 @@ const PLACES: Record<Location, (props: { period: Period }) => React.ReactNode> =
   'town-hall': TownHall,
   courthouse: Courthouse,
   'new-home': NewHome,
+  'music-room': MusicRoom,
+  shop: Shop,
+  office: Office,
 }
 
 /** Colour laid over the whole place for the time of day (day: none). */

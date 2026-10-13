@@ -109,3 +109,18 @@ describe('scenarioSchema', () => {
     ).toContain('malformed glossary markup, expected [[slug]] or [[slug|text]]')
   })
 })
+
+describe('scenario player and levels', () => {
+  it('rejects a player that is not a character', () => {
+    const result = scenarioSchema.safeParse({
+      slug: 's',
+      title: 'T',
+      intro: 'I.',
+      playerId: 'personne',
+      characters: [{ id: 'moi', name: 'Moi', role: 'Vous', avatar: 'player' }],
+      startSceneId: 'fin',
+      scenes: [{ id: 'fin', lines: [{ text: 'Fin.' }], ending: { title: 'Fin' } }],
+    })
+    expect(result.success).toBe(false)
+  })
+})
