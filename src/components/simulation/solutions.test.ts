@@ -1,9 +1,16 @@
 import { describe, expect, it } from 'vitest'
 
+import { routes } from '@/shared/amicable'
 import { channels as content, conflictTypes, type Channel } from '@/shared/simulation'
 
 import { CONFLICT_TYPE_STEP_ID } from './conflict-type'
-import { channelsFor, groupByFamily, mandatoryAttemptNotice, solutionsFor } from './solutions'
+import {
+  channelsFor,
+  comparedRoutes,
+  groupByFamily,
+  mandatoryAttemptNotice,
+  solutionsFor,
+} from './solutions'
 
 const channel = (slug: string, attributes: Partial<Channel>): Channel => ({
   slug,
@@ -129,6 +136,30 @@ describe('the real content', () => {
     for (const channel of content.all) {
       expect(channel.forYouIf, channel.slug).not.toBe('')
       if (channel.slug !== 'discussion-directe') expect(channel.law, channel.slug).toBeDefined()
+    }
+  })
+})
+
+describe('comparedRoutes (#109)', () => {
+  it('compares the main amicable way of the conflict with the judge', () => {
+    expect(comparedRoutes('voisinage')).toEqual(['conciliation', 'juge'])
+    expect(comparedRoutes('consommation')).toEqual(['mediation-consommation', 'juge'])
+    expect(comparedRoutes('famille')).toEqual(['mediation', 'juge'])
+  })
+
+  it('always compares conciliation or mediation, never talking alone, with the judge', () => {
+    expect(comparedRoutes('travail')).toEqual(['mediation', 'juge'])
+    expect(comparedRoutes(undefined)).toEqual(['conciliation', 'juge'])
+    for (const type of conflictTypes.all) {
+      expect(['conciliation', 'mediation', 'mediation-consommation']).toContain(
+        comparedRoutes(type.slug)[0],
+      )
+    }
+  })
+
+  it('only names routes of the comparison content, for every conflict type', () => {
+    for (const type of [...conflictTypes.all.map((t) => t.slug), undefined]) {
+      for (const slug of comparedRoutes(type)) expect(routes.has(slug)).toBe(true)
     }
   })
 })

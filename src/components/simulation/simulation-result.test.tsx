@@ -229,6 +229,18 @@ describe('simulation result screen', () => {
     })
   })
 
+  it('compares the amicable route with going to court: cost, time, who decides (#109)', () => {
+    renderResult(answers())
+    const compare = screen.getByRole('region', { name: 'Amiable ou procès : ce qui change' })
+    expect(
+      within(compare).getByRole('table', { name: 'La voie amiable et le procès comparés' }),
+    ).toBeInTheDocument()
+    expect(within(compare).getAllByText('Saisir le juge').length).toBeGreaterThan(0)
+    expect(
+      within(compare).getByRole('link', { name: /Comparer toutes les démarches/ }),
+    ).toHaveAttribute('href', '/demarches#comparer')
+  })
+
   describe('accessibility', () => {
     it('has one h2, then h3 sections, h4 families and h5 third parties', () => {
       renderResult(answers())
@@ -236,11 +248,12 @@ describe('simulation result screen', () => {
       expect(screen.getAllByRole('heading', { level: 2 })).toHaveLength(1)
       expect(screen.getAllByRole('heading', { level: 3 }).map((h) => h.textContent)).toEqual([
         'Vers un accord à l’amiable',
+        'Amiable ou procès : ce qui change',
         'Besoin d’en parler avant de choisir ?',
         'Vos réponses',
       ])
-      expect(screen.getAllByRole('heading', { level: 4 })).toHaveLength(2)
-      expect(screen.getAllByRole('heading', { level: 5 })).toHaveLength(2)
+      expect(within(amicable()).getAllByRole('heading', { level: 4 })).toHaveLength(2)
+      expect(within(amicable()).getAllByRole('heading', { level: 5 })).toHaveLength(2)
     })
 
     it('has no automatic WCAG A/AA violation, with solutions and with none', async () => {

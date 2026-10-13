@@ -36,6 +36,7 @@
     * Tentative amiable obligatoire (art. 750-1 CPC) quand elle s'applique ; une simple discussion ne suffit pas
     * « Vers un accord à l'amiable » : une partie Conciliation puis une partie Médiation, chacune avec une phrase d'explication, puis chaque tiers adapté au conflit (par exemple conciliateur de justice et commission départementale de conciliation pour le logement, médiateur familial pour la famille, conciliation aux prud'hommes et médiateur civil pour le travail), tout affiché : d'abord **ce que dit la loi** (statut, conditions, diplôme, textes cités), puis litiges traités et exclus, comment y accéder, coût, valeur de l'accord, contact et sources officielles
     * Lien vers tous les conciliateurs et médiateurs (et les autres recours) sur `/apprendre`
+  * « Amiable ou procès : ce qui change » (#109) : la voie amiable principale du conflit (conciliation, médiation ou médiation de la consommation) comparée au juge (coût, durée, qui décide, ce que vaut l'issue), mêmes données que la comparaison de `/demarches`, lien vers la comparaison complète
   * Encadré « Besoin d'en parler avant de choisir ? » : points-justice et CDAD, information gratuite (#94)
 
 ### `/`mise-en-situation
