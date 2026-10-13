@@ -15,6 +15,7 @@ read on the site).
 | Conflict types (simulation)                | `simulation/data.ts` → `conflictTypesData` |
 | Orientation channels (simulation result)   | `simulation/data.ts` → `channelsData`      |
 | Quizzes                                    | `quiz/data.ts`                             |
+| Amicable guides (`/demarches`)             | `amicable/data.ts`                         |
 | Role-play scenarios (`/mise-en-situation`) | `role-play/data.ts`                        |
 
 The current entries are **examples** (prefixed `EXEMPLE`) to be replaced.

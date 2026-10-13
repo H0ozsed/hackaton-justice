@@ -16,6 +16,7 @@ export const MAIN_NAV: NavItem[] = [
   { href: '/simulation', label: 'Simulation' },
   { href: '/mise-en-situation', label: 'Mise en situation' },
   { href: '/apprendre', label: 'Apprendre' },
+  { href: '/demarches', label: 'Démarches' },
 ]
 
 export type Journey = NavItem & {

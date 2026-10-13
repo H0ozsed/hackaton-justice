@@ -160,6 +160,19 @@
   }
 }
 
+/* Printing one part of a page only (e.g. the amicable letter of /demarches): the page sets
+   data-print on <body> before window.print(), and marks the part with data-print-area.
+   Everything else is removed from the printed page (so no blank pages follow). */
+@media print {
+  body[data-print] *:not(:has([data-print-area])):not([data-print-area]):not([data-print-area] *) {
+    display: none;
+  }
+  body[data-print] [data-print-area] {
+    border: 0;
+    box-shadow: none;
+  }
+}
+
 /* IRIS launcher ring (#133): grows and fades; run 3 times then stops (RGAA 13.8). */
 @keyframes iris-ring {
   from {

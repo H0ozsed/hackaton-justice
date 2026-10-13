@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
+import { guides, keyFigures, routes } from '@/shared/amicable'
 import { faq } from '@/shared/faq'
 import { glossary } from '@/shared/glossary'
 import { explainer } from '@/shared/home'
@@ -23,7 +24,10 @@ describe('buildChunks', () => {
         written(glossary.all.map((t) => t.definition)) +
         written(conflictTypes.all.map((t) => t.description)) +
         written(channels.all.map((c) => c.description)) +
-        written(quizzes.all.flatMap((q) => q.questions.map((x) => x.explanation))),
+        written(quizzes.all.flatMap((q) => q.questions.map((x) => x.explanation))) +
+        guides.all.length +
+        routes.all.length +
+        keyFigures.all.length,
     )
   })
 
@@ -72,5 +76,12 @@ describe('buildChunks', () => {
     const chunk = chunks.find((c) => c.id === `faq:${entry.slug}`)
     expect(chunk?.text).toContain(entry.question)
     expect(chunk?.text).toContain(entry.answer)
+  })
+
+  it('indexes the step-by-step guides of /demarches with every step', () => {
+    const guide = guides.all[0]!
+    const chunk = chunks.find((c) => c.id === `guide:${guide.slug}`)
+    expect(chunk?.url).toBe('/demarches#pas-a-pas')
+    for (const step of guide.steps) expect(chunk?.text).toContain(step.text)
   })
 })

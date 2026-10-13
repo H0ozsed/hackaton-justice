@@ -1,3 +1,4 @@
+import { guides, keyFigures, routes } from '@/shared/amicable'
 import { faq } from '@/shared/faq'
 import { glossary } from '@/shared/glossary'
 import { about, explainer, explainerText, journeyFor, orientation } from '@/shared/home'
@@ -9,7 +10,16 @@ import { channels, conflictTypes } from '@/shared/simulation'
 // is indexed, so IRIS can only rephrase what the site already says.
 
 export type ChunkDomain =
-  'home' | 'faq' | 'practical-info' | 'glossary' | 'conflict-type' | 'channel' | 'quiz'
+  | 'home'
+  | 'faq'
+  | 'practical-info'
+  | 'glossary'
+  | 'conflict-type'
+  | 'channel'
+  | 'quiz'
+  | 'guide'
+  | 'route'
+  | 'key-figure'
 
 export type Chunk = {
   /** Stable id: `<domain>:<slug>`. */
@@ -171,5 +181,42 @@ export function buildChunks(): Chunk[] {
           }
         }),
     ),
+    // Practical guides of /demarches.
+    ...guides.all.map((guide): Chunk => ({
+      id: `guide:${guide.slug}`,
+      domain: 'guide',
+      title: guide.title,
+      text: lines(
+        `Démarche : ${guide.title}`,
+        `Quand : ${guide.when}`,
+        ...guide.steps.map((step, i) => `Étape ${i + 1}, ${step.title} : ${step.text}`),
+        ...guide.good.map((tip) => `Bon à savoir : ${tip}`),
+      ),
+      url: '/demarches#pas-a-pas',
+    })),
+    ...routes.all.map((route): Chunk => ({
+      id: `route:${route.slug}`,
+      domain: 'route',
+      title: route.name,
+      text: lines(
+        `Solution : ${route.name} (${route.amicable ? 'voie amiable' : 'voie judiciaire'})`,
+        `Qui vous aide : ${route.helper}`,
+        `Coût : ${route.cost}`,
+        `Qui décide : ${route.decides}`,
+        `Durée : ${route.duration}`,
+        `Ce que vaut l’issue : ${route.outcome}`,
+      ),
+      url: '/demarches#comparer',
+    })),
+    ...keyFigures.all.map((figure): Chunk => ({
+      id: `key-figure:${figure.slug}`,
+      domain: 'key-figure',
+      title: figure.source.label,
+      text: lines(
+        `Chiffre clé : ${figure.value} ${figure.label}`,
+        `Source : ${figure.source.label}`,
+      ),
+      url: '/demarches#chiffres',
+    })),
   ]
 }
