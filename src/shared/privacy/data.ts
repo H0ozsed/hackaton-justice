@@ -88,4 +88,11 @@ export const browserStorageData: BrowserStorageInput[] = [
     purpose: 'Se souvenir si vous avez activé ou coupé le son de la mise en situation.',
     retention: 'Jusqu’à ce que vous l’effaciez (bouton ci-dessous ou réglages du navigateur).',
   },
+  {
+    slug: 'theme-affichage',
+    key: 'theme',
+    storage: 'localStorage',
+    purpose: 'Se souvenir du thème d’affichage choisi (clair ou sombre).',
+    retention: 'Jusqu’à ce que vous l’effaciez (bouton ci-dessous ou réglages du navigateur).',
+  },
 ]
