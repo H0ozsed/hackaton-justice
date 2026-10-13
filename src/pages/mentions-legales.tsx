@@ -55,12 +55,38 @@ export default function LegalNoticePage() {
         <p>
           Les informations du site sont générales et données à titre indicatif. Elles ne remplacent
           pas un conseil juridique personnalisé : le site n’est ni un avocat, ni un service officiel
-          de la justice, et ne prend aucune décision à votre place. Les réponses de l’assistante
-          IRIS sont générées automatiquement et peuvent contenir des erreurs.
+          de la justice, et ne prend aucune décision à votre place.
         </p>
         <p>
           Pour une démarche officielle, consultez <a href="https://www.justice.fr">justice.fr</a> ou{' '}
           <a href="https://www.service-public.fr">service-public.fr</a>.
+        </p>
+      </section>
+
+      <section aria-labelledby="iris">
+        <h2 id="iris">L’assistante IRIS</h2>
+        <ul>
+          <li>
+            <strong>Elle ne conserve rien</strong> : vos questions sont traitées le temps de la
+            réponse, puis oubliées. Elles ne sont ni enregistrées, ni transmises, ni utilisées pour
+            entraîner un modèle.
+          </li>
+          <li>
+            <strong>Elle répond uniquement à partir du contenu de ce site</strong> (lexique, foire
+            aux questions, informations pratiques, guides) et cite ses sources. Elle ne consulte
+            aucun autre site et ne reprend aucune information venant d’ailleurs. Si le site ne
+            contient pas la réponse, elle vous le dit au lieu d’en inventer une.
+          </li>
+          <li>
+            <strong>Elle n’a aucune connexion extérieure</strong> : le modèle de langage est
+            installé sur le serveur du site. Votre question va de votre navigateur à ce serveur, et
+            nulle part ailleurs : aucun service d’intelligence artificielle extérieur, aucun autre
+            site.
+          </li>
+        </ul>
+        <p>
+          Ses réponses sont rédigées automatiquement : une formulation peut être imprécise.
+          Vérifiez-les grâce aux sources citées, et ne les prenez pas pour un conseil juridique.
         </p>
       </section>
 
