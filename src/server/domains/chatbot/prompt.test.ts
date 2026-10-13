@@ -8,23 +8,39 @@ const result = (title: string, text: string) => ({
 })
 
 describe('SYSTEM_PROMPT', () => {
-  it('limits the model to rephrasing the retrieved extracts', () => {
-    expect(SYSTEM_PROMPT).toMatch(/Tu es IRIS \(Informer, Renseigner, Indiquer les Solutions\)/)
-    expect(SYSTEM_PROMPT).toMatch(/Ta seule tâche\nReformuler en français simple les extraits/)
+  it('gives IRIS its identity and a personality', () => {
+    expect(SYSTEM_PROMPT).toMatch(
+      /Tu es \*\*IRIS\*\* — Informer, Renseigner, Indiquer les Solutions/,
+    )
+    expect(SYSTEM_PROMPT).toMatch(/# Ta personnalité\n- Calme, bienveillant et rassurant/)
+    expect(SYSTEM_PROMPT).toMatch(/Neutre : tu ne juges jamais/)
+    expect(SYSTEM_PROMPT).toMatch(/Tu vouvoies toujours, en français/)
+  })
+
+  it('makes IRIS a guide: it orients, never advises, never decides', () => {
+    expect(SYSTEM_PROMPT).toMatch(/Tu es un guide, pas un conseiller/)
+    expect(SYSTEM_PROMPT).toMatch(/donner un conseil personnel ou un avis juridique/)
+    expect(SYSTEM_PROMPT).toMatch(/prendre une décision à la place de la personne/)
+    expect(SYSTEM_PROMPT).toMatch(/tu ne garantis aucun résultat/)
+    expect(SYSTEM_PROMPT).toMatch(/« vous devez »/)
+    expect(SYSTEM_PROMPT).toMatch(/# Si on te demande un conseil ou une décision/)
+  })
+
+  it('limits the model to the retrieved extracts', () => {
     expect(SYSTEM_PROMPT).toMatch(/Utilise uniquement le contenu des extraits/)
     expect(SYSTEM_PROMPT).toContain(`« ${NO_INFORMATION} »`)
   })
 
-  it('keeps IRIS neutral', () => {
-    expect(SYSTEM_PROMPT).toMatch(/ne garantis aucun résultat/)
-    expect(SYSTEM_PROMPT).toMatch(/« vous devez »/)
+  it('asks for a short, structured answer that ends by orienting, without reasoning', () => {
+    expect(SYSTEM_PROMPT).toMatch(/d’abord la réponse en une phrase/)
+    expect(SYSTEM_PROMPT).toMatch(/liste de 2 à 4 points commençant par « - »/)
+    expect(SYSTEM_PROMPT).toMatch(/termine par une phrase d’orientation/)
+    expect(SYSTEM_PROMPT).toMatch(/90 mots au plus/)
+    expect(SYSTEM_PROMPT).toMatch(/pas de raisonnement/)
   })
 
-  it('asks for a short French answer, lightly formatted, without reasoning', () => {
-    expect(SYSTEM_PROMPT).toMatch(/En français/)
-    expect(SYSTEM_PROMPT).toMatch(/80 mots au plus/)
-    expect(SYSTEM_PROMPT).toMatch(/commençant par « - »/)
-    expect(SYSTEM_PROMPT).toMatch(/pas de raisonnement/)
+  it('shows an example where IRIS declines to decide and orients instead', () => {
+    expect(SYSTEM_PROMPT).toMatch(/Je ne peux pas décider à votre place/)
   })
 })
 

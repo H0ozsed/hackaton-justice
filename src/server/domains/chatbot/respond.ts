@@ -131,14 +131,14 @@ export async function* respond(
 ): AsyncGenerator<ChatStreamEvent> {
   const { question, history } = request
 
-  // "Bonjour", "merci", "au revoir": answered directly, no search, no model.
+  // Small talk and questions about IRIS itself: fixed answer, no search, no model.
   const talk = smallTalk(question)
   if (talk) {
     yield {
       type: 'answer',
       text: IRIS_SMALL_TALK[talk],
       sources: [],
-      suggestions: talk === 'greeting' ? starterQuestions() : [],
+      suggestions: talk === 'greeting' || talk === 'about' ? starterQuestions() : [],
     }
     return
   }

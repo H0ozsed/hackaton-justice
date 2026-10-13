@@ -22,10 +22,19 @@ export const IRIS_ERRORS: Record<ChatErrorCode, string> = {
   'rate-limited': 'Vous avez posé beaucoup de questions d’un coup. Patientez une minute.',
 }
 
-/** Answers to small talk ("bonjour", "merci", "au revoir"), given without the model. */
+/**
+ * Answers given without the model: small talk and IRIS presenting itself. They use
+ * the same light formatting as the model's answers (**bold**, "- " lists).
+ */
 export const IRIS_SMALL_TALK = {
   greeting:
-    'Bonjour ! Je suis IRIS. Posez-moi une question sur la conciliation, la médiation ou les démarches amiables : je vous réponds à partir du contenu de ce site.',
+    'Bonjour ! Je suis **IRIS**. Je vous aide à comprendre les solutions amiables (conciliation, médiation…) et je vous oriente vers la bonne démarche ou le bon interlocuteur. Quelle est votre question ?',
   thanks: 'Avec plaisir ! N’hésitez pas si vous avez une autre question.',
   goodbye: 'Au revoir, et bonne continuation dans vos démarches.',
+  about: `Je suis **IRIS** : **I**nformer, **R**enseigner, **I**ndiquer les **S**olutions. Je suis l’assistant de ce site.
+- Je vous explique simplement les solutions amiables : conciliation, médiation, accord entre les personnes.
+- Je vous oriente vers la page du site ou l’interlocuteur adapté à votre situation.
+- Je réponds uniquement à partir du contenu de ce site, et j’indique toujours mes sources.
+
+Je ne suis ni avocat, ni médiateur, ni juge : je ne donne pas de conseil et je ne prends aucune décision à votre place.`,
 } as const
