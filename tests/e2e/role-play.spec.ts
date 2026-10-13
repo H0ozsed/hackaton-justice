@@ -85,3 +85,33 @@ test('with reduced motion, the text is shown at once', async ({ page }) => {
   await expect(page.getByRole('button', { name: /^(Suivant|Continuer)$/ })).toBeVisible()
   await expect(page.getByRole('button', { name: 'Tout afficher' })).toHaveCount(0)
 })
+
+test('the scene is played on a decorative stage, with life gauges in text', async ({ page }) => {
+  await page.goto('/mise-en-situation')
+  await expect(page.getByTestId('building-cutaway')).toHaveAttribute('aria-hidden', 'true')
+  await page.getByRole('button', { name: 'Commencer' }).click()
+
+  const stage = page.getByTestId('stage')
+  await expect(stage).toBeVisible()
+  await expect(stage).toHaveAttribute('aria-hidden', 'true')
+  const gauges = page.getByRole('list', { name: 'Vos jauges' })
+  await expect(gauges.getByRole('listitem')).toHaveCount(4)
+  await expect(gauges).toContainText('10 sur 10')
+
+  // Next scene after a choice: still on stage, the page stays accessible.
+  await readScene(page)
+  await choices(page).last().click()
+  await expect(page.getByRole('heading', { name: /^Scène 2/ })).toBeFocused()
+  await expect(stage).toBeVisible()
+  await expectNoAxeViolation(page)
+})
+
+test('the sound switch is off by default and keeps its name', async ({ page }) => {
+  await page.goto('/mise-en-situation')
+  const sound = page.getByRole('button', { name: 'Son' })
+  await expect(sound).toHaveAttribute('aria-pressed', 'false')
+  await sound.click()
+  await expect(sound).toHaveAttribute('aria-pressed', 'true')
+  await page.reload()
+  await expect(page.getByRole('button', { name: 'Son' })).toHaveAttribute('aria-pressed', 'true')
+})

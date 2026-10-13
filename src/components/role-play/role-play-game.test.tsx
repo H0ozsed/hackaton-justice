@@ -125,6 +125,9 @@ describe('RolePlayGame', () => {
     const user = userEvent.setup()
     render(<RolePlayGame scenario={scenario} />)
 
+    // The sound switch comes first, then the start button.
+    await user.tab()
+    expect(screen.getByRole('button', { name: 'Son' })).toHaveFocus()
     await user.tab()
     expect(screen.getByRole('button', { name: 'Commencer' })).toHaveFocus()
     await user.keyboard('{Enter}')
@@ -189,5 +192,70 @@ describe('RolePlayGame', () => {
     expect(await screen.findByText(/^Première réplique\./)).toBeVisible()
     expect(screen.queryByRole('button', { name: 'Tout afficher' })).toBeNull()
     expect(screen.getByRole('button', { name: 'Suivant' })).toBeInTheDocument()
+  })
+
+  it('draws each scene on a decorative stage with a title card', async () => {
+    const user = userEvent.setup()
+    render(<RolePlayGame scenario={scenario} />)
+    // The intro shows the building, hidden from screen readers.
+    expect(screen.getByTestId('building-cutaway')).toHaveAttribute('aria-hidden', 'true')
+    await user.click(screen.getByRole('button', { name: 'Commencer' }))
+
+    const stage = await screen.findByTestId('stage')
+    expect(stage).toHaveAttribute('aria-hidden', 'true')
+    expect(screen.getByTestId('title-card')).toHaveTextContent('Scène 1Sur le palier')
+    expect(stage.querySelectorAll('[data-character]')).toHaveLength(2)
+    // Narrator first, then M. Martin speaks.
+    expect(stage.querySelector('[data-speaking]')).toBeNull()
+    await user.click(screen.getByRole('button', { name: 'Tout afficher' }))
+    await user.click(screen.getByRole('button', { name: 'Suivant' }))
+    expect(stage.querySelector('[data-speaking]')).toHaveAttribute('data-character', 'voisin')
+  })
+
+  it('shows the life gauges in text and announces what a choice cost', async () => {
+    const user = userEvent.setup()
+    const { container } = render(<RolePlayGame scenario={scenario} />)
+    await user.click(screen.getByRole('button', { name: 'Commencer' }))
+    await screen.findByRole('heading', { name: /Scène 1/ })
+
+    const gauges = () => screen.getByRole('list', { name: 'Vos jauges' })
+    expect(gauges()).toHaveTextContent('Relation10/1010 sur 10')
+    await readScene(user)
+    await user.click(screen.getByRole('button', { name: 'Crier' }))
+    await screen.findByRole('heading', { name: 'Scène 2' })
+
+    expect(gauges()).toHaveTextContent('Relation7/107 sur 10')
+    expect(gauges()).toHaveTextContent('Santé10/1010 sur 10')
+    const [, notice] = container.querySelectorAll('[aria-live="polite"]')
+    expect(notice).toHaveTextContent('Relation moins 3.')
+  })
+
+  it('shows no title card when reduced motion is preferred', async () => {
+    motion.reduce = true
+    const user = userEvent.setup()
+    render(<RolePlayGame scenario={scenario} />)
+    await user.click(screen.getByRole('button', { name: 'Commencer' }))
+
+    expect(await screen.findByTestId('stage')).toBeInTheDocument()
+    expect(screen.queryByTestId('title-card')).toBeNull()
+  })
+
+  it('has a sound switch, off by default, remembered on the device', async () => {
+    window.localStorage.clear()
+    const user = userEvent.setup()
+    const { unmount } = render(<RolePlayGame scenario={scenario} />)
+    const button = screen.getByRole('button', { name: 'Son' })
+    expect(button).toHaveAttribute('aria-pressed', 'false')
+
+    await user.click(button)
+    expect(button).toHaveAttribute('aria-pressed', 'true')
+    // Playing with the sound on works even without Web Audio (silent).
+    await user.click(screen.getByRole('button', { name: 'Commencer' }))
+    await user.click(await screen.findByRole('button', { name: 'Tout afficher' }))
+    unmount()
+
+    render(<RolePlayGame scenario={scenario} />)
+    expect(await screen.findByRole('button', { name: 'Son', pressed: true })).toBeInTheDocument()
+    window.localStorage.clear()
   })
 })

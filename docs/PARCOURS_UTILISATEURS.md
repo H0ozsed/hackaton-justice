@@ -31,6 +31,10 @@
 * Pokemon like
   * Autonomie pendant la demo
     * Intro (personnages) → scènes : dialogues en texte progressif (passable, instantané si `prefers-reduced-motion`) → choix → scène suivante → fin
+    * Mini-jeu en pixel art (#76) : immeuble en coupe à l'intro, chaque scène jouée sur une scène illustrée (chambre, palier, escalier, hall, mairie, tribunal, nouvel appartement) avec l'éclairage du moment (matin, journée, soir, nuit), personnages animés (visage selon l'émotion, bouche qui parle, clignement), effets (batterie, porte, papier, sommeil…), carton de titre de scène
+    * Jauges de vie en haut de la scène : santé, relation (sur 10), argent dépensé, temps perdu ; ce que coûte chaque choix s'affiche et est annoncé aux lecteurs d'écran
+    * Son 8 bits optionnel (bouton « Son », coupé par défaut, mémorisé sur l'appareil)
+    * Tout le décor est décoratif (masqué aux lecteurs d'écran) : l'information est dans le titre, les répliques et les jauges en texte ; animations coupées avec `prefers-reduced-motion`
     * Jouable entièrement au clavier, focus déplacé sur chaque nouvelle scène, répliques annoncées aux lecteurs d'écran
     * Tout reste dans le navigateur : aucun choix envoyé ni stocké
   * Bilan (%age, correction, pertes, ...)

@@ -16,12 +16,15 @@ export function DialogueBox({
   text,
   revealed,
   onRevealed,
+  onLetter,
 }: {
   /** Name of the speaker, or undefined for the narrator. */
   speaker?: string
   text: string
   revealed: boolean
   onRevealed: () => void
+  /** Called with each letter as it is typed (text sounds). */
+  onLetter?: (letter: string, index: number) => void
 }) {
   const plain = toPlainText(text)
   const [letters, setLetters] = useState(0)
@@ -32,9 +35,12 @@ export function DialogueBox({
       onRevealed()
       return
     }
-    const timer = setTimeout(() => setLetters((n) => n + 1), LETTER_MS)
+    const timer = setTimeout(() => {
+      onLetter?.(plain[letters]!, letters)
+      setLetters((n) => n + 1)
+    }, LETTER_MS)
     return () => clearTimeout(timer)
-  }, [letters, plain.length, revealed, onRevealed])
+  }, [letters, plain, revealed, onRevealed, onLetter])
 
   return (
     <div className="min-h-32 rounded-lg border-4 border-double border-foreground bg-background p-4 shadow-[4px_4px_0_0_var(--color-foreground)]">

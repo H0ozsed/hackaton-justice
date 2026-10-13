@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
-import type { Scenario, Scene } from '@/shared/role-play'
+import type { Gauges, Scenario, Scene } from '@/shared/role-play'
 
-import { CharacterPortrait } from './character-portrait'
 import { ChoiceList } from './choice-list'
 import { DialogueBox } from './dialogue-box'
+import { LifeGauges } from './pixel/life-gauges'
+import type { Sound } from './pixel/sound'
+import { Stage } from './pixel/stage'
 import { toPlainText } from './rich-text'
 
 /**
@@ -17,7 +19,10 @@ export function SceneView({
   scenario,
   scene,
   sceneNumber,
+  gauges,
+  previousGauges,
   reduceMotion,
+  sound,
   announce,
   onChoose,
   renderEnding,
@@ -25,7 +30,12 @@ export function SceneView({
   scenario: Scenario
   scene: Scene
   sceneNumber: number
+  /** Life gauges of the player, shown in the HUD of the stage. */
+  gauges: Gauges
+  /** Gauges before the last choice (to show what it cost). */
+  previousGauges?: Gauges
   reduceMotion: boolean
+  sound: Sound
   /** Sends a text to the live region of the game (read by screen readers). */
   announce: (text: string) => void
   onChoose: (choiceId: string) => void
@@ -43,6 +53,19 @@ export function SceneView({
   const onRevealed = useCallback(() => setRevealed(true), [])
 
   useEffect(() => heading.current?.focus(), [])
+
+  // Sounds (when switched on): the effect of each line, and a blip per letter typed.
+  const { effect: playEffect, blip } = sound
+  useEffect(() => {
+    if (line.effect) playEffect(line.effect)
+  }, [line, playEffect])
+  const voice = speaker?.avatar ?? 'narrator'
+  const onLetter = useCallback(
+    (letter: string, index: number) => {
+      if (index % 2 === 0 && letter.trim()) blip(voice)
+    },
+    [blip, voice],
+  )
 
   useEffect(() => {
     announce(`${speaker?.name ?? 'Narrateur'} : ${toPlainText(line.text)}`)
@@ -64,7 +87,7 @@ export function SceneView({
   }
 
   return (
-    <section aria-labelledby="scene-heading" className="flex flex-col gap-4">
+    <section aria-labelledby="scene-heading" className="flex max-w-3xl flex-col gap-4">
       <h2
         id="scene-heading"
         ref={heading}
@@ -75,13 +98,21 @@ export function SceneView({
         {scene.setting && <span className="font-normal"> — {scene.setting}</span>}
       </h2>
 
-      {cast.length > 0 && (
-        <div className="flex justify-around rounded-lg bg-secondary px-4 py-6">
-          {cast.map((c) => (
-            <CharacterPortrait key={c.id} character={c} speaking={c.id === line.speaker} />
-          ))}
-        </div>
-      )}
+      <div className="overflow-hidden rounded-lg border-4 border-[#1e1f33] shadow-[4px_4px_0_0_var(--color-foreground)]">
+        <LifeGauges gauges={gauges} previous={previousGauges} reduceMotion={reduceMotion} />
+        <Stage
+          cast={cast}
+          speakerId={line.speaker}
+          emotion={line.emotion}
+          talking={!revealed}
+          effect={line.effect}
+          effectKey={lineIndex}
+          location={scene.location}
+          period={scene.period}
+          reduceMotion={reduceMotion}
+          titleCard={{ label: `Scène ${sceneNumber}`, setting: scene.setting }}
+        />
+      </div>
 
       <DialogueBox
         key={lineIndex}
@@ -89,6 +120,7 @@ export function SceneView({
         text={line.text}
         revealed={revealed}
         onRevealed={onRevealed}
+        onLetter={onLetter}
       />
 
       {!showOutcome && (
