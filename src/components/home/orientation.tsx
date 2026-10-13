@@ -24,26 +24,27 @@ export function Orientation({
       <p className="mt-2 text-muted-foreground">
         Choisissez la phrase qui vous correspond : nous vous indiquons le parcours adapté.
       </p>
-      <ul className="mt-6 flex flex-col gap-4">
+      {/* Three blocks side by side from md, stacked on narrow screens (no horizontal scroll). */}
+      <ul className="mt-6 grid gap-4 md:grid-cols-3">
         {options.map(({ slug, situation, journey: path }) => {
           const journey = journeyFor(path)
           return (
-            <li key={slug}>
+            <li key={slug} className="flex">
               <Link
                 href={path}
-                className="group flex items-center gap-4 rounded-lg border-2 border-border bg-card p-5 transition-colors hover:border-france-blue focus-visible:border-france-blue"
+                className="group flex w-full flex-col gap-3 rounded-lg border-2 border-border bg-card p-5 transition-colors hover:border-france-blue focus-visible:border-france-blue"
               >
                 <journey.icon aria-hidden className="size-8 shrink-0 text-france-blue" />
-                <span className="flex flex-col gap-1">
-                  <span className="text-lg font-bold">{situation}</span>
-                  <span className="text-muted-foreground">
-                    Parcours {journey.label} : {journey.description}
-                  </span>
-                  <span className="font-medium text-france-blue underline underline-offset-4 group-hover:decoration-2">
+                <span className="text-lg font-bold">{situation}</span>
+                <span className="text-muted-foreground">
+                  Parcours {journey.label} : {journey.description}
+                </span>
+                <span className="mt-auto flex items-center gap-2 font-medium text-france-blue">
+                  <span className="underline underline-offset-4 group-hover:decoration-2">
                     {journey.cta}
                   </span>
+                  <ArrowRightIcon aria-hidden className="size-5 shrink-0" />
                 </span>
-                <ArrowRightIcon aria-hidden className="ml-auto size-5 shrink-0 text-france-blue" />
               </Link>
             </li>
           )
