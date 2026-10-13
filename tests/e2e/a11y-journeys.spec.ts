@@ -118,7 +118,9 @@ test('role-play: a full game until the results', async ({ page }) => {
 
 test('learn: quiz error, feedback, definition and score', async ({ page }) => {
   await page.goto('/apprendre')
-  const validate = page.getByRole('button', { name: 'Valider' })
+  // The first quiz (there can be several on the page).
+  const quiz = page.getByRole('region', { name: 'Questionnaires' }).getByRole('region').first()
+  const validate = quiz.getByRole('button', { name: 'Valider' })
   test.skip((await validate.count()) === 0, 'no quiz on /apprendre')
 
   await validate.click()
@@ -126,7 +128,9 @@ test('learn: quiz error, feedback, definition and score', async ({ page }) => {
 
   for (let i = 0; i < 20; i++) {
     if (await validate.count()) {
-      const form = page.locator('form').filter({ has: validate })
+      const form = quiz
+        .locator('form')
+        .filter({ has: page.getByRole('button', { name: 'Valider' }) })
       await form.locator('[role="radio"], [role="checkbox"]').first().click()
       await validate.click()
       await expectNoViolations(page, `quiz feedback ${i + 1}`)
@@ -137,11 +141,11 @@ test('learn: quiz error, feedback, definition and score', async ({ page }) => {
         await page.keyboard.press('Escape')
       }
     }
-    const next = page.getByRole('button', { name: /^(Question suivante|Voir mon score)$/ })
+    const next = quiz.getByRole('button', { name: /^(Question suivante|Voir mon score)$/ })
     if (!(await next.count())) break
     await next.click()
   }
-  await expect(page.getByRole('heading', { name: /^Votre score/ })).toBeVisible()
+  await expect(quiz.getByRole('heading', { name: /^Votre score/ })).toBeVisible()
   await expectNoViolations(page, 'quiz score')
 })
 
