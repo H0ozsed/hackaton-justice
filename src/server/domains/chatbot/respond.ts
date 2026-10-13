@@ -1,4 +1,11 @@
-import { IRIS, type ChatRequest, type ChatSource, type ChatStreamEvent } from '@/shared/chatbot'
+import {
+  IRIS,
+  IRIS_SMALL_TALK,
+  starterQuestions,
+  type ChatRequest,
+  type ChatSource,
+  type ChatStreamEvent,
+} from '@/shared/chatbot'
 import { normalizeForSearch } from '@/shared/glossary'
 
 import {
@@ -15,12 +22,14 @@ import {
   embed,
   explainOllamaError,
   isInsideThinking,
+  looksLikeReasoning,
   ollamaConfig,
   OllamaUnavailableError,
   type ChatMessage,
   type ChatPart,
   type OllamaConfig,
 } from './ollama'
+import { smallTalk } from './conversation'
 import { buildMessages, searchQueries } from './prompt'
 
 // One question → status events while IRIS works, then ONE final event:
@@ -121,6 +130,25 @@ export async function* respond(
   deps: RespondDeps = defaultDeps(),
 ): AsyncGenerator<ChatStreamEvent> {
   const { question, history } = request
+
+  // "Bonjour", "merci", "au revoir": answered directly, no search, no model.
+  const talk = smallTalk(question)
+  if (talk) {
+    yield {
+      type: 'answer',
+      text: IRIS_SMALL_TALK[talk],
+      sources: [],
+      suggestions: talk === 'greeting' ? starterQuestions() : [],
+    }
+    return
+  }
+
+  const noAnswer = (suggestions: string[]): FinalEvent => ({
+    type: 'no-answer',
+    text: IRIS.noAnswer,
+    suggestions,
+  })
+
   try {
     yield { type: 'status', step: 'search' }
     const index = await deps.getIndex(deps.config)
@@ -143,14 +171,19 @@ export async function* respond(
 
     let final: FinalEvent
     if (extracts.length === 0) {
-      final = { type: 'no-answer', text: IRIS.noAnswer, suggestions }
+      final = noAnswer(suggestions)
     } else {
       yield { type: 'status', step: 'read', count: extracts.length }
       const messages = buildMessages(question, history, extracts, { model: deps.config.chatModel })
 
       let raw = ''
+      let truncated = false
       let step: 'think' | 'write' | undefined
       for await (const part of deps.chat(messages, deps.config, signal)) {
+        if (part.kind === 'end') {
+          truncated = part.truncated
+          continue
+        }
         if (part.kind === 'text') raw += part.text
         const now = part.kind === 'thinking' || isInsideThinking(raw) ? 'think' : 'write'
         if (now !== step) {
@@ -160,9 +193,18 @@ export async function* respond(
       }
 
       const text = cleanAnswer(raw)
+      // Never show a cut answer or one that reads like reasoning: it could be the
+      // model thinking aloud (thinking models), possibly in another language.
+      const unusable = truncated || looksLikeReasoning(text)
+      if (unusable) {
+        console.warn(
+          `[IRIS] answer discarded (${truncated ? 'cut by the length limit' : 'reads like reasoning'}): ` +
+            `use a chat model without a thinking mode (current: ${deps.config.chatModel})`,
+        )
+      }
       final =
-        !text || isNoInformation(text)
-          ? { type: 'no-answer', text: IRIS.noAnswer, suggestions }
+        !text || unusable || isNoInformation(text)
+          ? noAnswer(suggestions)
           : { type: 'answer', text, sources: sourcesOf(extracts), suggestions }
     }
 

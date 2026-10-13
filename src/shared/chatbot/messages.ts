@@ -21,3 +21,11 @@ export const IRIS_ERRORS: Record<ChatErrorCode, string> = {
   invalid: 'Votre question n’a pas pu être envoyée. Vérifiez qu’elle fait moins de 500 caractères.',
   'rate-limited': 'Vous avez posé beaucoup de questions d’un coup. Patientez une minute.',
 }
+
+/** Answers to small talk ("bonjour", "merci", "au revoir"), given without the model. */
+export const IRIS_SMALL_TALK = {
+  greeting:
+    'Bonjour ! Je suis IRIS. Posez-moi une question sur la conciliation, la médiation ou les démarches amiables : je vous réponds à partir du contenu de ce site.',
+  thanks: 'Avec plaisir ! N’hésitez pas si vous avez une autre question.',
+  goodbye: 'Au revoir, et bonne continuation dans vos démarches.',
+} as const

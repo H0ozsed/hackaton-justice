@@ -1,6 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { chatRequestSchema, IRIS, type ChatStreamEvent } from '@/shared/chatbot'
+import {
+  chatRequestSchema,
+  IRIS,
+  IRIS_SMALL_TALK,
+  starterQuestions,
+  type ChatStreamEvent,
+} from '@/shared/chatbot'
 
 import type { Chunk } from './chunks'
 import { normalize, type KnowledgeIndex } from './knowledge'
@@ -183,8 +189,52 @@ describe('respond', () => {
     d.getIndex.mockRejectedValue(
       new OllamaUnavailableError('Ollama error: model requires more system memory (5.6 GiB)'),
     )
-    expect((await run('Bonjour', d)).at(-1)).toEqual({ type: 'error', code: 'unavailable' })
+    expect((await run('Une question sur la médiation', d)).at(-1)).toEqual({
+      type: 'error',
+      code: 'unavailable',
+    })
     expect(warn).toHaveBeenCalledWith(expect.stringMatching(/does not fit in memory/))
     warn.mockRestore()
+  })
+
+  it('never shows raw reasoning without any tag, cut by the length limit', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+    const cut: ChatPart[] = [
+      text('Okay, let\'s tackle this query. The user is asking "C’est quoi la médiation ?"\n'),
+      text(
+        'Looking at the extracts, there is a section labeled [1] Médiation. The extract says "Démarche',
+      ),
+      { kind: 'end', truncated: true },
+    ]
+    const events = await run('C’est quoi la médiation ?', deps([1, 0], cut))
+    expect(events.at(-1)).toMatchObject({ type: 'no-answer' })
+    expect(JSON.stringify(events)).not.toMatch(/Okay|tackle|extracts/)
+    expect(warn).toHaveBeenCalledWith(expect.stringMatching(/cut by the length limit/))
+    warn.mockRestore()
+  })
+
+  it('never shows a complete answer that reads like reasoning', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+    const thinkingAloud = [text('Let me check the extracts. Mediation is…')]
+    const events = await run('C’est quoi la médiation ?', deps([1, 0], thinkingAloud))
+    expect(events.at(-1)).toMatchObject({ type: 'no-answer' })
+    warn.mockRestore()
+  })
+
+  it('answers a greeting directly, without searching or calling the model', async () => {
+    const d = deps([1, 0])
+    expect(await run('Bonjour !', d)).toEqual([
+      {
+        type: 'answer',
+        text: IRIS_SMALL_TALK.greeting,
+        sources: [],
+        suggestions: starterQuestions(),
+      },
+    ])
+    expect(d.getIndex).not.toHaveBeenCalled()
+    expect(d.chat).not.toHaveBeenCalled()
+    expect((await run('Merci beaucoup !', d)).at(-1)).toMatchObject({
+      text: IRIS_SMALL_TALK.thanks,
+    })
   })
 })
