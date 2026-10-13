@@ -7,7 +7,7 @@
 * **Footer**
 * **Infos pratiques**
 * **FAQ**
-* **Chatbot : IRIS** (Informer, Renseigner, Indiquer les Solutions)
+* **Chatbot : IRIS** (Identifier, Rechercher, Informer, Suggérer)
   * Bouton flottant → panneau accessible (focus, Échap, réponses annoncées aux lecteurs d'écran)
   * Répond uniquement à partir du contenu du site (FAQ, infos pratiques, lexique, types de conflit, interlocuteurs, quiz), avec ses sources
   * Rien de pertinent → « Je n'ai pas cette information », sans appeler le modèle

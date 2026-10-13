@@ -9,9 +9,7 @@ const result = (title: string, text: string) => ({
 
 describe('SYSTEM_PROMPT', () => {
   it('gives IRIS its identity and a personality', () => {
-    expect(SYSTEM_PROMPT).toMatch(
-      /Tu es \*\*IRIS\*\* — Informer, Renseigner, Indiquer les Solutions/,
-    )
+    expect(SYSTEM_PROMPT).toMatch(/Tu es \*\*IRIS\*\* — Identifier, Rechercher, Informer, Suggérer/)
     expect(SYSTEM_PROMPT).toMatch(/# Ta personnalité\n- Calme, bienveillant et rassurant/)
     expect(SYSTEM_PROMPT).toMatch(/Neutre : tu ne juges jamais/)
     expect(SYSTEM_PROMPT).toMatch(/Tu vouvoies toujours, en français/)

@@ -252,6 +252,10 @@ describe('respond', () => {
     expect(IRIS_SMALL_TALK.about).toMatch(
       /je ne donne pas de conseil et je ne prends aucune décision/,
     )
+    // The acronym: Identifier, Rechercher, Informer, Suggérer (#130).
+    expect(IRIS_SMALL_TALK.about).toMatch(
+      /\*\*I\*\*dentifier[\s\S]*\*\*R\*\*echercher[\s\S]*\*\*I\*\*nformer[\s\S]*\*\*S\*\*uggérer/,
+    )
     expect(d.getIndex).not.toHaveBeenCalled()
     expect(d.chat).not.toHaveBeenCalled()
   })
