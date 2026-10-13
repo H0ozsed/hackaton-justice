@@ -90,9 +90,9 @@ export const routesData: Route[] = [
     name: 'Médiation',
     amicable: true,
     helper: 'Un médiateur formé, neutre et tenu à la confidentialité',
-    // #124: through a structure; TO VALIDATE (#120).
+    // #124: through a mediation centre; TO VALIDATE (#120).
     access:
-      'Par une structure de médiation (un point-justice vous y oriente) ou la liste de la cour d’appel ; le juge peut aussi le désigner avec votre accord',
+      'Directement auprès d’un centre ou d’une association de médiation, ou sur la liste de la cour d’appel ; le juge peut aussi le désigner avec votre accord',
     cost: 'Payant, partagé entre les parties (aide juridictionnelle possible si le juge l’a désigné)',
     decides: 'Vous',
     duration: '5 mois au plus si le juge l’ordonne (renouvelable 3 mois)',
@@ -206,8 +206,8 @@ export const guidesData: GuideInput[] = [
       },
       {
         title: 'Choisissez un médiateur',
-        // #124: through a structure; TO VALIDATE (#120).
-        text: 'Passez par une structure : un point-justice vous oriente gratuitement vers une association ou un service de médiation. Chaque cour d’appel publie aussi une liste de médiateurs. Vérifiez sa formation et ses tarifs avant de vous engager.',
+        // #124: through a mediation centre; TO VALIDATE (#120).
+        text: 'Adressez-vous directement à un centre ou une association de médiation : il vous met en relation avec l’un de ses médiateurs. Chaque cour d’appel publie aussi une liste de médiateurs. Vérifiez sa formation et ses tarifs avant de vous engager.',
       },
       {
         title: 'Rencontrez-le',

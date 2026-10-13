@@ -138,7 +138,7 @@ export const glossaryData: GlossaryTermInput[] = [
     slug: 'point-justice',
     term: 'Point-justice',
     definition:
-      'Lieu d’accueil gratuit où l’on reçoit une information juridique et où l’on est orienté vers la bonne démarche. Selon les lieux, on y rencontre des juristes, des avocats, des conciliateurs de justice ou des médiateurs. Les points-justice sont coordonnés par le CDAD de chaque département.',
+      'Lieu d’accueil gratuit où l’on reçoit une information juridique et où l’on est orienté vers la bonne démarche. Selon les lieux, on y rencontre des juristes, des avocats et surtout des conciliateurs de justice, qui y tiennent leurs permanences. Les points-justice sont coordonnés par le CDAD de chaque département.',
     aliases: ['points-justice', 'point justice'],
     related: ['cdad', 'conciliateur-de-justice'],
   },
