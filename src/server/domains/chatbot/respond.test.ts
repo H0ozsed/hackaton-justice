@@ -237,4 +237,22 @@ describe('respond', () => {
       text: IRIS_SMALL_TALK.thanks,
     })
   })
+
+  it('presents itself and its limits when asked what it is for, without the model', async () => {
+    const d = deps([1, 0])
+    const events = await run('Tu sers à quoi ?', d)
+    expect(events).toEqual([
+      {
+        type: 'answer',
+        text: IRIS_SMALL_TALK.about,
+        sources: [],
+        suggestions: starterQuestions(),
+      },
+    ])
+    expect(IRIS_SMALL_TALK.about).toMatch(
+      /je ne donne pas de conseil et je ne prends aucune décision/,
+    )
+    expect(d.getIndex).not.toHaveBeenCalled()
+    expect(d.chat).not.toHaveBeenCalled()
+  })
 })
