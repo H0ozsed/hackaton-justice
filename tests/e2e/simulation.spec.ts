@@ -88,10 +88,18 @@ test('a full journey up to the orientation, then start over', async ({ page }) =
   await runJourney(page, { own: 'Oui', other: 'Oui' })
   await expect(result(page)).toBeFocused()
   await expect(page.getByRole('heading', { level: 2, name: 'Votre orientation' })).toBeVisible()
-  await expect(result(page).getByText('Le canal conseillé')).toBeVisible()
-  await expect(result(page).getByRole('heading', { name: 'Pourquoi ce canal ?' })).toBeVisible()
+  await expect(result(page).getByRole('heading', { name: 'Qui peut vous aider ?' })).toBeVisible()
   await expect(result(page).getByRole('heading', { name: 'Vos réponses' })).toBeVisible()
-  await expectNoAxeViolation(page) // orientation
+  await expectNoAxeViolation(page) // solutions, none chosen
+
+  // The person chooses: the details show, what the law says first.
+  const solutions = result(page).getByRole('radiogroup', { name: /Quelle solution correspond/ })
+  await expect(solutions.getByRole('radio', { checked: true })).toHaveCount(0)
+  await solutions.getByRole('radio').nth(1).check()
+  const chosen = result(page).getByText('La solution choisie')
+  await expect(chosen).toBeVisible()
+  await expect(result(page).getByRole('term').first()).toHaveText('Ce que dit la loi')
+  await expectNoAxeViolation(page) // solution chosen
 
   await page.getByRole('button', { name: 'Recommencer le questionnaire' }).click()
   await expect(stepTitle(page)).toBeFocused()
@@ -99,21 +107,16 @@ test('a full journey up to the orientation, then start over', async ({ page }) =
   await expect(page.getByRole('radio', { checked: true })).toHaveCount(0)
 })
 
-test.describe('the openness answers decide the orientation', () => {
-  const cases = [
-    { own: 'Oui', other: 'Oui', route: /en parler directement/ },
-    { own: 'Oui', other: 'Je ne sais pas', route: /l’aide d’une personne neutre/ },
-    { own: 'Non', other: 'Oui', route: /la voie judiciaire/ },
-  ]
-
-  for (const { own, other, route } of cases) {
-    test(`you: ${own}, the other party: ${other}`, async ({ page }) => {
-      await runJourney(page, { own, other })
-
-      const why = result(page).getByRole('region', { name: 'Pourquoi ce canal ?' })
-      await expect(why).toContainText(route)
-      await expect(result(page).getByRole('region', { name: 'Vos réponses' })).toContainText(own)
-    })
+test('the openness answers never choose for the person', async ({ page }) => {
+  for (const { own, other } of [
+    { own: 'Oui', other: 'Oui' },
+    { own: 'Non', other: 'Non' },
+  ]) {
+    await runJourney(page, { own, other })
+    const solutions = result(page).getByRole('radiogroup', { name: /Quelle solution correspond/ })
+    await expect(solutions.getByRole('radio', { checked: true })).toHaveCount(0)
+    await expect(result(page).getByRole('region', { name: 'Vos réponses' })).toContainText(own)
+    await page.getByRole('button', { name: 'Recommencer le questionnaire' }).click()
   }
 })
 

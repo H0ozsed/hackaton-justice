@@ -6,36 +6,38 @@ reloading the page starts over.
 
 > Current state: the `steps.ts` registry holds the conflict type step and its follow-up questions
 > (#13), the losses and frequency step (#14) and the openness to discussion step (#15). The result
-> screen recommends a channel from the answers (#16).
+> screen lists the solutions of the conflict type, grouped by family, and the person chooses (#16,
+> coaching feedback of 13 Oct 2026).
 
 ## Files
 
-| File                        | Role                                                                           |
-| --------------------------- | ------------------------------------------------------------------------------ |
-| `simulation-form.tsx`       | `<SimulationForm steps ResultView />`: the component to put in the page        |
-| `step-panel.tsx`            | One react-hook-form + zod form per step, progress, focus, errors               |
-| `engine.ts`                 | Pure logic (active steps, next, back, restart), no React                       |
-| `use-simulation.ts`         | Hook: in-memory state on top of the `engine.ts` functions                      |
-| `form-fields.tsx`           | Accessible native fields: text, number, radio group, checkbox group            |
-| `numbers.ts`                | `parseDecimal`: "12,5", "12.5", "1 200" to a number (NaN if not a number)      |
-| `step-progress.tsx`         | "Étape X sur N" indicator                                                      |
-| `error-summary.tsx`         | Error summary (`role="alert"`, links to the fields)                            |
-| `types.ts`                  | `SimulationStep`, `StepFieldsProps`, `SimulationAnswers`, `ResultViewProps`... |
-| `steps.ts`                  | **Registry** of the steps, in the order they are asked                         |
-| `conflict-type.ts`          | Contract: conflict type step id and field, `getChosenConflictType`             |
-| `conflict-type-step.tsx`    | `createConflictTypeStep(conflictTypes)`: choose the conflict type (#13)        |
-| `follow-up.ts`              | Validation of the follow-up questions, through `followUpAnswersSchema` (#13)   |
-| `follow-up-fields.tsx`      | One field per question of the content, by `kind`                               |
-| `follow-up-step.tsx`        | `createFollowUpStep(conflictTypes)`: the follow-up questions step              |
-| `loss-frequency.ts`         | Rules (zod) and options of the losses and frequency step (#14)                 |
-| `loss-frequency-fields.tsx` | Fields of that step: one block per declared loss kind, then the frequency      |
-| `loss-frequency-step.tsx`   | `createLossFrequencyStep(conflictTypes)`: the step itself                      |
-| `openness.ts`               | Rules, options and typed reader of the openness to discussion step (#15)       |
-| `openness-step.tsx`         | The openness to discussion step itself                                         |
-| `recommend-channel.ts`      | Orientation rules (#16): pure `recommendChannel(answers, channels)`            |
-| `answers-summary.ts`        | `summarizeAnswers`: what the person answered, as { label, value } lines        |
-| `simulation-result.tsx`     | Result screen: recommended channel, why, other options, answers, start over    |
-| `*.test.ts(x)`              | Unit tests (engine, numbers, rules, registry), component tests (form, steps)   |
+| File                        | Role                                                                              |
+| --------------------------- | --------------------------------------------------------------------------------- |
+| `simulation-form.tsx`       | `<SimulationForm steps ResultView />`: the component to put in the page           |
+| `step-panel.tsx`            | One react-hook-form + zod form per step, progress, focus, errors                  |
+| `engine.ts`                 | Pure logic (active steps, next, back, restart), no React                          |
+| `use-simulation.ts`         | Hook: in-memory state on top of the `engine.ts` functions                         |
+| `form-fields.tsx`           | Accessible native fields: text, number, radio group, checkbox group               |
+| `numbers.ts`                | `parseDecimal`: "12,5", "12.5", "1 200" to a number (NaN if not a number)         |
+| `step-progress.tsx`         | "Étape X sur N" indicator                                                         |
+| `error-summary.tsx`         | Error summary (`role="alert"`, links to the fields)                               |
+| `types.ts`                  | `SimulationStep`, `StepFieldsProps`, `SimulationAnswers`, `ResultViewProps`...    |
+| `steps.ts`                  | **Registry** of the steps, in the order they are asked                            |
+| `conflict-type.ts`          | Contract: conflict type step id and field, `getChosenConflictType`                |
+| `conflict-type-step.tsx`    | `createConflictTypeStep(conflictTypes)`: choose the conflict type (#13)           |
+| `follow-up.ts`              | Validation of the follow-up questions, through `followUpAnswersSchema` (#13)      |
+| `follow-up-fields.tsx`      | One field per question of the content, by `kind`                                  |
+| `follow-up-step.tsx`        | `createFollowUpStep(conflictTypes)`: the follow-up questions step                 |
+| `loss-frequency.ts`         | Rules (zod) and options of the losses and frequency step (#14)                    |
+| `loss-frequency-fields.tsx` | Fields of that step: one block per declared loss kind, then the frequency         |
+| `loss-frequency-step.tsx`   | `createLossFrequencyStep(conflictTypes)`: the step itself                         |
+| `openness.ts`               | Rules, options and typed reader of the openness to discussion step (#15)          |
+| `openness-step.tsx`         | The openness to discussion step itself                                            |
+| `solutions.ts`              | Pure `solutionsFor(answers, channels)`, `groupByFamily`, `mandatoryAttemptNotice` |
+| `solution-picker.tsx`       | The person picks a solution; its details (law first) show after the list          |
+| `answers-summary.ts`        | `summarizeAnswers`: what the person answered, as { label, value } lines           |
+| `simulation-result.tsx`     | Result screen: warning, mandatory attempt, solutions to choose, answers           |
+| `*.test.ts(x)`              | Unit tests (engine, numbers, rules, registry), component tests (form, steps)      |
 
 ## Add a step
 
@@ -183,40 +185,35 @@ contains the answers of the active steps, keyed by step id. `SimulationResult`
 (`simulation-result.tsx`) is the real one, built by `createSimulationResult({ channels, conflictTypes })`
 (the content is a parameter so that tests can use their own).
 
-**Rules** (`recommend-channel.ts`, a pure function, no React): the route only depends on the two
-answers of the openness step.
+**No automatic recommendation** (coaching feedback of 13 Oct 2026): the result does not choose
+for the person. `solutionsFor` (`solutions.ts`, pure, no React) keeps the channels shown in the
+simulation (`inSimulation`) that are meant for the chosen conflict type (`conflictTypes`, omitted:
+every type), and `groupByFamily` orders them by family: « Se parler », « Conciliation »,
+« Médiation », « Autres recours amiables », « Le juge » (`CHANNEL_FAMILY_LABELS`).
 
-| The person would talk with the other party? | The other party seems willing? | Route      |
-| ------------------------------------------- | ------------------------------ | ---------- |
-| no                                          | any                            | `judicial` |
-| yes or maybe                                | yes                            | `direct`   |
-| yes or maybe                                | maybe, no or unknown           | `assisted` |
-
-- **Every combination of answers leads to a result**: a missing openness answer is read as the most
-  prudent one (maybe / unknown, so `assisted`), and the other answers (conflict type, losses) never
-  prevent a route. The table of cases is tested exhaustively (3 x 4 combinations).
-- The rules are written on the **attributes** of the channels of the content, not on their slugs:
-  `judicial` is a channel with `amicable: false`; `assisted` is an amicable channel **with contact
-  details** (an organisation to reach out to); `direct` is an amicable channel **without** contact
-  details (talking to the other party). Free channels come first. When no channel fits, the closest
-  one is used (any amicable channel, then any channel). A guard test checks that the channels of the
-  content leave no route without a channel: if the content team replaces the examples and a route
-  is left empty, it fails with a clear message.
-- The rules are **provisional**: they say how the answers lean towards an amicable solution or not,
-  they are not legal advice, and the content / legal team is expected to review and refine them.
-- The screen says why (what the person answered, what the route means, whether the channel is
-  free), lists the other channels, recalls the answers (`summarizeAnswers`), gives the contact
-  details (the website opens in a new window, said in the link text) and says the orientation is
-  indicative. "Recommencer le questionnaire" starts over (`onRestart`).
+- `SolutionPicker` shows them as one radio group with a group per family. Each option says « C'est
+  pour vous si… » and its cost (accessible description). Nothing is checked at first; once the
+  person chooses, `SolutionDetails` (`src/components/solutions`) shows what the law says first,
+  then the disputes handled and excluded, how to reach it, the cost, the value of the agreement,
+  the contact and the official sources (new window, said in the link text).
+- Before the solutions: the conflict type's `warning` (« À savoir d'abord », e.g. emergency
+  numbers) and `mandatoryAttemptNotice` when art. 750-1 CPC requires an amicable attempt (a simple
+  discussion is not enough).
+- After: free information (points-justice, CDAD), the answers (`summarizeAnswers`), and
+  "Recommencer le questionnaire" (`onRestart`). The openness answers are recalled but choose
+  nothing.
+- The same channels are presented on `/apprendre` (« Qui peut vous aider ? », `WhoCanHelp`), and
+  indexed for IRIS.
 
 ## Tests
 
 `npm test` runs them (see `docs/TESTING.md`): unit tests of the engine, the number parsing, the
-losses, follow-up and openness rules, the orientation rules and the registry, and component tests of
+losses, follow-up and openness rules, the solutions and the registry, and component tests of
 `SimulationForm`, of every step and of the result screen (conditional blocks, one case per kind of
 question, refused values, kept answers, focus, accessibility with Testing Library and axe-core).
 They define their own neutral steps, conflict types and channels, and never rely on the shared
-example content, except the guard on the channels of the content.
+example content, except the guards on the real channels (every conflict type has an amicable
+solution and the judge, every solution has its legal texts).
 
 The whole journey, from the conflict type to the orientation, is covered end to end by
 `tests/e2e/simulation.spec.ts` (desktop and mobile, with the axe scan). It is written without

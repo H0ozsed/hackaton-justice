@@ -32,7 +32,7 @@ export const glossaryData: GlossaryTermInput[] = [
     slug: 'mediateur',
     term: 'Médiateur',
     definition:
-      'Professionnel formé, neutre et impartial, tenu à la confidentialité, qui aide les parties à se parler et à trouver elles-mêmes leur solution. On peut le choisir soi-même (médiation conventionnelle) ou le juge peut le désigner avec l’accord des parties (médiation judiciaire). Il est en général payant, partagé entre les parties. Il existe aussi des médiateurs spécialisés : consommation, famille…',
+      'Tiers indépendant et impartial, tenu à la confidentialité, qui aide les parties à se parler et à trouver elles-mêmes leur solution. On peut le choisir soi-même (médiation conventionnelle) ou le juge peut le désigner avec l’accord des parties (médiation judiciaire). La loi exige une formation ou une expérience de la médiation et des garanties d’indépendance ; un juge ou un conciliateur ne peut pas être médiateur civil. Il est payant, partagé entre les parties. Il existe aussi des médiateurs spécialisés : familial, consommation, secteurs (énergie, banque…), administrations, éducation.',
     aliases: ['médiatrice', 'médiateurs', 'médiation conventionnelle'],
     related: [
       'mediation',
@@ -76,7 +76,7 @@ export const glossaryData: GlossaryTermInput[] = [
     slug: 'conciliateur-de-justice',
     term: 'Conciliateur de justice',
     definition:
-      'Bénévole nommé par la justice qui aide gratuitement deux personnes ou plus en conflit à trouver un accord. On le contacte directement et on le rencontre sur rendez-vous, par exemple dans un point-justice ou au tribunal. Avec l’accord des parties, il peut se rendre sur les lieux et entendre toute personne utile, si elle l’accepte. Pour un conflit de voisinage, tenter une solution amiable est en principe obligatoire avant de saisir le juge.',
+      'Auxiliaire de justice bénévole, nommé par le premier président de la cour d’appel (décret n° 78-381 du 20 mars 1978), qui aide gratuitement deux personnes ou plus en conflit à trouver un accord. Il doit avoir une formation ou une expérience juridique et prête serment. On le contacte directement et on le rencontre sur rendez-vous, par exemple dans un point-justice ou au tribunal. Avec l’accord des parties, il peut se rendre sur les lieux et entendre toute personne utile, si elle l’accepte.',
     aliases: ['conciliatrice de justice', 'conciliatrice', 'conciliateur', 'conciliateurs'],
     related: ['conciliation', 'constat-d-accord', 'mediateur', 'point-justice'],
   },
@@ -114,7 +114,7 @@ export const glossaryData: GlossaryTermInput[] = [
     slug: 'tentative-amiable-prealable',
     term: 'Tentative amiable préalable',
     definition:
-      'Pour certains litiges (sommes de 5 000 € ou moins, troubles de voisinage), la loi impose de tenter une conciliation, une médiation ou une procédure participative avant de saisir le juge. Sans cette tentative, la demande peut être déclarée irrecevable (article 750-1 du code de procédure civile).',
+      'Pour certains litiges (sommes de 5 000 € ou moins, trouble anormal de voisinage, bornage, servitudes, distance des plantations, élagage), la loi impose de tenter une conciliation par un conciliateur de justice, une médiation ou une procédure participative avant de saisir le juge ; une simple discussion ne suffit pas. Sans cette tentative, la demande est irrecevable, sauf exception (urgence, aucun conciliateur disponible dans les 3 mois…) (article 750-1 du code de procédure civile).',
     aliases: ['tentative amiable', 'tentative de résolution amiable'],
     related: ['irrecevable', 'conciliation', 'mediation', 'procedure-participative'],
   },
@@ -162,8 +162,9 @@ export const glossaryData: GlossaryTermInput[] = [
     slug: 'mediation-familiale',
     term: 'Médiation familiale',
     definition:
-      'Médiation menée par un médiateur familial diplômé pour une séparation, l’organisation pour les enfants, une succession ou des relations familiales difficiles. Son coût dépend des revenus (barème de la Caf). Elle n’est pas proposée en cas de violences.',
-    related: ['mediation', 'homologation'],
+      'Médiation menée par un médiateur familial pour une séparation, l’organisation pour les enfants, une succession, les liens avec les grands-parents ou des relations familiales difficiles. Le diplôme d’État de médiateur familial (code de l’action sociale et des familles, art. R451-66 et suivants) est exigé dans les services financés par la Caf. Le premier entretien est gratuit, puis le coût dépend des revenus (barème de la Caf). Elle n’est pas proposée en cas de violences.',
+    aliases: ['médiateur familial', 'médiatrice familiale', 'diplôme d’État de médiateur familial'],
+    related: ['mediation', 'mediateur', 'homologation'],
   },
   {
     slug: 'procedure-participative',
@@ -207,5 +208,53 @@ export const glossaryData: GlossaryTermInput[] = [
     definition:
       'Délai au-delà duquel on ne peut plus agir en justice : en général 5 ans pour un litige civil (article 2224 du code civil). Une conciliation ou une médiation suspend ce délai pendant sa durée.',
     related: ['conciliation', 'mediation'],
+  },
+
+  // ---- Who can help (coaching feedback of 13 Oct 2026) ----
+  {
+    slug: 'commission-departementale-de-conciliation',
+    term: 'Commission départementale de conciliation',
+    definition:
+      'Commission placée auprès du préfet, composée à parts égales de représentants des bailleurs et des locataires (loi du 6 juillet 1989, art. 20). Elle cherche gratuitement un accord sur les litiges de location : loyer, dépôt de garantie, état des lieux, charges, réparations, décence du logement, congé.',
+    aliases: ['commission de conciliation', 'CDC'],
+    related: ['depot-de-garantie', 'etat-des-lieux', 'conciliation'],
+  },
+  {
+    slug: 'conseil-de-prud-hommes',
+    term: 'Conseil de prud’hommes',
+    definition:
+      'Juridiction qui règle les litiges nés du contrat de travail entre employeurs et salariés (code du travail, art. L1411-1). L’affaire commence en général par une séance de conciliation devant un conseiller employeur et un conseiller salarié.',
+    aliases: ['prud’hommes', 'prud’homale'],
+    related: ['conciliation'],
+  },
+  {
+    slug: 'defenseur-des-droits',
+    term: 'Défenseur des droits',
+    definition:
+      'Autorité indépendante (loi organique du 29 mars 2011) qui défend gratuitement vos droits face aux services publics, lutte contre les discriminations et défend les droits de l’enfant. Il peut régler un litige à l’amiable ou faire une recommandation, après une réclamation au service concerné. Le saisir ne suspend pas les délais de recours.',
+    related: ['recours-gracieux'],
+  },
+  {
+    slug: 'recours-gracieux',
+    term: 'Recours gracieux',
+    definition:
+      'Demande écrite adressée à l’administration qui a pris une décision pour qu’elle la revoie. Le recours hiérarchique s’adresse à son supérieur. C’est souvent la première étape avant un médiateur ou le juge administratif, devant qui le délai est en général de 2 mois.',
+    aliases: ['recours hiérarchique', 'recours amiable', 'recours administratif'],
+    related: ['defenseur-des-droits'],
+  },
+  {
+    slug: 'audience-de-reglement-amiable',
+    term: 'Audience de règlement amiable',
+    definition:
+      'Depuis le 1er novembre 2023 (décret n° 2023-686), le juge saisi d’une affaire peut renvoyer les parties devant un autre juge, qui ne jugera pas l’affaire, pour les aider à trouver un accord.',
+    related: ['conciliation', 'tribunal-judiciaire'],
+  },
+  {
+    slug: 'diplome-d-etat',
+    term: 'Diplôme d’État',
+    definition:
+      'Diplôme délivré au nom de l’État. Pour la médiation familiale, le diplôme d’État de médiateur familial (DEMF) sanctionne une formation théorique et un stage ; il est exigé dans les services de médiation familiale financés par la Caf.',
+    aliases: ['DEMF'],
+    related: ['mediation-familiale'],
   },
 ]

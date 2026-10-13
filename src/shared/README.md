@@ -6,17 +6,17 @@ conflict types, orientation channels, quizzes. **Only edit the `data.ts` files.*
 Field names and comments are in English; the content itself is in French (it is what users
 read on the site).
 
-| Content                                    | File                                                           |
-| ------------------------------------------ | -------------------------------------------------------------- |
-| Home page: explainer, orientation, about   | `home/data.ts`                                                 |
-| Glossary                                   | `glossary/data.ts`                                             |
-| FAQ                                        | `faq/data.ts`                                                  |
-| Practical info                             | `practical-info/data.ts`                                       |
-| Conflict types (simulation)                | `simulation/data.ts` → `conflictTypesData`                     |
-| Orientation channels (simulation result)   | `simulation/data.ts` → `channelsData`                          |
-| Quizzes                                    | `quiz/data.ts`                                                 |
-| Amicable guides (`/demarches`)             | `amicable/data.ts`                                             |
-| Role-play scenarios (`/mise-en-situation`) | `role-play/scenarios/<slug>.ts`, listed in `role-play/data.ts` |
+| Content                                      | File                                                           |
+| -------------------------------------------- | -------------------------------------------------------------- |
+| Home page: explainer, orientation, about     | `home/data.ts`                                                 |
+| Glossary                                     | `glossary/data.ts`                                             |
+| FAQ                                          | `faq/data.ts`                                                  |
+| Practical info                               | `practical-info/data.ts`                                       |
+| Conflict types (simulation)                  | `simulation/data.ts` → `conflictTypesData`                     |
+| Who can help (simulation result, /apprendre) | `simulation/data.ts` → `channelsData`                          |
+| Quizzes                                      | `quiz/data.ts`                                                 |
+| Amicable guides (`/demarches`)               | `amicable/data.ts`                                             |
+| Role-play scenarios (`/mise-en-situation`)   | `role-play/scenarios/<slug>.ts`, listed in `role-play/data.ts` |
 
 The content is real and sourced (sources in a comment at the top of each `data.ts`); it must be
 proofread by the legal / content team before the demo.
@@ -50,8 +50,14 @@ proofread by the legal / content team before the demo.
   `mandatoryAmicableAttempt` (`always` or `up-to-5000`) shows on the result that the law requires
   an amicable attempt before court (art. 750-1 CPC); with `up-to-5000`, the amount is read from
   the follow-up question whose id is `montant`.
-- **Channels**: `conflictTypes` (slugs) limits a channel to some conflict types (omitted: all).
-  The result recommends the most specific channel of the route first.
+- **Channels** (who can help): `family` (`dialogue`, `conciliation`, `mediation`, `other`, `judge`)
+  sets the category the person picks from; `law` (`text` + `references`) is **what the law says,
+  shown first**: write it from the legal texts and cite them; `forYouIf` (« C'est pour vous
+  si… ») lets the person decide; `disputes`, `excluded`, `access`, `cost`, `agreement`, `contact`
+  and `sources` (official pages) complete it. `conflictTypes` (slugs) limits a channel to some
+  conflict types (omitted: all); `inSimulation: false` keeps it on /apprendre only (e.g. a step
+  only a judge starts). The result never chooses for the person.
+- **Conflict types**: `warning` is shown first on the result (e.g. emergency numbers).
 - **Quizzes**: one id in `correctChoiceIds` → radio buttons; several → checkboxes.
 - **Role-play scenarios**: one file per scenario in `role-play/scenarios/`, added to the list in
   `role-play/data.ts`. `summary` (card text, no spoiler), `level` (1 to 3), `perspective`

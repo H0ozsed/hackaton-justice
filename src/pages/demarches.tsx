@@ -62,10 +62,11 @@ export default function ProceduresPage() {
           Est-ce obligatoire ?
         </h2>
         <p className="mt-4">
-          Pour certains litiges, la loi impose de tenter une solution amiable (conciliation,
-          médiation ou procédure participative) avant de saisir le juge. Sinon, le juge peut
-          déclarer la demande irrecevable, c’est-à-dire refuser de l’examiner (article 750-1 du code
-          de procédure civile). C’est le cas :
+          Pour certains litiges, la loi impose de tenter une solution amiable (conciliation par un
+          conciliateur de justice, médiation ou procédure participative) avant de saisir le juge ;
+          une simple discussion ne suffit pas. Sinon, le juge peut déclarer la demande irrecevable,
+          c’est-à-dire refuser de l’examiner (article 750-1 du code de procédure civile). C’est le
+          cas :
         </p>
         <ul className="mt-3 list-disc space-y-1 pl-5">
           <li>des demandes en paiement de 5 000 € ou moins ;</li>
@@ -143,6 +144,11 @@ export default function ProceduresPage() {
           <li>
             <Link href="/simulation" className={linkClassName}>
               Trouver la solution adaptée à mon litige
+            </Link>
+          </li>
+          <li>
+            <Link href="/apprendre#qui-peut-vous-aider" className={linkClassName}>
+              Connaître tous les conciliateurs et médiateurs, et ce que dit la loi
             </Link>
           </li>
           <li>
