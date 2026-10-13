@@ -49,6 +49,25 @@ export type Emotion = z.infer<typeof emotionSchema>
 export const effectSchema = z.enum(['drums', 'knock', 'door', 'phone', 'paper', 'sleep'])
 export type Effect = z.infer<typeof effectSchema>
 
+/** Shot of the animated opening shown before the game. */
+export const openingShotSchema = z.enum(['street', 'cutaway', 'bedroom'])
+export type OpeningShot = z.infer<typeof openingShotSchema>
+
+/** Short animation of what the player does after a choice. */
+export const actionSchema = z.enum([
+  'talk',
+  'broom',
+  'phone',
+  'letter',
+  'wait',
+  'agree',
+  'threaten',
+  'court',
+  'appointment',
+  'move',
+])
+export type Action = z.infer<typeof actionSchema>
+
 export const characterSchema = z.object({
   id: slugSchema,
   name: z.string().min(1),
@@ -85,6 +104,8 @@ export const choiceSchema = z.object({
   feedback: richTextSchema,
   /** What this choice costs: money in €, time in hours, health and relationship in points. */
   losses: z.partialRecord(lossKindSchema, z.number().nonnegative()).default({}),
+  /** Animation played after this choice, before the next scene (none when omitted). */
+  action: actionSchema.optional(),
 })
 
 export const sceneSchema = z
@@ -115,6 +136,14 @@ export const scenarioSchema = z
     title: z.string().min(1),
     /** Shown before the game starts. */
     intro: richTextSchema,
+    /**
+     * Animated opening: shots shown one after the other, each with a caption. Replaces the
+     * plain intro text on screen (the intro stays the summary of the scenario).
+     */
+    opening: z
+      .array(z.object({ shot: openingShotSchema, text: richTextSchema }))
+      .min(1)
+      .optional(),
     characters: z.array(characterSchema).min(1),
     startSceneId: slugSchema,
     scenes: z.array(sceneSchema).min(1),

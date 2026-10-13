@@ -88,12 +88,15 @@ test('with reduced motion, the text is shown at once', async ({ page }) => {
 
 test('the scene is played on a decorative stage, with life gauges in text', async ({ page }) => {
   await page.goto('/mise-en-situation')
-  await expect(page.getByTestId('building-cutaway')).toHaveAttribute('aria-hidden', 'true')
+  await expect(page.getByTestId('opening').locator('svg').first()).toHaveAttribute(
+    'aria-hidden',
+    'true',
+  )
   await page.getByRole('button', { name: 'Commencer' }).click()
 
   const stage = page.getByTestId('stage')
   await expect(stage).toBeVisible()
-  await expect(stage).toHaveAttribute('aria-hidden', 'true')
+  await expect(stage.locator('svg').first()).toHaveAttribute('aria-hidden', 'true')
   const gauges = page.getByRole('list', { name: 'Vos jauges' })
   await expect(gauges.getByRole('listitem')).toHaveCount(4)
   await expect(gauges).toContainText('10 sur 10')

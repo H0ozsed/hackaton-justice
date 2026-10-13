@@ -8,12 +8,14 @@ read on the site).
 
 | Content                                    | File                                       |
 | ------------------------------------------ | ------------------------------------------ |
+| Home page: explainer, orientation, about   | `home/data.ts`                             |
 | Glossary                                   | `glossary/data.ts`                         |
 | FAQ                                        | `faq/data.ts`                              |
 | Practical info                             | `practical-info/data.ts`                   |
 | Conflict types (simulation)                | `simulation/data.ts` → `conflictTypesData` |
 | Orientation channels (simulation result)   | `simulation/data.ts` → `channelsData`      |
 | Quizzes                                    | `quiz/data.ts`                             |
+| Amicable guides (`/demarches`)             | `amicable/data.ts`                         |
 | Role-play scenarios (`/mise-en-situation`) | `role-play/data.ts`                        |
 
 The current entries are **examples** (prefixed `EXEMPLE`) to be replaced.
@@ -30,6 +32,13 @@ The current entries are **examples** (prefixed `EXEMPLE`) to be replaced.
    build: invalid content blocks them, with a message naming the entry and the field to fix.
 
 ## Things to know
+
+- **Home page** (`home/data.ts`): the « L'amiable en 1 minute » cards (`body` can link
+  glossary terms with `[[slug]]` or `[[slug|displayed text]]`), the « Par où commencer ? »
+  answers (`journey`: `/simulation`, `/mise-en-situation` or `/apprendre`; the journey's
+  description and button text come from `src/lib/site.ts`), the « À propos »
+  texts and the questions IRIS suggests on the home page. Legal facts there are drafts until
+  validated (#120): they are marked `TO VALIDATE` in the file.
 
 - **References**: in the glossary (`related`) and quizzes (`glossary`), glossary terms are
   referenced by their `slug`. The referenced term must exist.
@@ -56,7 +65,12 @@ The current entries are **examples** (prefixed `EXEMPLE`) to be replaced.
   lighting). A line can set the `emotion` of its speaker (`neutral`, `happy`, `angry`,
   `sad`, `tired`, `surprised`) and an `effect` (`drums`, `knock`, `door`, `phone`,
   `paper`, `sleep`). These are decorative: the text must always say what happens. A
-  character's `avatar` picks its sprite.
+  character's `avatar` picks its sprite. A choice can set an `action` (`talk`, `broom`,
+  `phone`, `letter`, `wait`, `agree`, `threaten`, `court`, `appointment`, `move`): a short
+  animation of it plays before the next scene. A scenario can have an `opening`: shots
+  (`street`, `cutaway`, `bedroom`) shown before the game, each with a caption `text`. Do not
+  introduce characters there: they are discovered during the game (their `role` shows the
+  first time they speak).
   To link a glossary term in a line, the intro or a feedback (not in a choice `label`), write `[[slug]]` (shows the glossary term) or
   `[[slug|texte affiché]]` (shows another spelling): `Envoyez une [[mise-en-demeure|mise en demeure]]`.
   `[[slug]]` shows the term with its glossary capital letter: in the middle of a sentence,

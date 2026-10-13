@@ -123,7 +123,7 @@ export function paint(
 }
 
 // ---- Pixel font -------------------------------------------------------------------
-// 3 × 5 capitals for the onomatopoeias of the stage ("BOUM", "TOC TOC"…). Decorative
+// 3 × 5 capitals and digits for the onomatopoeias and titles of the stage ("BOUM", "17"…). Decorative
 // only: what happens is always written in the dialogue too.
 
 const FONT: Record<string, readonly string[]> = {
@@ -132,21 +132,40 @@ const FONT: Record<string, readonly string[]> = {
   C: ['XXX', 'X..', 'X..', 'X..', 'XXX'],
   D: ['XX.', 'X.X', 'X.X', 'X.X', 'XX.'],
   E: ['XXX', 'X..', 'XX.', 'X..', 'XXX'],
+  F: ['XXX', 'X..', 'XX.', 'X..', 'X..'],
   G: ['XXX', 'X..', 'X.X', 'X.X', 'XXX'],
   H: ['X.X', 'X.X', 'XXX', 'X.X', 'X.X'],
   I: ['XXX', '.X.', '.X.', '.X.', 'XXX'],
+  J: ['..X', '..X', '..X', 'X.X', 'XXX'],
   K: ['X.X', 'X.X', 'XX.', 'X.X', 'X.X'],
   L: ['X..', 'X..', 'X..', 'X..', 'XXX'],
   M: ['X.X', 'XXX', 'XXX', 'X.X', 'X.X'],
   N: ['XX.', 'X.X', 'X.X', 'X.X', 'X.X'],
   O: ['XXX', 'X.X', 'X.X', 'X.X', 'XXX'],
   P: ['XX.', 'X.X', 'XX.', 'X..', 'X..'],
+  Q: ['XXX', 'X.X', 'X.X', 'XXX', '..X'],
   R: ['XX.', 'X.X', 'XX.', 'X.X', 'X.X'],
   S: ['XXX', 'X..', 'XXX', '..X', 'XXX'],
   T: ['XXX', '.X.', '.X.', '.X.', '.X.'],
   U: ['X.X', 'X.X', 'X.X', 'X.X', 'XXX'],
+  V: ['X.X', 'X.X', 'X.X', 'X.X', '.X.'],
+  W: ['X.X', 'X.X', 'XXX', 'XXX', 'X.X'],
+  X: ['X.X', 'X.X', '.X.', 'X.X', 'X.X'],
+  Y: ['X.X', 'X.X', '.X.', '.X.', '.X.'],
   Z: ['XXX', '..X', '.X.', 'X..', 'XXX'],
+  '0': ['XXX', 'X.X', 'X.X', 'X.X', 'XXX'],
+  '1': ['.X.', 'XX.', '.X.', '.X.', 'XXX'],
+  '2': ['XXX', '..X', 'XXX', 'X..', 'XXX'],
+  '3': ['XXX', '..X', '.XX', '..X', 'XXX'],
+  '4': ['X.X', 'X.X', 'XXX', '..X', '..X'],
+  '5': ['XXX', 'X..', 'XXX', '..X', 'XXX'],
+  '6': ['XXX', 'X..', 'XXX', 'X.X', 'XXX'],
+  '7': ['XXX', '..X', '.X.', '.X.', '.X.'],
+  '8': ['XXX', 'X.X', 'XXX', 'X.X', 'XXX'],
+  '9': ['XXX', 'X.X', 'XXX', '..X', 'XXX'],
   '!': ['X', 'X', 'X', '.', 'X'],
+  '?': ['XXX', '..X', '.X.', '...', '.X.'],
+  '.': ['.', '.', '.', '.', 'X'],
   ' ': ['.', '.', '.', '.', '.'],
 }
 

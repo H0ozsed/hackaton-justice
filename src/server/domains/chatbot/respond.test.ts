@@ -221,6 +221,22 @@ describe('respond', () => {
     warn.mockRestore()
   })
 
+  it('sends a sensitive question to professionals, without searching or calling the model', async () => {
+    const d = deps([1, 0])
+    expect(await run('Mon voisin m’a frappé, qu’est-ce que je fais ?', d)).toEqual([
+      { type: 'answer', text: IRIS.sensitive, sources: [], suggestions: [] },
+    ])
+    expect(d.getIndex).not.toHaveBeenCalled()
+    expect(d.embed).not.toHaveBeenCalled()
+    expect(d.chat).not.toHaveBeenCalled()
+  })
+
+  it('never leaves the visitor without a next step when there is no answer', () => {
+    expect(IRIS.noAnswer).not.toMatch(/reformule/i)
+    expect(IRIS.noAnswer).toMatch(/point-justice/)
+    expect(IRIS.noAnswer).toMatch(/conciliateur de justice/)
+  })
+
   it('answers a greeting directly, without searching or calling the model', async () => {
     const d = deps([1, 0])
     expect(await run('Bonjour !', d)).toEqual([
@@ -236,5 +252,27 @@ describe('respond', () => {
     expect((await run('Merci beaucoup !', d)).at(-1)).toMatchObject({
       text: IRIS_SMALL_TALK.thanks,
     })
+  })
+
+  it('presents itself and its limits when asked what it is for, without the model', async () => {
+    const d = deps([1, 0])
+    const events = await run('Tu sers à quoi ?', d)
+    expect(events).toEqual([
+      {
+        type: 'answer',
+        text: IRIS_SMALL_TALK.about,
+        sources: [],
+        suggestions: starterQuestions(),
+      },
+    ])
+    expect(IRIS_SMALL_TALK.about).toMatch(
+      /je ne donne pas de conseil et je ne prends aucune décision/,
+    )
+    // The acronym: Identifier, Rechercher, Informer, Suggérer (#130).
+    expect(IRIS_SMALL_TALK.about).toMatch(
+      /\*\*I\*\*dentifier[\s\S]*\*\*R\*\*echercher[\s\S]*\*\*I\*\*nformer[\s\S]*\*\*S\*\*uggérer/,
+    )
+    expect(d.getIndex).not.toHaveBeenCalled()
+    expect(d.chat).not.toHaveBeenCalled()
   })
 })

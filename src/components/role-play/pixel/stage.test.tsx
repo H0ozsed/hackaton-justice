@@ -24,7 +24,7 @@ describe('Stage', () => {
   it('is hidden from screen readers and draws the place with its lighting', () => {
     render(<Stage {...base} location="bedroom" period="night" />)
     const stage = screen.getByTestId('stage')
-    expect(stage).toHaveAttribute('aria-hidden', 'true')
+    expect(stage.querySelector('svg')).toHaveAttribute('aria-hidden', 'true')
     const place = stage.querySelector('[data-location]')
     expect(place).toHaveAttribute('data-location', 'bedroom')
     expect(place).toHaveAttribute('data-period', 'night')
@@ -83,5 +83,35 @@ describe('Stage', () => {
     )
     expect(screen.queryByTestId('title-card')).toBeNull()
     expect(vi.getTimerCount()).toBe(0)
+  })
+
+  it('shows the line in a bubble pointing at the speaker, real text for screen readers', () => {
+    render(<Stage {...base} speakerId="martin" speech={{ kind: 'speech', content: 'Bonsoir !' }} />)
+    const bubble = screen.getByTestId('bubble')
+    expect(bubble).toHaveTextContent('Bonsoir !')
+    expect(bubble.closest('[aria-hidden]')).toBeNull()
+    // M. Martin stands on the right: the bubble too.
+    expect(bubble).toHaveClass('self-end')
+  })
+
+  it('shows the narration in a caption, without tail', () => {
+    render(<Stage {...base} speech={{ kind: 'speech', content: 'Il est tard.' }} />)
+    expect(screen.getByTestId('caption')).toHaveTextContent('Il est tard.')
+    expect(screen.queryByTestId('bubble')).toBeNull()
+  })
+
+  it('plays the action of the last choice instead of the cast', () => {
+    render(
+      <Stage
+        {...base}
+        action={{ action: 'broom' }}
+        titleCard={{ label: 'Scène 2' }}
+        speech={{ kind: 'caption', content: 'Votre choix' }}
+      />,
+    )
+    const stage = screen.getByTestId('stage')
+    expect(stage.querySelector('[data-action="broom"]')).not.toBeNull()
+    expect(stage.querySelectorAll('[data-character]')).toHaveLength(0)
+    expect(screen.queryByTestId('title-card')).toBeNull()
   })
 })
