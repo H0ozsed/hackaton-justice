@@ -9,10 +9,15 @@ const expectNoAxeViolation = async (page: Page) => {
   expect(results.violations).toEqual([])
 }
 
-test('the hub sections follow the h1 > h2 heading order', async ({ page }) => {
+test('the hub is a path in three steps: h1 > h2 step > h3 section (#106)', async ({ page }) => {
   await page.goto('/apprendre')
   await expect(page.getByRole('heading', { level: 1, name: 'Apprendre' })).toBeVisible()
   await expect(page.getByRole('heading', { level: 2 })).toHaveText([
+    '1. Comprendre les bases',
+    '2. Tester ses connaissances',
+    '3. Aller plus loin',
+  ])
+  await expect(page.getByRole('heading', { level: 3 })).toContainText([
     'Conciliateur ou médiateur ?',
     'Qui peut vous aider ?',
     'Questionnaires',
@@ -24,9 +29,17 @@ test('the hub sections follow the h1 > h2 heading order', async ({ page }) => {
   ])
 })
 
-test('the table of contents leads to each section', async ({ page }) => {
+test('the suggested path says where to start and leads to each step and section', async ({
+  page,
+}) => {
   await page.goto('/apprendre')
-  const toc = page.getByRole('navigation', { name: 'Sommaire' })
+  const path = page.getByRole('navigation', { name: 'Par où commencer ?' })
+  await expect(path.getByRole('listitem').first()).toContainText('1. Comprendre les bases')
+
+  for (const name of ['2. Tester ses connaissances', '3. Aller plus loin']) {
+    await path.getByRole('link', { name }).click()
+    await expect(page.getByRole('heading', { level: 2, name })).toBeInViewport()
+  }
   for (const name of [
     'Conciliateur ou médiateur ?',
     'Qui peut vous aider ?',
@@ -36,9 +49,10 @@ test('the table of contents leads to each section', async ({ page }) => {
     'Infos pratiques',
     'Sensibiliser en groupe',
   ]) {
-    await toc.getByRole('link', { name }).click()
-    await expect(page.getByRole('heading', { level: 2, name })).toBeInViewport()
+    await path.getByRole('link', { name, exact: true }).click()
+    await expect(page.getByRole('heading', { level: 3, name })).toBeInViewport()
   }
+  await expectNoAxeViolation(page)
 })
 
 test('a quiz can be answered up to its score, then restarted', async ({ page }) => {

@@ -68,9 +68,9 @@
 
 * Régler un litige à l'amiable (nuit #80)
   * Chiffres clés sourcés (Infostat Justice) : demandes aux conciliateurs, taux d'accord, nombre de conciliateurs, gratuité
-  * Est-ce obligatoire ? Tentative amiable préalable (art. 750-1 CPC) : sommes ≤ 5 000 €, troubles de voisinage, exceptions, garder une preuve
+  * Faut-il tenter l'amiable avant le juge ? Tentative amiable préalable (art. 750-1 CPC) : sommes ≤ 5 000 €, troubles de voisinage, exceptions, garder une preuve
   * Comparer les solutions : discussion, conciliation, médiation, médiation de la consommation, juge (qui aide, comment y accéder, coût, qui décide, durée, valeur de l'issue, point fort, limite)
-  * Pas à pas : conciliateur, médiateur de la consommation, médiation, médiation familiale (étapes numérotées, bon à savoir, sources)
+  * Les démarches étape par étape : conciliateur, médiateur de la consommation, médiation, médiation familiale (étapes numérotées, bon à savoir, sources)
   * Liste « Préparer son rendez-vous » à cocher (rien enregistré), imprimable
   * Liens vers « J’ai un conflit ? », « Qui peut vous aider ? » sur `/apprendre`, la mise en situation et le lexique
 
@@ -90,5 +90,5 @@
   * Page dédiée `/apprendre/lexique` (lien depuis `/apprendre`, « Apprendre » reste la page courante dans la navbar)
   * Recherche sans tenir compte des accents ni des majuscules (terme et variantes), nombre de résultats annoncé
   * Index alphabétique, termes groupés par lettre, ancre par terme (`/apprendre/lexique#mediation`), liens « Voir aussi » vers les termes liés
-* Sommaire en haut de page : liens vers chaque section (Conciliateur ou médiateur ?, Qui peut vous aider ?, Questionnaires, Mini-jeux, Lexique, Questions fréquentes, Infos pratiques, Sensibiliser en groupe)
+* Parcours conseillé en trois étapes (#106), qui sert aussi de sommaire : « Par où commencer ? » avec 1. Comprendre les bases (Conciliateur ou médiateur ?, Qui peut vous aider ?), 2. Tester ses connaissances (Questionnaires, Mini-jeux), 3. Aller plus loin (Lexique, Questions fréquentes, Infos pratiques, Sensibiliser en groupe) ; titres h1 > h2 étape > h3 section, une phrase d'introduction sous chaque section (#105)
 

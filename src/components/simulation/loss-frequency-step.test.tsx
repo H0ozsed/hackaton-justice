@@ -70,7 +70,7 @@ type User = ReturnType<typeof userEvent.setup>
 async function goToLossStep(user: User, typeLabel: string) {
   await user.click(screen.getByRole('radio', { name: typeLabel }))
   await user.click(screen.getByRole('button', { name: 'Suivant' }))
-  return screen.findByRole('heading', { level: 2, name: /Pertes et fréquence/ })
+  return screen.findByRole('heading', { level: 2, name: /Ce que le conflit vous coûte/ })
 }
 
 const money = () => screen.getByRole('textbox', { name: 'Montant estimé, en euros (€)' })
@@ -290,7 +290,7 @@ describe('losses and frequency step', () => {
       expect(screen.getByRole('radio', { name: 'Type commerce' })).toBeChecked()
 
       await user.click(screen.getByRole('button', { name: 'Suivant' }))
-      await screen.findByRole('heading', { level: 2, name: /Pertes et fréquence/ })
+      await screen.findByRole('heading', { level: 2, name: /Ce que le conflit vous coûte/ })
       expect(money()).toHaveValue('abc')
       expect(duration()).toHaveValue('3')
       expect(radioIn('Unité de la durée', 'Jours')).toBeChecked()
@@ -308,7 +308,7 @@ describe('losses and frequency step', () => {
       await screen.findByRole('heading', { level: 2, name: /Choix du type/ })
       await user.click(screen.getByRole('radio', { name: 'Type voisinage' }))
       await user.click(screen.getByRole('button', { name: 'Suivant' }))
-      await screen.findByRole('heading', { level: 2, name: /Pertes et fréquence/ })
+      await screen.findByRole('heading', { level: 2, name: /Ce que le conflit vous coûte/ })
 
       expect(screen.queryByRole('textbox')).not.toBeInTheDocument()
       expect(radioIn(FREQUENCY, 'Tous les jours ou presque')).toBeChecked()

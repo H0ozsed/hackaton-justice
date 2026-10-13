@@ -17,6 +17,8 @@ type FaqSectionProps = {
   title?: string
   /** Level of the section heading; questions are one level below. Match the page outline. */
   headingLevel?: Exclude<HeadingLevel, 6>
+  /** One sentence under the heading saying what the section holds (#105). */
+  intro?: string
   className?: string
 }
 
@@ -28,6 +30,7 @@ export function FaqSection({
   page,
   title = 'Questions fréquentes',
   headingLevel = 2,
+  intro = 'Les réponses courtes aux questions que l’on se pose le plus souvent.',
   className,
 }: FaqSectionProps) {
   const headingId = useId()
@@ -42,6 +45,7 @@ export function FaqSection({
       <Heading id={headingId} className="text-2xl font-bold">
         {title}
       </Heading>
+      <p className="text-muted-foreground">{intro}</p>
       <Accordion type="multiple" className="border-y">
         {entries.map((entry) => (
           <AccordionItem key={entry.slug} value={entry.slug}>
