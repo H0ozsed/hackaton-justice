@@ -9,16 +9,14 @@ const result = (title: string, text: string) => ({
 
 describe('SYSTEM_PROMPT', () => {
   it('gives IRIS its identity and a personality', () => {
-    expect(SYSTEM_PROMPT).toMatch(
-      /Tu es \*\*IRIS\*\* — Informer, Renseigner, Indiquer les Solutions/,
-    )
-    expect(SYSTEM_PROMPT).toMatch(/# Ta personnalité\n- Calme, bienveillant et rassurant/)
+    expect(SYSTEM_PROMPT).toMatch(/Tu es \*\*IRIS\*\* — Identifier, Rechercher, Informer, Suggérer/)
+    expect(SYSTEM_PROMPT).toMatch(/# Ta personnalité\n- Calme, bienveillante et rassurante/)
     expect(SYSTEM_PROMPT).toMatch(/Neutre : tu ne juges jamais/)
     expect(SYSTEM_PROMPT).toMatch(/Tu vouvoies toujours, en français/)
   })
 
   it('makes IRIS a guide: it orients, never advises, never decides', () => {
-    expect(SYSTEM_PROMPT).toMatch(/Tu es un guide, pas un conseiller/)
+    expect(SYSTEM_PROMPT).toMatch(/Tu es une guide, pas une conseillère/)
     expect(SYSTEM_PROMPT).toMatch(/donner un conseil personnel ou un avis juridique/)
     expect(SYSTEM_PROMPT).toMatch(/prendre une décision à la place de la personne/)
     expect(SYSTEM_PROMPT).toMatch(/tu ne garantis aucun résultat/)
