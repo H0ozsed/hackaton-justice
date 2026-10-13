@@ -65,7 +65,7 @@ proofread by the legal / content team before the demo.
   `relationship` in points). Every scene must be reachable from `startSceneId` and a scene
   cannot come back later in the same run (no loop): the check names the faulty scene.
   Staging, all optional (the pixel-art stage, #76): a scene can set its `location`
-  (`bedroom`, `landing`, `stairwell`, `lobby`, `town-hall`, `courthouse`, `new-home`,
+  (`bedroom`, `landing`, `stairwell`, `lobby`, `point-justice`, `courthouse`, `new-home`,
   `music-room`, `shop`, `office`; a
   neutral room when omitted) and its `period` (`morning`, `day`, `evening`, `night`: the
   lighting). A line can set the `emotion` of its speaker (`neutral`, `happy`, `angry`,

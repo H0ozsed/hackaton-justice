@@ -1,7 +1,8 @@
 import type { PracticalInfoInput } from './schema'
 
 // Field names in English, content in French (shown to users). See src/shared/README.md.
-// Facts checked against justice.fr and the DGCCRF (October 2026); to be proofread.
+// Facts checked against justice.fr and the DGCCRF (October 2026); to be proofread (#120).
+// Points-justice and CDAD: #94.
 export const practicalInfoData: PracticalInfoInput[] = [
   {
     slug: 'preparer-ses-documents',
@@ -12,8 +13,12 @@ export const practicalInfoData: PracticalInfoInput[] = [
   {
     slug: 'trouver-de-l-aide',
     title: 'Trouver de l’aide près de chez soi',
-    body: 'Le conciliateur de justice tient des permanences gratuites en mairie, au tribunal ou dans une maison de justice. Les points-justice proposent aussi des informations juridiques gratuites.',
+    body: 'Les points-justice offrent une information juridique gratuite et vous orientent vers la bonne démarche ; on peut y rencontrer un conciliateur de justice, gratuit, ou un médiateur. À La Réunion, ils sont coordonnés par le CDAD (conseil départemental de l’accès au droit).',
     links: [
+      {
+        label: 'L’accès au droit et les points-justice à La Réunion',
+        href: 'https://www.cours-appel.justice.fr/saint-denis/acces-au-droit-la-reunion',
+      },
       { label: 'Trouver un conciliateur de justice', href: 'https://www.conciliateurs.fr' },
       {
         label: 'Le conciliateur de justice sur justice.fr',

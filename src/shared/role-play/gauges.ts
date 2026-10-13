@@ -17,7 +17,7 @@ export type Gauges = {
 
 /** Labels shown in the HUD of the stage (French, shown to users). */
 export const GAUGE_LABELS: Record<keyof Gauges, string> = {
-  health: 'Santé',
+  health: 'Bien-être',
   relationship: 'Relation',
   money: 'Argent dépensé',
   time: 'Temps perdu',

@@ -30,7 +30,29 @@ describe('RoutesComparison', () => {
     const rows = within(table)
       .getAllByRole('rowheader')
       .map((h) => h.textContent)
-    expect(rows).toEqual(['Qui vous aide', 'Coût', 'Qui décide', 'Durée', 'Ce que vaut l’issue'])
+    expect(rows).toEqual([
+      'Qui vous aide',
+      'Comment y accéder',
+      'Coût',
+      'Qui décide',
+      'Durée',
+      'Ce que vaut l’issue',
+      'Point fort',
+      'Limite',
+    ])
+  })
+
+  it('compares a subset of routes with its own caption and without the scale', () => {
+    render(
+      <RoutesComparison
+        entries={[routes.get('conciliation'), routes.get('mediation')]}
+        caption="Conciliateur ou médiateur"
+        showScale={false}
+      />,
+    )
+    const table = screen.getByRole('table', { name: 'Conciliateur ou médiateur' })
+    expect(within(table).getAllByRole('columnheader')).toHaveLength(2)
+    expect(screen.queryByText('Vous gardez la main')).not.toBeInTheDocument()
   })
 
   it('says in words which routes are amicable (never by colour alone)', () => {

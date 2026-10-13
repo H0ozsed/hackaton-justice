@@ -17,6 +17,7 @@ export function LossFrequencyFields({ lossKinds }: { lossKinds: readonly LossKin
       <RadioGroupField
         name="frequency"
         legend="À quelle fréquence le conflit se produit-il ?"
+        hint="Un trouble qui se répète pèse plus lourd : cela aide à mesurer l’urgence."
         options={[...FREQUENCY_OPTIONS]}
       />
     </div>
@@ -64,7 +65,8 @@ function LossBlock({ kind }: { kind: LossKind }) {
         <LossGroup kind={kind}>
           <RadioGroupField
             name="health"
-            legend="Effet du conflit sur votre santé (stress, sommeil…)"
+            legend="Effet du conflit sur votre bien-être (stress, sommeil, fatigue…)"
+            hint="Votre ressenti suffit."
             options={[...IMPACT_OPTIONS]}
           />
         </LossGroup>
@@ -75,6 +77,7 @@ function LossBlock({ kind }: { kind: LossKind }) {
           <RadioGroupField
             name="relationship"
             legend="Effet du conflit sur vos relations (famille, voisinage, travail…)"
+            hint="Quand la relation compte, une médiation peut aider à la préserver."
             options={[...IMPACT_OPTIONS]}
           />
         </LossGroup>

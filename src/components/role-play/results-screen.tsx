@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react'
 
 import { Button } from '@/components/ui/button'
 import { formatLoss, type RolePlayResults } from '@/shared/role-play'
-import { LOSS_KIND_LABELS, type LossKind } from '@/shared/simulation'
+import { LOSS_KIND_DESCRIPTIONS, LOSS_KIND_LABELS, type LossKind } from '@/shared/simulation'
 
 import { RichText } from './rich-text'
 
@@ -70,6 +70,7 @@ export function ResultsScreen({
                   {LOSS_KIND_LABELS[kind]}
                 </dt>
                 <dd className="text-lg font-bold">{formatLoss(kind, losses[kind])}</dd>
+                <dd className="text-sm text-muted-foreground">{LOSS_KIND_DESCRIPTIONS[kind]}</dd>
               </div>
             )
           })}

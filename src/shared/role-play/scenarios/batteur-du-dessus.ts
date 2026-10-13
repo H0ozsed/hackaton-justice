@@ -147,7 +147,7 @@ export const batteurDuDessus: ScenarioInput = {
           text: 'Monsieur Martin, une lettre recommandée pour vous. Votre voisine du dessous est passée me voir, elle était à bout.',
         },
         {
-          text: 'Dans la lettre, votre voisine vous propose de rencontrer un [[conciliateur-de-justice|conciliateur de justice]], gratuitement, à la mairie.',
+          text: 'Dans la lettre, votre voisine vous propose de rencontrer un [[conciliateur-de-justice|conciliateur de justice]], gratuitement, au [[point-justice|point-justice]] du quartier.',
           effect: 'paper',
         },
       ],
@@ -217,8 +217,8 @@ export const batteurDuDessus: ScenarioInput = {
     // ---- Scene 5 -----------------------------------------------------------------
     {
       id: 'conciliation',
-      setting: 'À la mairie, permanence de la conciliatrice',
-      location: 'town-hall',
+      setting: 'Au point-justice, permanence de la conciliatrice',
+      location: 'point-justice',
       period: 'day',
       lines: [
         {
@@ -282,7 +282,7 @@ export const batteurDuDessus: ScenarioInput = {
         },
         { speaker: 'roche', text: 'Chacun repart avec un exemplaire. Bonne continuation !' },
       ],
-      location: 'town-hall',
+      location: 'point-justice',
       period: 'day',
       ending: { title: 'Accord chez la conciliatrice' },
     },

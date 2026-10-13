@@ -15,7 +15,7 @@ describe('LifeGauges', () => {
     )
     const items = within(screen.getByRole('list', { name: 'Vos jauges' })).getAllByRole('listitem')
     expect(items.map((i) => i.textContent)).toEqual([
-      'Santé7/107 sur 10',
+      'Bien-être7/107 sur 10',
       'Relation4/104 sur 10',
       'Argent dépensé150 €150 euros',
       'Temps perdu1 h1 heure',

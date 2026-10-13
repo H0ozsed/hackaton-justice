@@ -26,6 +26,8 @@ const channel = (slug: string, attributes: Partial<Channel>): Channel => ({
 const talk = channel('talk', {})
 const neutral = channel('neutral', {
   contact: { url: 'https://example.org/neutral', phone: '01 23 45 67 89' },
+  cost: 'Partagé entre les parties',
+  agreement: 'Homologable par le juge',
 })
 const court = channel('court', { amicable: false, free: false })
 const channels = [talk, neutral, court]
@@ -70,7 +72,26 @@ describe('simulation result screen', () => {
       expect(region).toHaveTextContent('Description du canal neutral.')
       expect(region).toHaveTextContent('Le canal conseillé')
       expect(region).toHaveTextContent('Voie amiable')
-      expect(region).toHaveTextContent('Gratuit')
+      // Its detailed cost replaces the short "Gratuit" label (never said twice).
+      expect(region).not.toHaveTextContent('Gratuit')
+      expect(region).toHaveTextContent('Coût : Partagé entre les parties')
+    })
+
+    it('says who pays and what the agreement is worth, when the content says it', () => {
+      renderResult(answers('yes', 'unknown'))
+
+      const region = screen.getByRole('region', { name: 'Canal neutral' })
+      expect(region).toHaveTextContent('Coût : Partagé entre les parties')
+      expect(region).toHaveTextContent('Valeur de l’accord : Homologable par le juge')
+    })
+
+    it('points to free information before choosing (points-justice, CDAD)', () => {
+      renderResult(answers('no', 'no'))
+
+      const region = screen.getByRole('region', { name: 'Besoin d’en parler avant de choisir ?' })
+      expect(region).toHaveTextContent('CDAD')
+      expect(within(region).getByRole('link')).toHaveAttribute('target', '_blank')
+      expect(within(region).getByRole('link')).toHaveAccessibleName(/nouvelle fenêtre/)
     })
 
     it('says in words when it is a judicial channel that can cost something', () => {
@@ -173,7 +194,7 @@ describe('simulation result screen', () => {
   describe('start over, and edge cases', () => {
     it('lets the person start over', async () => {
       const { user, onRestart } = renderResult(answers('yes', 'yes'))
-      await user.click(screen.getByRole('button', { name: 'Recommencer la simulation' }))
+      await user.click(screen.getByRole('button', { name: 'Recommencer le questionnaire' }))
       expect(onRestart).toHaveBeenCalledOnce()
     })
 
@@ -185,7 +206,7 @@ describe('simulation result screen', () => {
       ).toBeInTheDocument()
       expect(screen.getByRole('region', { name: 'Canal neutral' })).toBeInTheDocument()
       expect(screen.queryByRole('region', { name: 'Vos réponses' })).not.toBeInTheDocument()
-      await user.click(screen.getByRole('button', { name: 'Recommencer la simulation' }))
+      await user.click(screen.getByRole('button', { name: 'Recommencer le questionnaire' }))
       expect(onRestart).toHaveBeenCalled()
     })
 
@@ -196,7 +217,9 @@ describe('simulation result screen', () => {
       expect(
         screen.getByText('Aucun canal d’orientation n’est disponible pour le moment.'),
       ).toBeInTheDocument()
-      expect(screen.getByRole('button', { name: 'Recommencer la simulation' })).toBeInTheDocument()
+      expect(
+        screen.getByRole('button', { name: 'Recommencer le questionnaire' }),
+      ).toBeInTheDocument()
     })
   })
 
@@ -209,6 +232,7 @@ describe('simulation result screen', () => {
         'Canal neutral',
         'Pourquoi ce canal ?',
         'Autres pistes',
+        'Besoin d’en parler avant de choisir ?',
         'Vos réponses',
       ])
     })
@@ -277,7 +301,7 @@ describe('from the form to the result', () => {
   it('starts over from the result, back to the first step with nothing kept', async () => {
     const user = renderFlow()
     await answerAll(user, 'Oui', 'Oui')
-    await user.click(await screen.findByRole('button', { name: 'Recommencer la simulation' }))
+    await user.click(await screen.findByRole('button', { name: 'Recommencer le questionnaire' }))
 
     expect(await screen.findByRole('heading', { level: 2, name: /Type de conflit/ })).toHaveFocus()
     expect(screen.getByRole('radio', { name: 'Type commerce' })).not.toBeChecked()

@@ -207,7 +207,7 @@ answers of the openness step.
 - The screen says why (what the person answered, what the route means, whether the channel is
   free), lists the other channels, recalls the answers (`summarizeAnswers`), gives the contact
   details (the website opens in a new window, said in the link text) and says the orientation is
-  indicative. "Recommencer la simulation" starts over (`onRestart`).
+  indicative. "Recommencer le questionnaire" starts over (`onRestart`).
 
 ## Tests
 

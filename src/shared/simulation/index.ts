@@ -1,7 +1,7 @@
 import { assertReferences, defineCollection } from '@/lib/content'
 
-import { channelsData, conflictTypesData } from './data'
-import { channelSchema, conflictTypeSchema, type LossKind } from './schema'
+import { channelsData, conflictTypesData, freeInformationData } from './data'
+import { channelSchema, conflictTypeSchema, freeInformationSchema, type LossKind } from './schema'
 
 export type { Channel, ConflictType, LossKind, Question } from './schema'
 export { lossKindSchema, questionSchema } from './schema'
@@ -12,6 +12,8 @@ export const conflictTypes = defineCollection(
   conflictTypesData,
 )
 export const channels = defineCollection('channels', channelSchema, channelsData)
+
+export const freeInformation = freeInformationSchema.parse(freeInformationData)
 
 assertReferences(
   'channels',
@@ -25,8 +27,16 @@ assertReferences(
 export const LOSS_KIND_LABELS: Record<LossKind, string> = {
   money: 'Argent',
   time: 'Temps',
-  health: 'Santé',
+  health: 'Bien-être',
   relationship: 'Relations',
+}
+
+/** What each loss kind measures, in one line (results of the role-play, simulation). */
+export const LOSS_KIND_DESCRIPTIONS: Record<LossKind, string> = {
+  money: 'Ce que le conflit coûte : frais, réparations, démarches payantes.',
+  time: 'Le temps passé à cause du conflit : démarches, rendez-vous, attente.',
+  health: 'Votre état personnel : stress, sommeil, fatigue, tension accumulée.',
+  relationship: 'L’état de la relation avec l’autre partie et avec votre entourage.',
 }
 
 export { answerSchema, followUpAnswersSchema, type FollowUpAnswers } from './answers'

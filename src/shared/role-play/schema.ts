@@ -39,7 +39,7 @@ export const locationSchema = z.enum([
   'landing',
   'stairwell',
   'lobby',
-  'town-hall',
+  'point-justice',
   'courthouse',
   'new-home',
   'music-room',

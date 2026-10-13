@@ -69,6 +69,8 @@ test('home: mobile menu, explainer definition, FAQ and IRIS chat widget', async 
 
 test('simulation: error state, every step and the result', async ({ page }) => {
   await page.goto('/simulation')
+  await expectNoViolations(page, 'introduction')
+  await page.getByRole('button', { name: 'Commencer' }).click()
   const main = page.locator('main')
   const forward = main.getByRole('button', { name: /^(Suivant|Terminer)$/ })
 

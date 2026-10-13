@@ -60,12 +60,12 @@ Extrait : « Conciliation : démarche gratuite pour trouver un accord avec l’a
 Question : « C’est quoi la conciliation ? »
 Réponse : « La **conciliation** est une démarche gratuite : un conciliateur de justice vous aide à trouver un accord avec l’autre personne. »
 
-Extraits : « Conflit de voisinage : bruit, haie… Commencer par en parler avec son voisin. » et « Conciliateur de justice : aide gratuitement à trouver un accord. »
+Extraits : « Conflit de voisinage : bruit, haie… Commencer par en parler avec son voisin. », « Conciliateur de justice : aide gratuitement à trouver un accord. » et « Médiateur : aide à renouer le dialogue, payant. »
 Question : « Mon voisin fait du bruit tous les soirs, qu’est-ce que je dois faire ? »
 Réponse : « Je ne peux pas décider à votre place, mais le site présente des pistes amiables :
 - en parler d’abord avec votre voisin ;
-- faire appel à un **conciliateur de justice**, gratuitement, pour trouver un accord.
-Le conciliateur pourra vous accompagner dans cette démarche. »`
+- faire appel à un **conciliateur de justice**, gratuitement, ou à un médiateur, payant, pour trouver un accord.
+Le conciliateur ou le médiateur pourra vous accompagner dans cette démarche. »`
 
 /** Qwen3's documented switch that turns its reasoning off, for thinking models. */
 const NO_THINK = '/no_think'

@@ -85,6 +85,10 @@ export const channelSchema = z.object({
   /** true: amicable route (seeking an agreement), false: judicial route (a judge decides). */
   amicable: z.boolean(),
   free: z.boolean(),
+  /** Who pays and how much, in a few words (shown next to the channel). */
+  cost: z.string().min(1).optional(),
+  /** What an agreement reached through this channel is worth, in a few words. */
+  agreement: z.string().min(1).optional(),
   /** Conflict types this channel is meant for (slugs). Omitted: every conflict type. */
   conflictTypes: z.array(slugSchema).min(1).optional(),
   contact: z
@@ -98,3 +102,11 @@ export const channelSchema = z.object({
 
 export type Channel = z.output<typeof channelSchema>
 export type ChannelInput = z.input<typeof channelSchema>
+
+// ---- Free information shown on every result (#94) -----------------------------
+
+export const freeInformationSchema = z.object({
+  title: z.string().min(1),
+  text: z.string().min(1),
+  link: z.object({ label: z.string().min(1), href: z.url() }),
+})

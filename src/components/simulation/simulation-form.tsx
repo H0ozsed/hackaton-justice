@@ -10,9 +10,12 @@ import { useSimulation } from './use-simulation'
 export function SimulationForm({
   steps,
   ResultView,
+  autoFocus = false,
 }: {
   steps: SimulationStep[]
   ResultView: ComponentType<ResultViewProps>
+  /** Moves the focus to the first step's title on mount (after an introduction screen). */
+  autoFocus?: boolean
 }) {
   const simulation = useSimulation(steps)
 
@@ -31,7 +34,7 @@ export function SimulationForm({
             steps={steps}
             answers={simulation.answers}
             defaultValues={simulation.defaultValues}
-            focusHeading={simulation.navigated}
+            focusHeading={simulation.navigated || autoFocus}
             onSubmit={simulation.submit}
             onBack={simulation.back}
           />

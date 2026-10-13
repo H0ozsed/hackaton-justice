@@ -243,11 +243,11 @@ export const whoStatementsData: WhoStatementInput[] = [
       'Condamner est le rôle du juge. Le conciliateur et le médiateur n’ont aucun pouvoir de sanction.',
   },
   {
-    slug: 'mairie',
-    statement: 'On le rencontre souvent en mairie ou dans une maison de justice.',
+    slug: 'point-justice',
+    statement: 'Il est bénévole et on le contacte directement, par exemple dans un point-justice.',
     actors: ['conciliator'],
     explanation:
-      'Les conciliateurs tiennent des permanences en mairie, au tribunal ou en maison de justice. On les trouve sur conciliateurs.fr.',
+      'Le conciliateur de justice est un bénévole gratuit. On le contacte soi-même et on le rencontre sur rendez-vous, par exemple dans un point-justice ou au tribunal. On le trouve sur conciliateurs.fr.',
   },
   {
     slug: 'ordonne',

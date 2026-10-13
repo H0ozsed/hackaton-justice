@@ -44,9 +44,15 @@ async function answerFirstChoices(page: Page) {
 const OWN_QUESTION = /Seriez-vous prêt\(e\) à discuter/
 const OTHER_QUESTION = /l’autre partie serait-elle prête/
 
+/** Opens « Ma situation ? » and leaves the introduction for the first question. */
+async function openForm(page: Page) {
+  await page.goto('/simulation')
+  await page.getByRole('button', { name: 'Commencer' }).click()
+}
+
 /** Goes through every step; the openness step gets the answers given, the others the first ones. */
 async function runJourney(page: Page, { own, other }: { own: string; other: string }) {
-  await page.goto('/simulation')
+  if (!(await stepTitle(page).isVisible())) await openForm(page)
   for (let step = 0; step < 20 && !(await result(page).isVisible()); step++) {
     const before = await stepTitle(page).textContent()
     const openness = page.getByRole('radiogroup', { name: OWN_QUESTION })
@@ -71,7 +77,12 @@ async function runJourney(page: Page, { own, other }: { own: string; other: stri
 
 test('a full journey up to the orientation, then start over', async ({ page }) => {
   await page.goto('/simulation')
-  await expect(page.getByRole('heading', { level: 1, name: 'Simulation' })).toBeVisible()
+  await expect(page.getByRole('heading', { level: 1, name: 'Ma situation ?' })).toBeVisible()
+  await expect(page.getByRole('heading', { level: 2, name: 'Comment ça marche ?' })).toBeVisible()
+  await expectNoAxeViolation(page) // introduction
+
+  await page.getByRole('button', { name: 'Commencer' }).click()
+  await expect(stepTitle(page)).toBeFocused()
   await expectNoAxeViolation(page) // first step
 
   await runJourney(page, { own: 'Oui', other: 'Oui' })
@@ -82,7 +93,7 @@ test('a full journey up to the orientation, then start over', async ({ page }) =
   await expect(result(page).getByRole('heading', { name: 'Vos réponses' })).toBeVisible()
   await expectNoAxeViolation(page) // orientation
 
-  await page.getByRole('button', { name: 'Recommencer la simulation' }).click()
+  await page.getByRole('button', { name: 'Recommencer le questionnaire' }).click()
   await expect(stepTitle(page)).toBeFocused()
   await expect(stepTitle(page)).toContainText('Étape 1 sur')
   await expect(page.getByRole('radio', { checked: true })).toHaveCount(0)
@@ -107,7 +118,7 @@ test.describe('the openness answers decide the orientation', () => {
 })
 
 test('an empty step is refused with a clear message, and can be fixed', async ({ page }) => {
-  await page.goto('/simulation')
+  await openForm(page)
   await goOn(page).click()
 
   // Inside <main>: Next adds its own role="alert" element (route announcer) to the page.
@@ -122,7 +133,7 @@ test('an empty step is refused with a clear message, and can be fixed', async ({
 })
 
 test('going back keeps the answers', async ({ page }) => {
-  await page.goto('/simulation')
+  await openForm(page)
   const firstChoice = page.getByRole('radiogroup').getByRole('radio').first()
   await firstChoice.check()
   await goOn(page).click()
