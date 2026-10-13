@@ -18,7 +18,8 @@ read on the site).
 | Amicable guides (`/demarches`)             | `amicable/data.ts`                         |
 | Role-play scenarios (`/mise-en-situation`) | `role-play/data.ts`                        |
 
-The current entries are **examples** (prefixed `EXEMPLE`) to be replaced.
+The content is real and sourced (sources in a comment at the top of each `data.ts`); it must be
+proofread by the legal / content team before the demo.
 
 ## Adding an entry
 

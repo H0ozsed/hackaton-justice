@@ -17,7 +17,7 @@ export function PracticalInfoSection({
       </h2>
       <ul className="mt-6 grid gap-6 md:grid-cols-2">
         {entries.map(({ slug, title, body, links }) => (
-          <li key={slug} className="rounded-lg border-2 border-border bg-card p-6">
+          <li key={slug} className="min-w-0 rounded-lg border-2 border-border bg-card p-6">
             <h3 className="text-xl font-bold">{title}</h3>
             <p className="mt-2 whitespace-pre-line">{body}</p>
             {links.length > 0 && (
@@ -36,8 +36,10 @@ export function PracticalInfoSection({
   )
 }
 
+// Inline (not inline-flex): a long label wraps like text instead of pushing the icon out of
+// narrow cards (320 px, text at 200 %).
 const linkClassName =
-  'inline-flex items-center gap-1 font-medium break-words text-france-blue underline underline-offset-4 hover:decoration-2'
+  'font-medium break-words text-france-blue underline underline-offset-4 hover:decoration-2'
 
 function InfoLink({ label, href }: { label: string; href: string }) {
   if (!isExternalLink(href)) {
@@ -54,7 +56,7 @@ function InfoLink({ label, href }: { label: string; href: string }) {
     <a href={href} target="_blank" rel="noopener noreferrer" className={linkClassName}>
       {label}
       <span className="sr-only"> (nouvelle fenêtre)</span>
-      <ExternalLinkIcon aria-hidden className="size-4 shrink-0" />
+      <ExternalLinkIcon aria-hidden className="ml-1 inline size-4 align-[-0.125em]" />
     </a>
   )
 }
