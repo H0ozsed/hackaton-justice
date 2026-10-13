@@ -83,5 +83,5 @@ export const FOOTER_NAV: NavItem[] = [
   { href: '/mentions-legales', label: 'Mentions légales' },
   { href: '/confidentialite', label: 'Données personnelles' },
   { href: '/cookies', label: 'Cookies' },
-  { href: '/accessibilite', label: 'Accessibilité : non conforme' },
+  { href: '/accessibilite', label: 'Accessibilité' },
 ]
