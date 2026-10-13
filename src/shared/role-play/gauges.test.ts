@@ -91,7 +91,7 @@ describe('describeGaugeChange', () => {
   it('describes every change in one French sentence', () => {
     const after = gaugesAfter(scenario, [{ sceneId: 'a', choiceId: 'cher' }])
     expect(describeGaugeChange(INITIAL_GAUGES, after)).toBe(
-      'Santé moins 3, Relation moins 2, 150 euros dépensés, 4 heures perdues.',
+      'Bien-être moins 3, Relation moins 2, 150 euros dépensés, 4 heures perdues.',
     )
   })
 

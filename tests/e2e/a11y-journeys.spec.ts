@@ -69,6 +69,8 @@ test('home: mobile menu, explainer definition, FAQ and IRIS chat widget', async 
 
 test('simulation: error state, every step and the result', async ({ page }) => {
   await page.goto('/simulation')
+  await expectNoViolations(page, 'introduction')
+  await page.getByRole('button', { name: 'Commencer' }).click()
   const main = page.locator('main')
   const forward = main.getByRole('button', { name: /^(Suivant|Terminer)$/ })
 
@@ -94,6 +96,13 @@ test('simulation: error state, every step and the result', async ({ page }) => {
     await expectNoViolations(page, `after step ${step}`)
   }
   await expect(forward).toHaveCount(0)
+
+  await main
+    .getByRole('radiogroup', { name: /Quelle solution correspond/ })
+    .getByRole('radio')
+    .first()
+    .check()
+  await expectNoViolations(page, 'result with a solution chosen')
 })
 
 test('role-play: a full game until the results', async ({ page }) => {

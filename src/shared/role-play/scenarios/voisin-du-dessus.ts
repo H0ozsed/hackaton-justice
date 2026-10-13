@@ -239,7 +239,7 @@ export const voisinDuDessus: ScenarioInput = {
         },
         {
           speaker: 'diallo',
-          text: 'Vous savez qu’il existe un [[conciliateur-de-justice|conciliateur de justice]] à la mairie ? C’est gratuit, et il reçoit les deux voisins ensemble.',
+          text: 'Vous savez qu’il existe un [[conciliateur-de-justice|conciliateur de justice]] au [[point-justice|point-justice]] du quartier ? C’est gratuit, et il reçoit les deux voisins ensemble.',
           emotion: 'happy',
         },
       ],
@@ -333,8 +333,8 @@ export const voisinDuDessus: ScenarioInput = {
     // ---- Scene 4 ---------------------------------------------------------------
     {
       id: 'conciliation',
-      setting: 'À la mairie, permanence de la conciliatrice',
-      location: 'town-hall',
+      setting: 'Au point-justice, permanence de la conciliatrice',
+      location: 'point-justice',
       period: 'day',
       lines: [
         {
@@ -397,7 +397,7 @@ export const voisinDuDessus: ScenarioInput = {
     },
     {
       id: 'fin-accord',
-      location: 'town-hall',
+      location: 'point-justice',
       period: 'day',
       lines: [
         {
@@ -417,7 +417,7 @@ export const voisinDuDessus: ScenarioInput = {
     },
     {
       id: 'fin-echec',
-      location: 'town-hall',
+      location: 'point-justice',
       period: 'day',
       lines: [
         { speaker: 'martin', emotion: 'angry', text: 'Arrêter complètement ? Hors de question.' },

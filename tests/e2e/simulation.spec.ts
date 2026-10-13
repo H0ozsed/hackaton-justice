@@ -44,9 +44,15 @@ async function answerFirstChoices(page: Page) {
 const OWN_QUESTION = /Seriez-vous prêt\(e\) à discuter/
 const OTHER_QUESTION = /l’autre partie serait-elle prête/
 
+/** Opens « Ma situation ? » and leaves the introduction for the first question. */
+async function openForm(page: Page) {
+  await page.goto('/simulation')
+  await page.getByRole('button', { name: 'Commencer' }).click()
+}
+
 /** Goes through every step; the openness step gets the answers given, the others the first ones. */
 async function runJourney(page: Page, { own, other }: { own: string; other: string }) {
-  await page.goto('/simulation')
+  if (!(await stepTitle(page).isVisible())) await openForm(page)
   for (let step = 0; step < 20 && !(await result(page).isVisible()); step++) {
     const before = await stepTitle(page).textContent()
     const openness = page.getByRole('radiogroup', { name: OWN_QUESTION })
@@ -71,43 +77,51 @@ async function runJourney(page: Page, { own, other }: { own: string; other: stri
 
 test('a full journey up to the orientation, then start over', async ({ page }) => {
   await page.goto('/simulation')
-  await expect(page.getByRole('heading', { level: 1, name: 'Simulation' })).toBeVisible()
+  await expect(page.getByRole('heading', { level: 1, name: 'Ma situation ?' })).toBeVisible()
+  await expect(page.getByRole('heading', { level: 2, name: 'Comment ça marche ?' })).toBeVisible()
+  await expectNoAxeViolation(page) // introduction
+
+  await page.getByRole('button', { name: 'Commencer' }).click()
+  await expect(stepTitle(page)).toBeFocused()
   await expectNoAxeViolation(page) // first step
 
   await runJourney(page, { own: 'Oui', other: 'Oui' })
   await expect(result(page)).toBeFocused()
   await expect(page.getByRole('heading', { level: 2, name: 'Votre orientation' })).toBeVisible()
-  await expect(result(page).getByText('Le canal conseillé')).toBeVisible()
-  await expect(result(page).getByRole('heading', { name: 'Pourquoi ce canal ?' })).toBeVisible()
+  await expect(result(page).getByRole('heading', { name: 'Qui peut vous aider ?' })).toBeVisible()
   await expect(result(page).getByRole('heading', { name: 'Vos réponses' })).toBeVisible()
-  await expectNoAxeViolation(page) // orientation
+  await expectNoAxeViolation(page) // solutions, none chosen
 
-  await page.getByRole('button', { name: 'Recommencer la simulation' }).click()
+  // The person chooses: the details show, what the law says first.
+  const solutions = result(page).getByRole('radiogroup', { name: /Quelle solution correspond/ })
+  await expect(solutions.getByRole('radio', { checked: true })).toHaveCount(0)
+  await solutions.getByRole('radio').nth(1).check()
+  const chosen = result(page).getByText('La solution choisie')
+  await expect(chosen).toBeVisible()
+  await expect(result(page).getByRole('term').first()).toHaveText('Ce que dit la loi')
+  await expectNoAxeViolation(page) // solution chosen
+
+  await page.getByRole('button', { name: 'Recommencer le questionnaire' }).click()
   await expect(stepTitle(page)).toBeFocused()
   await expect(stepTitle(page)).toContainText('Étape 1 sur')
   await expect(page.getByRole('radio', { checked: true })).toHaveCount(0)
 })
 
-test.describe('the openness answers decide the orientation', () => {
-  const cases = [
-    { own: 'Oui', other: 'Oui', route: /en parler directement/ },
-    { own: 'Oui', other: 'Je ne sais pas', route: /l’aide d’une personne neutre/ },
-    { own: 'Non', other: 'Oui', route: /la voie judiciaire/ },
-  ]
-
-  for (const { own, other, route } of cases) {
-    test(`you: ${own}, the other party: ${other}`, async ({ page }) => {
-      await runJourney(page, { own, other })
-
-      const why = result(page).getByRole('region', { name: 'Pourquoi ce canal ?' })
-      await expect(why).toContainText(route)
-      await expect(result(page).getByRole('region', { name: 'Vos réponses' })).toContainText(own)
-    })
+test('the openness answers never choose for the person', async ({ page }) => {
+  for (const { own, other } of [
+    { own: 'Oui', other: 'Oui' },
+    { own: 'Non', other: 'Non' },
+  ]) {
+    await runJourney(page, { own, other })
+    const solutions = result(page).getByRole('radiogroup', { name: /Quelle solution correspond/ })
+    await expect(solutions.getByRole('radio', { checked: true })).toHaveCount(0)
+    await expect(result(page).getByRole('region', { name: 'Vos réponses' })).toContainText(own)
+    await page.getByRole('button', { name: 'Recommencer le questionnaire' }).click()
   }
 })
 
 test('an empty step is refused with a clear message, and can be fixed', async ({ page }) => {
-  await page.goto('/simulation')
+  await openForm(page)
   await goOn(page).click()
 
   // Inside <main>: Next adds its own role="alert" element (route announcer) to the page.
@@ -122,7 +136,7 @@ test('an empty step is refused with a clear message, and can be fixed', async ({
 })
 
 test('going back keeps the answers', async ({ page }) => {
-  await page.goto('/simulation')
+  await openForm(page)
   const firstChoice = page.getByRole('radiogroup').getByRole('radio').first()
   await firstChoice.check()
   await goOn(page).click()

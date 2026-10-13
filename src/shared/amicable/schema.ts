@@ -26,12 +26,17 @@ export const routeSchema = z.object({
   amicable: z.boolean(),
   /** Who helps you. */
   helper: z.string().min(1),
+  /** How to reach this route. */
+  access: z.string().min(1),
   cost: z.string().min(1),
   /** Who decides the outcome. */
   decides: z.string().min(1),
   duration: z.string().min(1),
   /** What the agreement or decision is worth. */
   outcome: z.string().min(1),
+  /** Its main advantage, then its main limit (conciliator vs mediator comparison, #108). */
+  strengths: z.string().min(1),
+  limits: z.string().min(1),
 })
 
 export const guideSchema = z.object({

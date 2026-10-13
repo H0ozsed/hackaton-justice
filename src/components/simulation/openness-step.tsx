@@ -15,6 +15,7 @@ function OpennessFields() {
       <RadioGroupField
         name="userOpenness"
         legend="Seriez-vous prêt(e) à discuter avec l’autre partie pour trouver un accord ?"
+        hint="Directement ou avec l’aide d’une personne neutre, comme un conciliateur ou un médiateur."
         options={USER_OPENNESS_OPTIONS}
       />
       <RadioGroupField

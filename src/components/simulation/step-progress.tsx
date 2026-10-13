@@ -7,7 +7,7 @@ export function StepProgress({ position, total }: { position: number; total: num
     <div className="space-y-2">
       <div
         role="progressbar"
-        aria-label="Progression de la simulation"
+        aria-label="Progression du questionnaire"
         aria-valuemin={1}
         aria-valuemax={total}
         aria-valuenow={position}

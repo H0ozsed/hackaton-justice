@@ -4,7 +4,7 @@ import { glossary } from '@/shared/glossary'
 import { about, explainer, explainerText, journeyFor, orientation } from '@/shared/home'
 import { practicalInfo } from '@/shared/practical-info'
 import { quizzes } from '@/shared/quiz'
-import { channels, conflictTypes } from '@/shared/simulation'
+import { CHANNEL_FAMILY_LABELS, channels, conflictTypes } from '@/shared/simulation'
 
 // IRIS's knowledge base: one chunk per content entry of src/shared. Nothing else
 // is indexed, so IRIS can only rephrase what the site already says.
@@ -150,16 +150,23 @@ export function buildChunks(): Chunk[] {
         domain: 'channel',
         title: channel.name,
         text: lines(
-          `Interlocuteur : ${channel.name}`,
+          `Qui peut vous aider : ${channel.name} (${CHANNEL_FAMILY_LABELS[channel.family]})`,
+          channel.law && `Ce que dit la loi : ${channel.law.text}`,
+          channel.law && `Textes : ${channel.law.references.join(' ; ')}`,
           channel.description,
+          `C’est pour vous si : ${channel.forYouIf}`,
+          channel.disputes.length > 0 && `Litiges concernés : ${channel.disputes.join(' ; ')}`,
+          channel.excluded.length > 0 && `Ne traite pas : ${channel.excluded.join(' ; ')}`,
+          channel.access && `Comment y accéder : ${channel.access}`,
           channel.amicable
             ? 'Voie amiable : on cherche un accord.'
             : 'Voie judiciaire : un juge décide.',
-          channel.free ? 'Gratuit.' : 'Payant.',
+          channel.cost ? `Coût : ${channel.cost}.` : channel.free ? 'Gratuit.' : 'Payant.',
+          channel.agreement && `Valeur de l’accord : ${channel.agreement}.`,
           channel.contact?.url && `Site : ${channel.contact.url}`,
           channel.contact?.phone && `Téléphone : ${channel.contact.phone}`,
         ),
-        url: '/simulation',
+        url: '/apprendre#qui-peut-vous-aider',
       })),
     ...quizzes.all.flatMap((quiz) =>
       quiz.questions
@@ -201,10 +208,13 @@ export function buildChunks(): Chunk[] {
       text: lines(
         `Solution : ${route.name} (${route.amicable ? 'voie amiable' : 'voie judiciaire'})`,
         `Qui vous aide : ${route.helper}`,
+        `Comment y accéder : ${route.access}`,
         `Coût : ${route.cost}`,
         `Qui décide : ${route.decides}`,
         `Durée : ${route.duration}`,
         `Ce que vaut l’issue : ${route.outcome}`,
+        `Point fort : ${route.strengths}`,
+        `Limite : ${route.limits}`,
       ),
       url: '/demarches#comparer',
     })),

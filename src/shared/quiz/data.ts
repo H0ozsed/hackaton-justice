@@ -6,7 +6,7 @@ export const quizzesData: QuizInput[] = [
   {
     slug: 'bases',
     title: 'Les bases de l’amiable',
-    description: 'Six questions pour savoir comment régler un litige sans aller devant le juge.',
+    description: 'Sept questions pour savoir comment régler un litige sans aller devant le juge.',
     questions: [
       {
         id: 'cout-conciliateur',
@@ -57,8 +57,25 @@ export const quizzesData: QuizInput[] = [
         ],
         correctChoiceIds: ['homologue'],
         explanation:
-          'Signé, l’accord engage les parties. Homologué par le juge, il a la même force qu’un jugement et peut être exécuté de force.',
-        glossary: ['homologation'],
+          'Signé, l’accord engage les parties. À leur demande, le juge peut l’homologuer, après une médiation comme après une conciliation : il a alors force exécutoire, comme un jugement.',
+        glossary: ['homologation', 'force-executoire'],
+      },
+      {
+        id: 'conciliateur-ou-mediateur',
+        prompt: 'Quelle différence entre le conciliateur de justice et le médiateur ?',
+        choices: [
+          { id: 'cout', label: 'Le conciliateur est gratuit, le médiateur est en général payant' },
+          {
+            id: 'propose',
+            label:
+              'Le conciliateur peut proposer des solutions, le médiateur aide les parties à construire la leur',
+          },
+          { id: 'tranche', label: 'Le médiateur tranche le litige comme un juge' },
+        ],
+        correctChoiceIds: ['cout', 'propose'],
+        explanation:
+          'Les deux sont neutres et ne tranchent pas. Le conciliateur, bénévole, est gratuit ; le médiateur, professionnel, est payé par les parties, en général à parts égales. Si le juge désigne un médiateur, c’est avec l’accord des parties, et l’aide juridictionnelle peut le prendre en charge.',
+        glossary: ['conciliateur-de-justice', 'mediateur'],
       },
       {
         id: 'confidentiel',

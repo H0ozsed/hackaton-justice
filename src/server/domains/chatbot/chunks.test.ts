@@ -60,7 +60,7 @@ describe('buildChunks', () => {
     const chunk = chunks.find((c) => c.id === 'home:par-ou-commencer')
     expect(chunk?.url).toBe('/#par-ou-commencer')
     expect(chunk?.text).toContain(
-      'Je vis un conflit en ce moment : parcours Simulation (/simulation)',
+      'Je vis un conflit en ce moment : parcours Ma situation ? (/simulation)',
     )
   })
 
