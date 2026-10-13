@@ -165,13 +165,12 @@ export function IrisWidget({
         }}
         className="fixed inset-x-2 bottom-20 z-40 flex max-h-[min(36rem,calc(100dvh-6rem))] flex-col rounded-lg border-2 border-france-blue bg-background shadow-xl sm:inset-x-auto sm:right-4 sm:w-96"
       >
-        <header className="flex items-start justify-between gap-2 border-b px-4 py-3">
-          <div>
-            <h2 id={titleId} className="text-lg font-bold text-france-blue">
-              {IRIS.name}
-            </h2>
-            <p className="text-sm text-muted-foreground">{IRIS.tagline}</p>
-          </div>
+        {/* The tagline gets the full width of the panel (below the buttons): the four
+            words of the acronym fit on one line. */}
+        <header className="grid grid-cols-[1fr_auto] items-center gap-x-2 border-b px-4 py-3">
+          <h2 id={titleId} className="text-lg font-bold text-france-blue">
+            {IRIS.name}
+          </h2>
           <div className="flex gap-1">
             <Button variant="ghost" size="icon-lg" onClick={reset} disabled={messages.length === 0}>
               <RotateCcwIcon aria-hidden />
@@ -182,6 +181,7 @@ export function IrisWidget({
               <span className="sr-only">Fermer IRIS</span>
             </Button>
           </div>
+          <p className="col-span-2 text-xs text-muted-foreground sm:text-sm">{IRIS.tagline}</p>
         </header>
 
         <p className="bg-france-blue-4 px-4 py-2 text-xs">{IRIS.notice}</p>
