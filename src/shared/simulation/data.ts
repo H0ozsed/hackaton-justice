@@ -463,10 +463,10 @@ export const channelsData: ChannelInput[] = [
       'Famille (hors violences)',
     ],
     excluded: ['Droit pénal'],
-    // Structures rather than individual mediators, whose contacts are hard to get (#124).
-    // TO VALIDATE (#120): where people in La Réunion are oriented to a mediation structure.
+    // Mediators are reached through mediation centres, not individually nor through a
+    // point-justice (#124, feedback of 13 Oct 2026). TO VALIDATE (#120).
     access:
-      'Passez par une structure plutôt que de chercher un médiateur seul : un point-justice vous informe gratuitement et vous oriente vers une association ou un service de médiation. Chaque cour d’appel publie aussi une liste de médiateurs. Pendant un procès, le juge peut en désigner un, avec votre accord.',
+      'Adressez-vous directement à un centre ou une association de médiation : il vous met en relation avec l’un de ses médiateurs. Chaque cour d’appel publie aussi une liste de médiateurs. Pendant un procès, le juge peut en désigner un, avec votre accord.',
     amicable: true,
     free: false,
     cost: 'Payant : honoraires fixés avec les parties et partagés à parts égales sauf accord ou décision du juge ; l’aide juridictionnelle peut prendre en charge une médiation ordonnée par le juge',
@@ -688,7 +688,7 @@ export const channelsData: ChannelInput[] = [
 /** Free information before choosing (#94): shown on every result of the simulation. */
 export const freeInformationData = {
   title: 'Besoin d’en parler avant de choisir ?',
-  text: 'Les points-justice vous informent gratuitement sur vos droits et vous orientent vers le bon interlocuteur : conciliateur, médiateur, avocat. À La Réunion, ils sont coordonnés par le CDAD (conseil départemental de l’accès au droit).',
+  text: 'Les points-justice vous informent gratuitement sur vos droits et vous orientent vers la bonne démarche ; on y rencontre souvent un conciliateur de justice. À La Réunion, ils sont coordonnés par le CDAD (conseil départemental de l’accès au droit).',
   link: {
     label: 'L’accès au droit à La Réunion (cour d’appel de Saint-Denis)',
     href: 'https://www.cours-appel.justice.fr/saint-denis/acces-au-droit-la-reunion',

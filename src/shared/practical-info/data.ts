@@ -13,7 +13,7 @@ export const practicalInfoData: PracticalInfoInput[] = [
   {
     slug: 'trouver-de-l-aide',
     title: 'Trouver de l’aide près de chez soi',
-    body: 'Les points-justice offrent une information juridique gratuite et vous orientent vers la bonne démarche ; on peut y rencontrer un conciliateur de justice, gratuit, ou un médiateur. À La Réunion, ils sont coordonnés par le CDAD (conseil départemental de l’accès au droit).',
+    body: 'Les points-justice offrent une information juridique gratuite et vous orientent vers la bonne démarche ; c’est souvent là que le conciliateur de justice, gratuit, tient ses permanences. À La Réunion, ils sont coordonnés par le CDAD (conseil départemental de l’accès au droit).',
     links: [
       {
         label: 'L’accès au droit et les points-justice à La Réunion',
@@ -27,14 +27,16 @@ export const practicalInfoData: PracticalInfoInput[] = [
     ],
   },
   {
-    // Structures rather than individual mediators (#124). TO VALIDATE (#120).
+    // Mediators are reached through mediation centres, not individually nor through a
+    // point-justice, which is mostly where conciliators hold their sessions (#124, feedback of
+    // 13 Oct 2026). TO VALIDATE (#120).
     slug: 'trouver-un-mediateur',
     title: 'Trouver un médiateur',
-    body: 'Passez par une structure plutôt que de chercher un médiateur seul. Un point-justice vous informe gratuitement et vous oriente vers une association ou un service de médiation. Pour un conflit familial, adressez-vous à un service de médiation familiale (Caf, association conventionnée). Pour un litige avec un professionnel, c’est son médiateur de la consommation.',
+    body: 'Un médiateur se trouve rarement seul : adressez-vous directement à un centre ou une association de médiation, qui vous mettra en relation avec l’un de ses médiateurs. Chaque cour d’appel publie aussi une liste de médiateurs. Pour un conflit familial, contactez un service de médiation familiale (Caf, association conventionnée). Pour un litige avec un professionnel, c’est son médiateur de la consommation.',
     links: [
       {
-        label: 'Les points-justice à La Réunion',
-        href: 'https://www.cours-appel.justice.fr/saint-denis/acces-au-droit-la-reunion',
+        label: 'Le médiateur civil sur justice.fr',
+        href: 'https://www.justice.fr/fiche/mediateur-civil',
       },
       {
         label: 'La médiation familiale (Caf)',

@@ -50,7 +50,7 @@ export const faqData: FaqEntryInput[] = [
     slug: 'information-gratuite',
     question: 'Où être informé gratuitement près de chez moi ?',
     answer:
-      'Dans un point-justice : on vous y donne une information juridique gratuite et on vous oriente vers la bonne démarche. Selon les lieux, vous pouvez y rencontrer un juriste, un avocat, un conciliateur de justice ou un médiateur.\n\nLes points-justice sont coordonnés dans chaque département par le CDAD (conseil départemental de l’accès au droit). À La Réunion, la cour d’appel de Saint-Denis présente l’accès au droit sur son site.',
+      'Dans un point-justice : on vous y donne une information juridique gratuite et on vous oriente vers la bonne démarche. Selon les lieux, vous pouvez y rencontrer un juriste, un avocat ou un conciliateur de justice. Pour un médiateur, adressez-vous plutôt directement à un centre ou une association de médiation.\n\nLes points-justice sont coordonnés dans chaque département par le CDAD (conseil départemental de l’accès au droit). À La Réunion, la cour d’appel de Saint-Denis présente l’accès au droit sur son site.',
     pages: ['home', 'learn'],
   },
   {
