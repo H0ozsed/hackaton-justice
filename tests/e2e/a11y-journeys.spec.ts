@@ -134,6 +134,9 @@ test('role-play: a full game until the results', async ({ page }) => {
 })
 
 test('learn: quiz error, feedback, definition and score', async ({ page }) => {
+  // Up to 20 questions with an axe scan each: about 17 s alone, over the 30 s default
+  // when the whole suite runs in parallel (#140).
+  test.slow()
   await page.goto('/apprendre')
   // The first quiz (there can be several on the page).
   const quiz = page.getByRole('region', { name: 'Questionnaires' }).getByRole('region').first()
