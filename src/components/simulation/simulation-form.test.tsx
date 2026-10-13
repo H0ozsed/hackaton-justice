@@ -113,6 +113,12 @@ describe('SimulationForm', () => {
     expect(document.body).toHaveFocus()
   })
 
+  it('puts the focus on the first step title when shown after an introduction', () => {
+    render(<SimulationForm steps={[firstStep, secondStep]} ResultView={ResultFixture} autoFocus />)
+
+    expect(screen.getByRole('heading', { level: 2, name: /Première question/ })).toHaveFocus()
+  })
+
   it('refuses to move on while the step is invalid, and announces the error', async () => {
     const { user } = renderForm()
     await user.click(screen.getByRole('button', { name: 'Terminer' }))

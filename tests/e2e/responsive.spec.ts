@@ -53,6 +53,7 @@ test.describe('responsive', () => {
   }) => {
     await page.setViewportSize({ width: 375, height: 800 })
     await page.goto('/simulation')
+    await page.getByRole('button', { name: 'Commencer' }).click()
     const targets = page.locator('footer a, main input[type="radio"]')
     for (const target of await targets.all()) {
       const box = await target.boundingBox()

@@ -15,8 +15,8 @@ describe('SiteHeader', () => {
   it('marks the current page for screen readers', () => {
     render(<SiteHeader />)
     const current = screen.getAllByRole('link', { current: 'page' })
-    expect(current.map((link) => link.textContent)).toContain('Simulation')
-    expect(current.every((link) => link.textContent === 'Simulation')).toBe(true)
+    expect(current.map((link) => link.textContent)).toContain('Ma situation ?')
+    expect(current.every((link) => link.textContent === 'Ma situation ?')).toBe(true)
   })
 
   it('opens and closes the mobile menu, announcing its state', async () => {

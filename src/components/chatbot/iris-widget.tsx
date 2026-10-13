@@ -312,7 +312,7 @@ function MessageView({
 }) {
   if (message.role === 'user') {
     return (
-      <div className="ml-8 rounded-lg bg-france-blue px-3 py-2 text-sm text-white">
+      <div className="ml-8 rounded-lg bg-primary px-3 py-2 text-sm text-primary-foreground">
         <span className="sr-only">Vous : </span>
         {message.content}
       </div>

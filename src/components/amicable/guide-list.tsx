@@ -24,7 +24,7 @@ export function GuideList({ entries = guides.all }: { entries?: readonly Guide[]
                 <li key={step.title} className="flex gap-3">
                   <span
                     aria-hidden
-                    className="flex size-8 shrink-0 items-center justify-center rounded-full bg-france-blue font-bold text-white"
+                    className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary font-bold text-primary-foreground"
                   >
                     {i + 1}
                   </span>

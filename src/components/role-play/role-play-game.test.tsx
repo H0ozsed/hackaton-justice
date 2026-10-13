@@ -181,6 +181,8 @@ describe('RolePlayGame', () => {
     const losses = within(screen.getByRole('region', { name: 'Ce que vos choix vous ont coûté' }))
     expect(losses.getByText('Relations').closest('div')).toHaveTextContent('Moyenne')
     expect(losses.getByText('Argent').closest('div')).toHaveTextContent('0 €')
+    // Each gauge says what it measures (#97).
+    expect(losses.getByText('Bien-être').closest('div')).toHaveTextContent(/stress, sommeil/)
   })
 
   it('shows the text at once and without animation when reduced motion is preferred', async () => {
@@ -225,7 +227,7 @@ describe('RolePlayGame', () => {
     await screen.findByRole('heading', { name: 'Scène 2' })
 
     expect(gauges()).toHaveTextContent('Relation7/107 sur 10')
-    expect(gauges()).toHaveTextContent('Santé10/1010 sur 10')
+    expect(gauges()).toHaveTextContent('Bien-être10/1010 sur 10')
     const [, notice] = container.querySelectorAll('[aria-live="polite"]')
     expect(notice).toHaveTextContent('Relation moins 3.')
   })

@@ -66,6 +66,8 @@ export const conflictTypeSchema = z.object({
    * `always` (e.g. abnormal neighbourhood disturbance), `up-to-5000` (claims of 5,000 € or less).
    */
   mandatoryAmicableAttempt: z.enum(['always', 'up-to-5000']).optional(),
+  /** What to know first, shown at the top of the result (e.g. emergency numbers). */
+  warning: z.string().min(1).optional(),
   /** Extra questions specific to this conflict type. */
   followUpQuestions: z
     .array(questionSchema)
@@ -78,15 +80,54 @@ export type ConflictTypeInput = z.input<typeof conflictTypeSchema>
 
 // ---- Channels (where the result sends the user) -------------------------------
 
+/**
+ * Family of a channel, the categories the user picks from (« Ma situation ? », /apprendre):
+ * talking directly, conciliation, mediation, other amicable recourse, the judge.
+ */
+export const channelFamilySchema = z.enum([
+  'dialogue',
+  'conciliation',
+  'mediation',
+  'other',
+  'judge',
+])
+export type ChannelFamily = z.infer<typeof channelFamilySchema>
+
+const sourceSchema = z.object({ label: z.string().min(1), href: z.url() })
+
 export const channelSchema = z.object({
   slug: slugSchema,
   name: z.string().min(1),
+  family: channelFamilySchema,
   description: z.string().min(1),
+  /** « C'est pour vous si… »: lets the user decide whether this channel fits their situation. */
+  forYouIf: z.string().min(1),
+  /**
+   * « Ce que dit la loi », shown first: the rules that frame this channel (status, conditions,
+   * diploma…) and the legal texts they come from.
+   */
+  law: z
+    .object({
+      text: z.string().min(1),
+      references: z.array(z.string().min(1)).min(1),
+    })
+    .optional(),
+  /** Disputes it handles, and the ones it does not. */
+  disputes: z.array(z.string().min(1)).default([]),
+  excluded: z.array(z.string().min(1)).default([]),
+  /** How to reach it. */
+  access: z.string().min(1).optional(),
   /** true: amicable route (seeking an agreement), false: judicial route (a judge decides). */
   amicable: z.boolean(),
   free: z.boolean(),
+  /** Who pays and how much, in a few words (shown next to the channel). */
+  cost: z.string().min(1).optional(),
+  /** What an agreement reached through this channel is worth, in a few words. */
+  agreement: z.string().min(1).optional(),
   /** Conflict types this channel is meant for (slugs). Omitted: every conflict type. */
   conflictTypes: z.array(slugSchema).min(1).optional(),
+  /** false: presented on /apprendre only (e.g. a step that only a judge can start). */
+  inSimulation: z.boolean().default(true),
   contact: z
     .object({
       url: z.url().optional(),
@@ -94,7 +135,17 @@ export const channelSchema = z.object({
     })
     .refine((c) => c.url !== undefined || c.phone !== undefined, 'give a url and/or a phone')
     .optional(),
+  /** Official pages the facts come from. */
+  sources: z.array(sourceSchema).default([]),
 })
 
 export type Channel = z.output<typeof channelSchema>
 export type ChannelInput = z.input<typeof channelSchema>
+
+// ---- Free information shown on every result (#94) -----------------------------
+
+export const freeInformationSchema = z.object({
+  title: z.string().min(1),
+  text: z.string().min(1),
+  link: z.object({ label: z.string().min(1), href: z.url() }),
+})

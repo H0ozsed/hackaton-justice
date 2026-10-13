@@ -26,7 +26,7 @@ words, and lets you practise before the real situation.**
 
 | Journey | What it does | Why it matters |
 | --- | --- | --- |
-| **Simulation** | A few questions → the right amicable channel for *your* dispute + "the law requires an amicable attempt" when it applies | Turns "I don't know where to go" into a next step |
+| **Ma situation ?** (`/simulation`) | A few questions → the right amicable channel for *your* dispute, with its cost and the value of the agreement + "the law requires an amicable attempt" when it applies | Turns "I don't know where to go" into a next step |
 | **Mise en situation** | Pixel-art role-play with levels: you suffer the trouble, you are accused of it, then you are the mediator; animated choices, life gauges, a score with corrections | People remember what they lived; seeing the other side de-escalates |
 | **Apprendre** + **Démarches** | Quizzes, glossary, mini-games ("Désamorcer", "Qui fait quoi ?"), comparison of routes, step-by-step guides, checklist, amicable letter generator, IRIS chatbot | Know, compare, prepare, act |
 

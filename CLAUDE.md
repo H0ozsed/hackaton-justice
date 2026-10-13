@@ -26,9 +26,9 @@ Next.js 16 **Pages Router** app (`src/pages`, `@/*` alias), shadcn (radix) theme
 "hackaton-justice" — a hackathon app to help users understand and navigate legal/justice-related conflicts, based on three user journeys described in `docs/PARCOURS_UTILISATEURS.md` (in French):
 
 - `/` — landing page with navigation between the three journeys below, navbar, footer, practical info, FAQ, chatbot.
-- `/simulation` — adaptive form flow: conflict type → loss/frequency estimation → willingness to discuss → routed to the right communication channel.
+- `/simulation` — « Ma situation ? »: introduction screen, then an adaptive form flow: conflict type → loss/frequency estimation → willingness to discuss → the solutions for that conflict, by category (talking, conciliation, mediation, other recourse, the judge), for the user to choose; each one says what the law says first, then its cost and the value of the agreement.
 - `/mise-en-situation` — a Pokémon-like interactive scenario/demo: autonomous walkthrough, then a results summary (score %, corrections, losses), with inline definitions for difficult terms.
-- `/apprendre` — learning hub: chatbot, evaluation quizzes, FAQ, practical info, glossary.
+- `/apprendre` — learning hub: who can help (every conciliator and mediator, law first), chatbot, evaluation quizzes, FAQ, practical info, glossary.
 
 ## Planned stack
 

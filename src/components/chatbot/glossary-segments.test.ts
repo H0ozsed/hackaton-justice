@@ -24,7 +24,7 @@ describe('glossarySegments', () => {
   it.runIf(mediation)('matches an alias and finds a term written without accents', () => {
     expect(glossarySegments('Contactez une médiatrice.')).toContainEqual({
       text: 'médiatrice',
-      slug: 'mediation',
+      slug: 'mediateur',
     })
     expect(glossarySegments('la mediation')).toContainEqual({
       text: 'mediation',
