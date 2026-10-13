@@ -26,11 +26,18 @@ export const scenariosData: ScenarioInput[] = [
       {
         id: 'debut',
         setting: 'Chez vous, un mardi, 23 h',
+        location: 'bedroom',
+        period: 'night',
         lines: [
           {
             text: 'Boum, boum, tchak… Pour le troisième soir de suite, la batterie résonne au-dessus de votre lit.',
+            effect: 'drums',
           },
-          { speaker: 'camille', text: 'Encore ! Je travaille tôt demain, je n’en peux plus…' },
+          {
+            speaker: 'camille',
+            text: 'Encore ! Je travaille tôt demain, je n’en peux plus…',
+            emotion: 'tired',
+          },
           { text: 'Vous n’avez encore jamais parlé de ce bruit avec M. Martin.' },
         ],
         choices: [
@@ -67,12 +74,19 @@ export const scenariosData: ScenarioInput[] = [
       {
         id: 'discussion',
         setting: 'Sur le palier, le lendemain soir',
+        location: 'landing',
+        period: 'evening',
         lines: [
           {
             speaker: 'camille',
             text: 'Bonsoir monsieur Martin, je suis votre voisine du dessous. Je peux vous parler deux minutes ?',
+            emotion: 'neutral',
           },
-          { speaker: 'martin', text: 'Bonsoir ! Oui, bien sûr. Il y a un souci ?' },
+          {
+            speaker: 'martin',
+            text: 'Bonsoir ! Oui, bien sûr. Il y a un souci ?',
+            emotion: 'happy',
+          },
           {
             speaker: 'camille',
             text: 'La batterie s’entend beaucoup chez moi le soir, parfois jusqu’à minuit. J’ai du mal à dormir.',
@@ -80,6 +94,7 @@ export const scenariosData: ScenarioInput[] = [
           {
             speaker: 'martin',
             text: 'Ah… Je suis désolé, je ne pensais pas que ça s’entendait autant. Je répète pour un concert le mois prochain.',
+            emotion: 'surprised',
           },
         ],
         choices: [
@@ -105,15 +120,23 @@ export const scenariosData: ScenarioInput[] = [
       {
         id: 'le-ton-monte',
         setting: 'Dans l’escalier, le lendemain matin',
+        location: 'stairwell',
+        period: 'morning',
         lines: [
           {
             speaker: 'martin',
             text: 'C’est vous qui tapiez au plafond hier soir ? Vous auriez pu venir me parler au lieu de faire ce vacarme !',
+            emotion: 'angry',
           },
-          { speaker: 'camille', text: 'Vous faites du bruit tous les soirs jusqu’à minuit !' },
+          {
+            speaker: 'camille',
+            text: 'Vous faites du bruit tous les soirs jusqu’à minuit !',
+            emotion: 'angry',
+          },
           {
             speaker: 'diallo',
             text: 'Allons, allons, calmez-vous tous les deux. Ce n’est pas comme ça que vous allez régler ça.',
+            emotion: 'sad',
           },
         ],
         choices: [
@@ -139,12 +162,15 @@ export const scenariosData: ScenarioInput[] = [
       {
         id: 'apres-la-police',
         setting: 'Dans le hall, deux jours plus tard',
+        location: 'lobby',
+        period: 'day',
         lines: [
           {
             speaker: 'diallo',
             text: 'Les policiers sont passés chez M. Martin l’autre soir. Il est très vexé, il dit à tout le monde qu’on l’a dénoncé sans même le prévenir.',
+            emotion: 'sad',
           },
-          { speaker: 'martin', text: '…' },
+          { speaker: 'martin', emotion: 'angry', effect: 'door', text: '…' },
           {
             text: 'M. Martin passe devant vous sans vous dire bonjour. Le bruit s’est arrêté… pour l’instant.',
           },
@@ -174,17 +200,22 @@ export const scenariosData: ScenarioInput[] = [
       {
         id: 'ca-recommence',
         setting: 'Chez vous, trois semaines plus tard',
+        location: 'bedroom',
+        period: 'night',
         lines: [
           {
             text: 'Pendant quelques jours, tout allait mieux. Mais ce soir, à 23 h 30, la batterie a repris.',
+            effect: 'drums',
           },
           {
             speaker: 'camille',
             text: 'Je lui en ai déjà parlé… Qu’est-ce que je fais maintenant ?',
+            emotion: 'tired',
           },
           {
             speaker: 'diallo',
             text: 'Vous savez qu’il existe un [[conciliateur-de-justice|conciliateur de justice]] à la mairie ? C’est gratuit, et il reçoit les deux voisins ensemble.',
+            emotion: 'happy',
           },
         ],
         choices: [
@@ -220,11 +251,18 @@ export const scenariosData: ScenarioInput[] = [
       {
         id: 'dialogue-rompu',
         setting: 'Chez vous, trois semaines plus tard',
+        location: 'bedroom',
+        period: 'night',
         lines: [
           {
             text: 'M. Martin ne vous adresse plus la parole. Et ce soir, la batterie a repris, plus fort que jamais.',
+            effect: 'drums',
           },
-          { speaker: 'camille', text: 'Je ne vais quand même pas supporter ça toute l’année…' },
+          {
+            speaker: 'camille',
+            text: 'Je ne vais quand même pas supporter ça toute l’année…',
+            emotion: 'sad',
+          },
           {
             speaker: 'diallo',
             text: 'Vous devriez essayer le [[conciliateur-de-justice|conciliateur de justice]]. Il est gratuit, et il a déjà réglé une histoire de bruit au troisième.',
@@ -265,6 +303,8 @@ export const scenariosData: ScenarioInput[] = [
       {
         id: 'conciliation',
         setting: 'À la mairie, permanence de la conciliatrice',
+        location: 'town-hall',
+        period: 'day',
         lines: [
           {
             speaker: 'roche',
@@ -273,10 +313,12 @@ export const scenariosData: ScenarioInput[] = [
           {
             speaker: 'camille',
             text: 'Je n’arrive plus à dormir à cause de la batterie le soir, parfois jusqu’à minuit.',
+            emotion: 'tired',
           },
           {
             speaker: 'martin',
             text: 'Je travaille en journée, le soir c’est le seul moment où je peux répéter. Et mon concert approche.',
+            emotion: 'sad',
           },
           { speaker: 'roche', text: 'Chacun a ses contraintes. Madame, que proposeriez-vous ?' },
         ],
@@ -305,27 +347,36 @@ export const scenariosData: ScenarioInput[] = [
       // ---- Endings ---------------------------------------------------------------
       {
         id: 'fin-calme',
+        location: 'landing',
+        period: 'evening',
         lines: [
           {
             speaker: 'martin',
             text: 'D’accord pour 21 h. Et si un soir je dépasse, venez frapper, sans hésiter !',
+            emotion: 'happy',
           },
           {
             text: 'Les semaines suivantes, M. Martin respecte l’horaire. Vous dormez enfin, et vous êtes même invitée à son concert.',
+            effect: 'sleep',
           },
         ],
         ending: { title: 'Le calme retrouvé' },
       },
       {
         id: 'fin-accord',
+        location: 'town-hall',
+        period: 'day',
         lines: [
           {
             speaker: 'martin',
             text: 'Ça me va. Je vais acheter un tapis épais, et je préviendrai avant les répétitions du week-end.',
+            emotion: 'happy',
           },
           {
             speaker: 'roche',
             text: 'Parfait. Je rédige un [[constat-d-accord|constat d’accord]] que vous signerez tous les deux.',
+            emotion: 'happy',
+            effect: 'paper',
           },
           { text: 'L’accord est signé. Le bruit diminue nettement et les relations s’apaisent.' },
         ],
@@ -333,8 +384,10 @@ export const scenariosData: ScenarioInput[] = [
       },
       {
         id: 'fin-echec',
+        location: 'town-hall',
+        period: 'day',
         lines: [
-          { speaker: 'martin', text: 'Arrêter complètement ? Hors de question.' },
+          { speaker: 'martin', emotion: 'angry', text: 'Arrêter complètement ? Hors de question.' },
           {
             speaker: 'roche',
             text: 'Je constate que vous n’êtes pas parvenus à un accord. Vous pourrez saisir le [[tribunal-judiciaire|tribunal judiciaire]] si vous le souhaitez.',
@@ -347,17 +400,22 @@ export const scenariosData: ScenarioInput[] = [
       },
       {
         id: 'fin-irrecevable',
+        location: 'courthouse',
+        period: 'day',
         lines: [
           {
             text: 'Plusieurs mois plus tard, le tribunal rend sa décision : votre demande est [[irrecevable|irrecevable]], faute de tentative de solution amiable.',
+            effect: 'paper',
           },
-          { speaker: 'camille', text: 'Tout ça pour revenir au point de départ…' },
-          { text: 'Et pendant ce temps, la batterie a continué.' },
+          { speaker: 'camille', text: 'Tout ça pour revenir au point de départ…', emotion: 'sad' },
+          { text: 'Et pendant ce temps, la batterie a continué.', effect: 'drums' },
         ],
         ending: { title: 'Demande irrecevable' },
       },
       {
         id: 'fin-demenagement',
+        location: 'new-home',
+        period: 'day',
         lines: [
           {
             text: 'Vous trouvez un autre appartement, plus cher et plus loin de votre travail. Frais d’agence, caution, camion : la note est salée.',
@@ -365,6 +423,7 @@ export const scenariosData: ScenarioInput[] = [
           {
             speaker: 'camille',
             text: 'Au moins, c’est calme… Mais j’aurais peut-être pu éviter tout ça.',
+            emotion: 'tired',
           },
         ],
         ending: { title: 'Partir' },
