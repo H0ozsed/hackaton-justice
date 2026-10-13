@@ -2,7 +2,9 @@ import { ExternalLinkIcon } from 'lucide-react'
 import Link from 'next/link'
 import type { ComponentType } from 'react'
 
+import { RoutesComparison } from '@/components/amicable/routes-comparison'
 import { Button } from '@/components/ui/button'
+import { routes } from '@/shared/amicable'
 import {
   channels as channelsContent,
   conflictTypes as conflictTypesContent,
@@ -14,7 +16,7 @@ import {
 import { summarizeAnswers } from './answers-summary'
 import { getChosenConflictType } from './conflict-type'
 import { SolutionPicker } from './solution-picker'
-import { mandatoryAttemptNotice, solutionsFor } from './solutions'
+import { comparedRoutes, mandatoryAttemptNotice, solutionsFor } from './solutions'
 import type { ResultViewProps } from './types'
 
 // Result screen of the simulation (#16): what to know first, whether an amicable attempt is
@@ -92,6 +94,29 @@ export function createSimulationResult({
         ) : (
           <p>Aucune solution n’est disponible pour le moment.</p>
         )}
+
+        {/* Why try the amicable route first (#109): cost, time and who decides, side by side
+            with going to court. Same data as the comparison of /demarches. */}
+        <section aria-labelledby="result-compare" className="space-y-4">
+          <h3 id="result-compare" className="text-xl font-bold">
+            Amiable ou procès : ce qui change
+          </h3>
+          <p>
+            Le juge reste possible. Mais un procès prend du temps, peut coûter cher, et son issue ne
+            dépend plus de vous : c’est le juge qui décide.
+          </p>
+          <RoutesComparison
+            entries={comparedRoutes(conflictType?.slug).flatMap((slug) => routes.find(slug) ?? [])}
+            caption="La voie amiable et le procès comparés"
+            showScale={false}
+            cardHeadingLevel={4}
+          />
+          <p>
+            <Link href="/demarches#comparer" className="text-primary underline underline-offset-4">
+              Comparer toutes les démarches, de la discussion au juge
+            </Link>
+          </p>
+        </section>
 
         <section
           aria-labelledby="result-information"

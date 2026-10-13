@@ -37,6 +37,7 @@
     * Tentative amiable obligatoire (art. 750-1 CPC) quand elle s'applique ; une simple discussion ne suffit pas
     * « Qui peut vous aider ? » : les solutions du type de conflit, par catégorie (Se parler, Conciliation, Médiation, Autres recours amiables, Le juge), chacune avec « C'est pour vous si… » et son coût
     * Une fois choisie : d'abord **ce que dit la loi** (statut, conditions, diplôme, textes cités), puis litiges traités et exclus, comment y accéder, coût, valeur de l'accord, contact et sources officielles
+  * « Amiable ou procès : ce qui change » (#109) : la voie amiable principale du conflit (conciliation, médiation, médiation de la consommation, sinon la discussion) comparée au juge (coût, durée, qui décide, ce que vaut l'issue), mêmes données que la comparaison de `/demarches`, lien vers la comparaison complète
   * Encadré « Besoin d'en parler avant de choisir ? » : points-justice et CDAD, information gratuite (#94)
 
 ### `/`mise-en-situation

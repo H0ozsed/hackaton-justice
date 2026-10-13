@@ -260,6 +260,18 @@ describe('simulation result screen', () => {
     })
   })
 
+  it('compares the amicable route with going to court: cost, time, who decides (#109)', () => {
+    renderResult(answers('yes', 'yes'))
+    const compare = screen.getByRole('region', { name: 'Amiable ou procès : ce qui change' })
+    expect(
+      within(compare).getByRole('table', { name: 'La voie amiable et le procès comparés' }),
+    ).toBeInTheDocument()
+    expect(within(compare).getAllByText('Saisir le juge').length).toBeGreaterThan(0)
+    expect(
+      within(compare).getByRole('link', { name: /Comparer toutes les démarches/ }),
+    ).toHaveAttribute('href', '/demarches#comparer')
+  })
+
   describe('accessibility', () => {
     it('has one h2 and h3 sections each named by their heading', async () => {
       const { user } = renderResult(answers('yes', 'unknown'))
@@ -269,6 +281,7 @@ describe('simulation result screen', () => {
       expect(screen.getAllByRole('heading', { level: 3 }).map((h) => h.textContent)).toEqual([
         'Qui peut vous aider ?',
         'Canal talk',
+        'Amiable ou procès : ce qui change',
         'Besoin d’en parler avant de choisir ?',
         'Vos réponses',
       ])
