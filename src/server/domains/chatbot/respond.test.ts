@@ -221,6 +221,22 @@ describe('respond', () => {
     warn.mockRestore()
   })
 
+  it('sends a sensitive question to professionals, without searching or calling the model', async () => {
+    const d = deps([1, 0])
+    expect(await run('Mon voisin m’a frappé, qu’est-ce que je fais ?', d)).toEqual([
+      { type: 'answer', text: IRIS.sensitive, sources: [], suggestions: [] },
+    ])
+    expect(d.getIndex).not.toHaveBeenCalled()
+    expect(d.embed).not.toHaveBeenCalled()
+    expect(d.chat).not.toHaveBeenCalled()
+  })
+
+  it('never leaves the visitor without a next step when there is no answer', () => {
+    expect(IRIS.noAnswer).not.toMatch(/reformule/i)
+    expect(IRIS.noAnswer).toMatch(/point-justice/)
+    expect(IRIS.noAnswer).toMatch(/conciliateur de justice/)
+  })
+
   it('answers a greeting directly, without searching or calling the model', async () => {
     const d = deps([1, 0])
     expect(await run('Bonjour !', d)).toEqual([
