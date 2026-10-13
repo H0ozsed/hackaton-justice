@@ -205,7 +205,7 @@ export function WhoDoesWhat({ statements }: { statements: readonly WhoStatement[
           Recommencer
         </Button>
       ) : (
-        <Button type="submit" className="self-start">
+        <Button type="submit" className="h-auto self-start py-2 whitespace-normal">
           Vérifier mes réponses
         </Button>
       )}
