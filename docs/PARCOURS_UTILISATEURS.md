@@ -31,7 +31,10 @@
 * Pokemon like
   * Autonomie pendant la demo
     * Intro (personnages) → scènes : dialogues en texte progressif (passable, instantané si `prefers-reduced-motion`) → choix → scène suivante → fin
-    * Mini-jeu en pixel art (#76) : immeuble en coupe à l'intro, chaque scène jouée sur une scène illustrée (chambre, palier, escalier, hall, mairie, tribunal, nouvel appartement) avec l'éclairage du moment (matin, journée, soir, nuit), personnages animés (visage selon l'émotion, bouche qui parle, clignement), effets (batterie, porte, papier, sommeil…), carton de titre de scène
+    * Ouverture animée sans spoiler : écran titre (la rue la nuit, titre en pixel art), puis plans enchaînés avec légendes (« Suivant », « Commencer » à tout moment) ; les personnages ne sont pas présentés d'avance, leur rôle s'affiche la première fois qu'ils parlent
+    * Répliques en bulles de BD sur la scène (pointe vers celui qui parle, narration en encadré), en vrai texte
+    * Chaque choix est animé (Camille agit : parler, balai, téléphone, courrier, attendre, accord, menace, tribunal, rendez-vous, déménagement) avant la scène suivante, passable avec « Suivant »
+    * Mini-jeu en pixel art (#76) : chaque scène jouée sur une scène illustrée (chambre, palier, escalier, hall, mairie, tribunal, nouvel appartement) avec l'éclairage du moment (matin, journée, soir, nuit), personnages animés (visage selon l'émotion, bouche qui parle, clignement), effets (batterie, porte, papier, sommeil…), carton de titre de scène
     * Jauges de vie en haut de la scène : santé, relation (sur 10), argent dépensé, temps perdu ; ce que coûte chaque choix s'affiche et est annoncé aux lecteurs d'écran
     * Son 8 bits optionnel (bouton « Son », coupé par défaut, mémorisé sur l'appareil)
     * Tout le décor est décoratif (masqué aux lecteurs d'écran) : l'information est dans le titre, les répliques et les jauges en texte ; animations coupées avec `prefers-reduced-motion`

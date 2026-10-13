@@ -9,12 +9,12 @@ import { PixelSprite } from './pixel-sprite'
 // Decorative only: the line itself always says what happens. With reduced motion, each
 // effect is shown as a still picture.
 
-const NOTE: Sprite = {
+export const NOTE: Sprite = {
   rows: withOutline(['..XXX', '..X.X', '..X..', '..X..', 'XXX..', 'XXX..']),
   colors: { X: P.white, o: P.ink },
 }
 
-const PAPER: Sprite = {
+export const PAPER: Sprite = {
   rows: withOutline([
     'WWWWWWW',
     'WLLLLWW',
@@ -29,13 +29,13 @@ const PAPER: Sprite = {
   colors: { W: P.white, L: P.g2, S: P.franceBlue, o: P.ink },
 }
 
-const PHONE: Sprite = {
+export const PHONE: Sprite = {
   rows: withOutline(['KKKK', 'KSSK', 'KSSK', 'KSSK', 'KKKK', 'KWKK']),
   colors: { K: P.q1, S: P.f2, W: P.white, o: P.ink },
 }
 
 /** A pixel word, scaled `size` times, that pops in at `delay` and repeats. */
-function Word({
+export function Word({
   text,
   x,
   y,
@@ -43,6 +43,7 @@ function Word({
   color = P.l1,
   delay = 0,
   still,
+  once = false,
 }: {
   text: string
   x: number
@@ -51,6 +52,8 @@ function Word({
   color?: string
   delay?: number
   still: boolean
+  /** Pops in once and stays (instead of looping). */
+  once?: boolean
 }) {
   return (
     <g transform={`translate(${x} ${y}) scale(${size})`}>
@@ -60,9 +63,16 @@ function Word({
         animate={
           still
             ? undefined
-            : { scale: [0, 1.25, 1, 1], opacity: [0, 1, 1, 0], rotate: [-8, 4, 0, 0] }
+            : once
+              ? { scale: [0, 1.25, 1], opacity: [0, 1, 1], rotate: [-8, 4, 0] }
+              : { scale: [0, 1.25, 1, 1], opacity: [0, 1, 1, 0], rotate: [-8, 4, 0, 0] }
         }
-        transition={{ duration: 1.1, delay, repeat: Infinity, repeatDelay: 0.5 }}
+        transition={{
+          duration: once ? 0.4 : 1.1,
+          delay,
+          repeat: once ? 0 : Infinity,
+          repeatDelay: 0.5,
+        }}
       >
         <PixelSprite sprite={textSprite(text, color)} />
       </motion.g>
@@ -73,8 +83,8 @@ function Word({
 function Drums({ still }: { still: boolean }) {
   return (
     <g data-effect="drums">
-      <Word text="BOUM" x={14} y={8} still={still} />
-      <Word text="TCHAK" x={128} y={10} still={still} delay={0.55} color={P.h1} />
+      <Word text="BOUM" x={70} y={30} still={still} />
+      <Word text="TCHAK" x={120} y={42} still={still} delay={0.55} color={P.h1} />
       {[52, 92, 150].map((x, i) => (
         <motion.g
           key={x}

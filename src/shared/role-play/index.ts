@@ -6,6 +6,7 @@ import { termSlugs } from './rich-text'
 import { scenarioSchema, type Scenario } from './schema'
 
 export type {
+  Action,
   Avatar,
   Character,
   Choice,
@@ -14,15 +15,18 @@ export type {
   Emotion,
   Line,
   Location,
+  OpeningShot,
   Period,
   Scenario,
   Scene,
 } from './schema'
 export {
+  actionSchema,
   avatarSchema,
   effectSchema,
   emotionSchema,
   locationSchema,
+  openingShotSchema,
   periodSchema,
   scenarioSchema,
 } from './schema'
@@ -39,6 +43,7 @@ export function glossaryReferences(scenario: Scenario) {
     termSlugs(text).map((slug) => [`"${scenario.slug}" > ${location}`, slug] as const)
   return [
     ...refs('intro', scenario.intro),
+    ...(scenario.opening ?? []).flatMap((shot, i) => refs(`opening.${i}`, shot.text)),
     ...scenario.scenes.flatMap((scene) => [
       ...scene.lines.flatMap((line, i) => refs(`"${scene.id}".lines.${i}`, line.text)),
       ...scene.choices.flatMap((c) => refs(`"${scene.id}" > "${c.id}".feedback`, c.feedback)),

@@ -56,6 +56,11 @@ describe('textSprite', () => {
   })
 
   it('is case-insensitive and skips unknown characters', () => {
-    expect(textSprite('zz?', '#fff').rows).toEqual(textSprite('ZZ', '#fff').rows)
+    expect(textSprite('zz§', '#fff').rows).toEqual(textSprite('ZZ', '#fff').rows)
+  })
+
+  it('has digits and the punctuation of the onomatopoeias', () => {
+    for (const text of ['17', 'OK !', 'ALLO ?', '...'])
+      expect(textSprite(text, '#fff').rows.join(''), text).toContain('X')
   })
 })

@@ -51,7 +51,12 @@ The current entries are **examples** (prefixed `EXEMPLE`) to be replaced.
   lighting). A line can set the `emotion` of its speaker (`neutral`, `happy`, `angry`,
   `sad`, `tired`, `surprised`) and an `effect` (`drums`, `knock`, `door`, `phone`,
   `paper`, `sleep`). These are decorative: the text must always say what happens. A
-  character's `avatar` picks its sprite.
+  character's `avatar` picks its sprite. A choice can set an `action` (`talk`, `broom`,
+  `phone`, `letter`, `wait`, `agree`, `threaten`, `court`, `appointment`, `move`): a short
+  animation of it plays before the next scene. A scenario can have an `opening`: shots
+  (`street`, `cutaway`, `bedroom`) shown before the game, each with a caption `text`. Do not
+  introduce characters there: they are discovered during the game (their `role` shows the
+  first time they speak).
   To link a glossary term in a line, the intro or a feedback (not in a choice `label`), write `[[slug]]` (shows the glossary term) or
   `[[slug|texte affiché]]` (shows another spelling): `Envoyez une [[mise-en-demeure|mise en demeure]]`.
   `[[slug]]` shows the term with its glossary capital letter: in the middle of a sentence,

@@ -2,13 +2,11 @@ import { motion } from 'framer-motion'
 import { useSyncExternalStore } from 'react'
 
 import { characterSprite } from './characters'
-import { STAGE } from './locations'
 import { PALETTE as P, textSprite, withOutline, type Sprite } from './pixel-art'
 import { PixelSprite } from './pixel-sprite'
 
-// Cross-section of the building shown before the game (#76): the neighbour plays the
-// drums upstairs while Camille tries to sleep downstairs. Decorative (aria-hidden):
-// the intro text says the same thing.
+// Cross-section of the building, a shot of the opening (#76): the neighbour plays the
+// drums upstairs while Camille tries to sleep downstairs. Decorative: the caption says it.
 
 type Rect = readonly [number, number, number, number, string]
 
@@ -88,7 +86,7 @@ const subscribe = () => () => {}
  * server, which cannot know the motion preference: animations start after hydration only,
  * so both renders match.
  */
-function useHydrated() {
+export function useHydrated() {
   return useSyncExternalStore(
     subscribe,
     () => true,
@@ -96,63 +94,52 @@ function useHydrated() {
   )
 }
 
-export function BuildingCutaway({ reduceMotion: reduce }: { reduceMotion: boolean }) {
-  const hydrated = useHydrated()
-  const reduceMotion = reduce || !hydrated
+/** Cut-away of the building, drawn in the 192 × 108 coordinates of the stage. */
+export function CutawayArt({ still }: { still: boolean }) {
+  const reduceMotion = still
   return (
-    <div
-      aria-hidden
-      data-testid="building-cutaway"
-      className="relative aspect-video w-full overflow-hidden bg-[#1e1f33]"
-    >
-      <svg
-        viewBox={`0 0 ${STAGE.width} ${STAGE.height}`}
-        shapeRendering="crispEdges"
-        className="absolute inset-0 size-full"
-        focusable="false"
+    <g data-shot="cutaway">
+      {BUILDING.map(([x, y, width, height, fill], i) => (
+        <rect key={i} x={x} y={y} width={width} height={height} fill={fill} />
+      ))}
+
+      {/* The neighbour drums, the floor shakes, Camille is awake. */}
+      <motion.g
+        animate={reduceMotion ? undefined : { y: [0, -1, 0] }}
+        transition={{ duration: 0.3, repeat: Infinity }}
       >
-        {BUILDING.map(([x, y, width, height, fill], i) => (
-          <rect key={i} x={x} y={y} width={width} height={height} fill={fill} />
-        ))}
+        <PixelSprite
+          sprite={characterSprite('neighbor', { emotion: 'happy' })}
+          x={78}
+          y={46 - 34}
+        />
+      </motion.g>
+      <PixelSprite sprite={characterSprite('player', { emotion: 'tired' })} x={62} y={96 - 34} />
 
-        {/* The neighbour drums, the floor shakes, Camille is awake. */}
+      {[
+        { x: 86, delay: 0 },
+        { x: 112, delay: 0.5 },
+        { x: 130, delay: 1 },
+      ].map(({ x, delay }) => (
         <motion.g
-          animate={reduceMotion ? undefined : { y: [0, -1, 0] }}
-          transition={{ duration: 0.3, repeat: Infinity }}
+          key={x}
+          initial={reduceMotion ? false : { y: 0, opacity: 0 }}
+          animate={reduceMotion ? undefined : { y: [0, 12], opacity: [0, 1, 0] }}
+          transition={{ duration: 1.5, delay, repeat: Infinity }}
         >
-          <PixelSprite
-            sprite={characterSprite('neighbor', { emotion: 'happy' })}
-            x={78}
-            y={46 - 34}
-          />
+          <PixelSprite sprite={NOTE} x={x} y={58} />
         </motion.g>
-        <PixelSprite sprite={characterSprite('player', { emotion: 'tired' })} x={62} y={96 - 34} />
+      ))}
 
-        {[
-          { x: 86, delay: 0 },
-          { x: 112, delay: 0.5 },
-          { x: 130, delay: 1 },
-        ].map(({ x, delay }) => (
-          <motion.g
-            key={x}
-            initial={reduceMotion ? false : { y: 0, opacity: 0 }}
-            animate={reduceMotion ? undefined : { y: [0, 12], opacity: [0, 1, 0] }}
-            transition={{ duration: 1.5, delay, repeat: Infinity }}
-          >
-            <PixelSprite sprite={NOTE} x={x} y={58} />
-          </motion.g>
-        ))}
-
-        <g transform="translate(20 58) scale(2)">
-          <motion.g
-            style={{ transformBox: 'fill-box', transformOrigin: 'center' }}
-            animate={reduceMotion ? undefined : { scale: [1, 1.2, 1] }}
-            transition={{ duration: 0.6, repeat: Infinity }}
-          >
-            <PixelSprite sprite={textSprite('BOUM', P.l1)} />
-          </motion.g>
-        </g>
-      </svg>
-    </div>
+      <g transform="translate(20 58) scale(2)">
+        <motion.g
+          style={{ transformBox: 'fill-box', transformOrigin: 'center' }}
+          animate={reduceMotion ? undefined : { scale: [1, 1.2, 1] }}
+          transition={{ duration: 0.6, repeat: Infinity }}
+        >
+          <PixelSprite sprite={textSprite('BOUM', P.l1)} />
+        </motion.g>
+      </g>
+    </g>
   )
 }

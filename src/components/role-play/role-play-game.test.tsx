@@ -197,12 +197,12 @@ describe('RolePlayGame', () => {
   it('draws each scene on a decorative stage with a title card', async () => {
     const user = userEvent.setup()
     render(<RolePlayGame scenario={scenario} />)
-    // The intro shows the building, hidden from screen readers.
-    expect(screen.getByTestId('building-cutaway')).toHaveAttribute('aria-hidden', 'true')
+    // No cast list before the game: characters are discovered while playing.
+    expect(screen.queryByText('M. Martin')).toBeNull()
     await user.click(screen.getByRole('button', { name: 'Commencer' }))
 
     const stage = await screen.findByTestId('stage')
-    expect(stage).toHaveAttribute('aria-hidden', 'true')
+    expect(stage.querySelector('svg')).toHaveAttribute('aria-hidden', 'true')
     expect(screen.getByTestId('title-card')).toHaveTextContent('Scène 1Sur le palier')
     expect(stage.querySelectorAll('[data-character]')).toHaveLength(2)
     // Narrator first, then M. Martin speaks.
@@ -257,5 +257,106 @@ describe('RolePlayGame', () => {
     render(<RolePlayGame scenario={scenario} />)
     expect(await screen.findByRole('button', { name: 'Son', pressed: true })).toBeInTheDocument()
     window.localStorage.clear()
+  })
+})
+
+// Scenario with an opening, roles to discover and choices with actions.
+const staged = scenarioSchema.parse({
+  slug: 'staged',
+  title: 'Histoire animée',
+  intro: 'Résumé.',
+  opening: [
+    { shot: 'street', text: 'Un soir, dans la rue.' },
+    { shot: 'bedroom', text: 'Dans votre chambre.' },
+  ],
+  characters: [
+    { id: 'moi', name: 'Camille', role: 'Locataire', avatar: 'player' },
+    { id: 'voisin', name: 'M. Martin', role: 'Votre voisin', avatar: 'neighbor' },
+  ],
+  startSceneId: 'debut',
+  scenes: [
+    {
+      id: 'debut',
+      lines: [
+        { speaker: 'voisin', text: 'Bonsoir.' },
+        { speaker: 'voisin', text: 'Encore moi.' },
+      ],
+      choices: [
+        {
+          id: 'balai',
+          label: 'Taper au plafond',
+          next: 'fin',
+          quality: 'bad',
+          feedback: 'Non.',
+          action: 'broom',
+        },
+      ],
+    },
+    { id: 'fin', lines: [{ speaker: 'voisin', text: 'Au revoir.' }], ending: { title: 'Fin' } },
+  ],
+})
+
+describe('RolePlayGame, staged scenario', () => {
+  it('plays the opening shot by shot, and can start at any time', async () => {
+    motion.reduce = true // captions shown at once
+    const user = userEvent.setup()
+    const { container } = render(<RolePlayGame scenario={staged} />)
+
+    expect(screen.getByTestId('caption')).toHaveTextContent('Un soir, dans la rue.')
+    expect(screen.getByTestId('opening').querySelector('[data-shot="street"]')).not.toBeNull()
+    expect(screen.getByRole('button', { name: 'Commencer' })).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Suivant' }))
+    expect(screen.getByTestId('caption')).toHaveTextContent('Dans votre chambre.')
+    expect(container.querySelector('[aria-live="polite"]')).toHaveTextContent(
+      'Narrateur : Dans votre chambre.',
+    )
+    // Last shot: only the start button.
+    expect(screen.queryByRole('button', { name: 'Suivant' })).toBeNull()
+    await user.click(screen.getByRole('button', { name: 'Commencer' }))
+    expect(await screen.findByRole('heading', { name: 'Scène 1' })).toHaveFocus()
+  })
+
+  it('gives the role of a character the first time they speak only', async () => {
+    motion.reduce = true
+    const user = userEvent.setup()
+    render(<RolePlayGame scenario={staged} />)
+    await user.click(screen.getByRole('button', { name: 'Commencer' }))
+
+    expect(await screen.findByTestId('bubble')).toHaveTextContent(
+      'M. Martin (Votre voisin)Bonsoir.',
+    )
+    await user.click(screen.getByRole('button', { name: 'Suivant' }))
+    expect(screen.getByTestId('bubble')).toHaveTextContent(/^M\. MartinEncore moi\.$/)
+  })
+
+  it('animates the choice made before the next scene, skippable', async () => {
+    const user = userEvent.setup()
+    render(<RolePlayGame scenario={staged} />)
+    await user.click(screen.getByRole('button', { name: 'Commencer' }))
+    await screen.findByRole('heading', { name: 'Scène 1' })
+    await readScene(user)
+    await user.click(screen.getByRole('button', { name: 'Taper au plafond' }))
+
+    expect(await screen.findByRole('heading', { name: 'Scène 2' })).toHaveFocus()
+    expect(screen.getByTestId('caption')).toHaveTextContent('Votre choixTaper au plafond')
+    expect(screen.getByTestId('stage').querySelector('[data-action="broom"]')).not.toBeNull()
+
+    await user.click(screen.getByRole('button', { name: 'Suivant' }))
+    expect(screen.getByTestId('stage').querySelector('[data-action]')).toBeNull()
+    expect(screen.getByTestId('bubble')).toBeInTheDocument()
+  })
+
+  it('does not animate the choice with reduced motion', async () => {
+    motion.reduce = true
+    const user = userEvent.setup()
+    render(<RolePlayGame scenario={staged} />)
+    await user.click(screen.getByRole('button', { name: 'Commencer' }))
+    await readScene(user)
+    await user.click(screen.getByRole('button', { name: 'Taper au plafond' }))
+
+    await screen.findByRole('heading', { name: 'Scène 2' })
+    expect(screen.getByTestId('stage').querySelector('[data-action]')).toBeNull()
+    expect(screen.getByTestId('bubble')).toHaveTextContent('Au revoir.')
   })
 })
