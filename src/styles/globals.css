@@ -159,3 +159,15 @@
     @apply outline-2 outline-offset-2 outline-ring;
   }
 }
+
+/* IRIS launcher ring (#133): grows and fades; run 3 times then stops (RGAA 13.8). */
+@keyframes iris-ring {
+  from {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  to {
+    transform: scale(1.7);
+    opacity: 0;
+  }
+}
