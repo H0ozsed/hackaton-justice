@@ -29,10 +29,14 @@
 * Nom du parcours choisi après le retour des coachs du 13 oct. (#101) ; l'URL reste `/simulation`
 * **Écran d'introduction** « Comment ça marche ? » : les 4 étapes, environ 3 minutes, rien envoyé ni enregistré, orientation indicative ; bouton « Commencer » qui place le focus sur la première question
 * **Formulaires adaptatifs** (progression « Étape X sur N », bouton « Précédent », aide sous chaque question : ce qui est demandé et pourquoi)
-  * Type de conflit
+  * Type de conflit : voisinage, professionnel (consommation), logement, argent entre particuliers, famille (séparation, enfants, pension, succession, grands-parents, parent âgé), travail, administration, école
   * Estimation des pertes/fréquences
   * Ouverture à la discussion
-  * Redirection communication : discussion directe, conciliateur de justice, médiateur, médiateur de la consommation, médiation familiale, juge ; pour chacun, son coût (qui paie) et ce que vaut l'accord (homologation possible)
+  * Résultat : **la personne choisit sa solution**, rien n'est choisi pour elle (retour des coachs du 13 oct.)
+    * « À savoir d'abord » selon le conflit : violences (17, 112, 3919, 119), harcèlement scolaire (3018), délais (12 mois pour une rupture du contrat de travail, 2 mois devant le juge administratif)
+    * Tentative amiable obligatoire (art. 750-1 CPC) quand elle s'applique ; une simple discussion ne suffit pas
+    * « Qui peut vous aider ? » : les solutions du type de conflit, par catégorie (Se parler, Conciliation, Médiation, Autres recours amiables, Le juge), chacune avec « C'est pour vous si… » et son coût
+    * Une fois choisie : d'abord **ce que dit la loi** (statut, conditions, diplôme, textes cités), puis litiges traités et exclus, comment y accéder, coût, valeur de l'accord, contact et sources officielles
   * Encadré « Besoin d'en parler avant de choisir ? » : points-justice et CDAD, information gratuite (#94)
 
 ### `/`mise-en-situation
@@ -69,13 +73,14 @@
   * Pas à pas : conciliateur, médiateur de la consommation, médiation, médiation familiale (étapes numérotées, bon à savoir, sources)
   * Liste « Préparer son rendez-vous » à cocher (rien enregistré), imprimable
   * Écrire un courrier amiable : formulaire (noms, objet, faits, demande, délai, proposer un conciliateur) → courrier courtois daté à copier ou imprimer, rien envoyé ni enregistré
-  * Liens vers « Ma situation ? », la mise en situation et le lexique
+  * Liens vers « Ma situation ? », « Qui peut vous aider ? » sur `/apprendre`, la mise en situation et le lexique
 
 ### `/`apprendre
 
 * Mini-jeux (nuit #80) : « Désamorcer » (`/apprendre/desamorcer`), 8 situations du quotidien, choisir la phrase qui dit les choses sans attaquer (fait, ressenti, besoin, demande) ; jauge de tension de la discussion en texte, réaction du personnage, explication, bilan ; sans chrono
 * Mini-jeu « Qui fait quoi ? » (`/apprendre/qui-fait-quoi`) : 10 phrases à attribuer au conciliateur, au médiateur et/ou au juge (cases à cocher), vérification d'un coup, score, explication par carte
 
+* Qui peut vous aider ? : tous les tiers par catégorie, en accordéon, ce que dit la loi d'abord (conciliateur de justice, commission départementale de conciliation, conciliation aux prud'hommes, audience de règlement amiable, médiateur civil, médiateur familial et son diplôme d'État, médiateur de la consommation, médiateurs de secteur, médiateurs des administrations, médiateur de l'éducation nationale, médiation administrative, Défenseur des droits, le juge) ; mêmes données que « Ma situation ? » et IRIS
 * Conciliateur ou médiateur ? (#108) : les deux comparés côte à côte (qui, accès, coût, qui décide, durée, valeur de l'accord, point fort, limite), lien vers la comparaison complète de `/demarches`
 * Sensibiliser en groupe (#94) : le CDAD fait connaître l'amiable dans les écoles et lors d'événements ; questionnaires, mini-jeux et mises en situation utilisables à plusieurs
 * Chatbot : IRIS, comme sur `/` (questions suggérées tirées de la FAQ de cette page)
@@ -86,5 +91,5 @@
   * Page dédiée `/apprendre/lexique` (lien depuis `/apprendre`, « Apprendre » reste la page courante dans la navbar)
   * Recherche sans tenir compte des accents ni des majuscules (terme et variantes), nombre de résultats annoncé
   * Index alphabétique, termes groupés par lettre, ancre par terme (`/apprendre/lexique#mediation`), liens « Voir aussi » vers les termes liés
-* Sommaire en haut de page : liens vers chaque section (Conciliateur ou médiateur ?, Questionnaires, Mini-jeux, Lexique, Questions fréquentes, Infos pratiques, Sensibiliser en groupe)
+* Sommaire en haut de page : liens vers chaque section (Conciliateur ou médiateur ?, Qui peut vous aider ?, Questionnaires, Mini-jeux, Lexique, Questions fréquentes, Infos pratiques, Sensibiliser en groupe)
 

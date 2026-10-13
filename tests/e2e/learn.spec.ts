@@ -14,6 +14,7 @@ test('the hub sections follow the h1 > h2 heading order', async ({ page }) => {
   await expect(page.getByRole('heading', { level: 1, name: 'Apprendre' })).toBeVisible()
   await expect(page.getByRole('heading', { level: 2 })).toHaveText([
     'Conciliateur ou médiateur ?',
+    'Qui peut vous aider ?',
     'Questionnaires',
     'Mini-jeux',
     'Lexique',
@@ -28,6 +29,7 @@ test('the table of contents leads to each section', async ({ page }) => {
   const toc = page.getByRole('navigation', { name: 'Sommaire' })
   for (const name of [
     'Conciliateur ou médiateur ?',
+    'Qui peut vous aider ?',
     'Questionnaires',
     'Lexique',
     'Questions fréquentes',
@@ -67,6 +69,18 @@ test('compares the conciliator and the mediator side by side', async ({ page }) 
     .or(section.getByRole('list'))
   await expect(comparison.first()).toBeVisible()
   await expect(section.getByText('Gratuit', { exact: true }).first()).toBeAttached()
+  await expectNoAxeViolation(page)
+})
+
+test('presents every conciliator and mediator, what the law says first', async ({ page }) => {
+  await page.goto('/apprendre')
+  const section = page.getByRole('region', { name: 'Qui peut vous aider ?' })
+  await expect(section.getByRole('heading', { level: 3, name: 'Médiation' })).toBeVisible()
+
+  await section.getByRole('button', { name: 'Médiateur familial' }).click()
+  const familyMediator = section.getByRole('region', { name: 'Médiateur familial' })
+  await expect(familyMediator.getByRole('term').first()).toHaveText('Ce que dit la loi')
+  await expect(familyMediator).toContainText('diplôme d’État de médiateur familial')
   await expectNoAxeViolation(page)
 })
 

@@ -6,6 +6,7 @@ import { FaqSection } from '@/components/faq/faq-section'
 import { PageTitle } from '@/components/layout/page-title'
 import { PracticalInfoSection } from '@/components/practical-info/practical-info'
 import { QuizPlayer } from '@/components/quiz/quiz-player'
+import { WhoCanHelp } from '@/components/solutions/who-can-help'
 import { routes } from '@/shared/amicable'
 import { glossary } from '@/shared/glossary'
 import { quizzes } from '@/shared/quiz'
@@ -16,6 +17,7 @@ import { quizzes } from '@/shared/quiz'
 // Anchors of the page sections, listed in the table of contents (long page, RGAA 12.6).
 const SECTIONS = [
   { id: 'conciliateur-ou-mediateur', label: 'Conciliateur ou médiateur ?' },
+  { id: 'qui-peut-vous-aider', label: 'Qui peut vous aider ?' },
   { id: 'questionnaires', label: 'Questionnaires' },
   { id: 'mini-jeux', label: 'Mini-jeux' },
   { id: 'lexique', label: 'Lexique' },
@@ -90,6 +92,25 @@ export default function LearnPage() {
             Comparer toutes les démarches, de la discussion au juge
           </Link>
         </p>
+      </section>
+
+      <section
+        id="qui-peut-vous-aider"
+        aria-labelledby="qui-peut-vous-aider-titre"
+        className="mt-12 scroll-mt-4"
+      >
+        <h2 id="qui-peut-vous-aider-titre" className="text-2xl font-bold">
+          Qui peut vous aider ?
+        </h2>
+        <p className="mt-4 max-w-3xl">
+          Tous les conciliateurs, médiateurs et autres recours amiables, avec d’abord ce que dit la
+          loi : leur statut, leurs conditions (par exemple le diplôme d’État exigé du médiateur
+          familial dans les services financés par la Caf), ce qu’ils traitent, leur coût et ce que
+          vaut l’accord.
+        </p>
+        <div className="mt-6 max-w-3xl">
+          <WhoCanHelp />
+        </div>
       </section>
 
       <section

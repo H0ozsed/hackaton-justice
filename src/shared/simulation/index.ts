@@ -1,10 +1,16 @@
 import { assertReferences, defineCollection } from '@/lib/content'
 
 import { channelsData, conflictTypesData, freeInformationData } from './data'
-import { channelSchema, conflictTypeSchema, freeInformationSchema, type LossKind } from './schema'
+import {
+  channelSchema,
+  conflictTypeSchema,
+  freeInformationSchema,
+  type ChannelFamily,
+  type LossKind,
+} from './schema'
 
-export type { Channel, ConflictType, LossKind, Question } from './schema'
-export { lossKindSchema, questionSchema } from './schema'
+export type { Channel, ChannelFamily, ConflictType, LossKind, Question } from './schema'
+export { channelFamilySchema, lossKindSchema, questionSchema } from './schema'
 
 export const conflictTypes = defineCollection(
   'conflict types',
@@ -40,3 +46,12 @@ export const LOSS_KIND_DESCRIPTIONS: Record<LossKind, string> = {
 }
 
 export { answerSchema, followUpAnswersSchema, type FollowUpAnswers } from './answers'
+
+/** Display labels of the channel families, in the order they are shown. */
+export const CHANNEL_FAMILY_LABELS: Record<ChannelFamily, string> = {
+  dialogue: 'Se parler',
+  conciliation: 'Conciliation',
+  mediation: 'Médiation',
+  other: 'Autres recours amiables',
+  judge: 'Le juge',
+}

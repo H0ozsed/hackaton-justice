@@ -96,6 +96,13 @@ test('simulation: error state, every step and the result', async ({ page }) => {
     await expectNoViolations(page, `after step ${step}`)
   }
   await expect(forward).toHaveCount(0)
+
+  await main
+    .getByRole('radiogroup', { name: /Quelle solution correspond/ })
+    .getByRole('radio')
+    .first()
+    .check()
+  await expectNoViolations(page, 'result with a solution chosen')
 })
 
 test('role-play: a full game until the results', async ({ page }) => {
