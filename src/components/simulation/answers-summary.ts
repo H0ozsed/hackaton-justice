@@ -4,7 +4,6 @@ import { getChosenConflictType } from './conflict-type'
 import { FOLLOW_UP_STEP_ID } from './follow-up'
 import { FREQUENCY_OPTIONS, IMPACT_OPTIONS, TIME_UNIT_OPTIONS } from './loss-frequency'
 import { LOSS_FREQUENCY_STEP_ID } from './loss-frequency-step'
-import { OPENNESS_STEP_ID, OTHER_PARTY_OPENNESS_OPTIONS, USER_OPENNESS_OPTIONS } from './openness'
 import type { SimulationAnswers } from './types'
 
 // What the person answered, written for the result screen: one { label, value } per answer, in the
@@ -82,21 +81,6 @@ export function summarizeAnswers(
     if (losses.frequency !== undefined) {
       add('Fréquence du conflit', labelOf(FREQUENCY_OPTIONS, losses.frequency))
     }
-  }
-
-  // Openness to discussion.
-  const openness = answers[OPENNESS_STEP_ID]
-  if (openness?.userOpenness !== undefined) {
-    add(
-      'Prêt(e) à discuter avec l’autre partie',
-      labelOf(USER_OPENNESS_OPTIONS, openness.userOpenness),
-    )
-  }
-  if (openness?.otherPartyOpenness !== undefined) {
-    add(
-      'L’autre partie serait prête à discuter',
-      labelOf(OTHER_PARTY_OPENNESS_OPTIONS, openness.otherPartyOpenness),
-    )
   }
 
   return lines

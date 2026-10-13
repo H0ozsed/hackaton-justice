@@ -1,4 +1,5 @@
 import {
+  AMICABLE_FAMILIES,
   CHANNEL_FAMILY_LABELS,
   type Channel,
   type ChannelFamily,
@@ -11,10 +12,10 @@ import type { SimulationAnswers } from './types'
 
 // Solutions of the simulation result: pure functions, no React and no I/O.
 //
-// The result does not pick a channel for the person (coaching feedback of 13 Oct 2026): it lists
-// the solutions meant for their conflict type, grouped by family (talking, conciliation,
-// mediation, other recourse, the judge), each with its « C'est pour vous si… », and the person
-// chooses the one that fits their situation.
+// « J'ai un conflit ? » leads to an amicable agreement, nothing else (feedback of 13 Oct 2026):
+// the result shows, without any choice to make, the conciliation and mediation third parties meant
+// for the person's conflict type. Talking directly, other recourse and the judge are explained on
+// /apprendre only.
 
 const FAMILY_ORDER = Object.keys(CHANNEL_FAMILY_LABELS) as ChannelFamily[]
 
@@ -37,10 +38,18 @@ export function groupByFamily(channels: readonly Channel[]): SolutionGroup[] {
   })).filter((group) => group.channels.length > 0)
 }
 
-/** The solutions offered on the result: channels shown in the simulation, for the chosen type. */
+const isAmicableFamily = (family: ChannelFamily) =>
+  (AMICABLE_FAMILIES as readonly ChannelFamily[]).includes(family)
+
+/**
+ * The solutions shown on the result: the conciliation and mediation third parties shown in the
+ * simulation and meant for the chosen conflict type, conciliation first.
+ */
 export function solutionsFor(answers: SimulationAnswers, channels: readonly Channel[]) {
   const type = answers[CONFLICT_TYPE_STEP_ID]?.[CONFLICT_TYPE_FIELD]
-  const shown = channels.filter((channel) => channel.inSimulation)
+  const shown = channels.filter(
+    (channel) => channel.inSimulation && isAmicableFamily(channel.family),
+  )
   return groupByFamily(channelsFor(typeof type === 'string' ? type : undefined, shown))
 }
 
@@ -78,8 +87,8 @@ export function mandatoryAttemptNotice(
 
 /**
  * Amicable route compared with going to court on the result (#109), by conflict type: the
- * main amicable way for that conflict, as described in src/shared/amicable (routes). Types
- * not listed compare talking directly with the judge.
+ * main amicable way for that conflict (conciliation or mediation, the only ways the journey leads
+ * to), as described in src/shared/amicable (routes). Types not listed compare conciliation.
  */
 const COMPARED_AMICABLE_ROUTE: Record<string, string> = {
   voisinage: 'conciliation',
@@ -87,10 +96,13 @@ const COMPARED_AMICABLE_ROUTE: Record<string, string> = {
   'argent-particuliers': 'conciliation',
   consommation: 'mediation-consommation',
   famille: 'mediation',
+  travail: 'mediation',
+  administration: 'mediation',
+  scolaire: 'mediation',
 }
 
 /** Route slugs to compare on the result: the amicable way, then the judge. */
 export function comparedRoutes(conflictTypeSlug: string | undefined): [string, string] {
   const amicable = conflictTypeSlug ? COMPARED_AMICABLE_ROUTE[conflictTypeSlug] : undefined
-  return [amicable ?? 'discussion', 'juge']
+  return [amicable ?? 'conciliation', 'juge']
 }

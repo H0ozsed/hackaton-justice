@@ -13,7 +13,7 @@ export type NavItem = {
 // Main journeys (docs/PARCOURS_UTILISATEURS.md).
 export const MAIN_NAV: NavItem[] = [
   { href: '/', label: 'Accueil' },
-  { href: '/simulation', label: 'Ma situation ?' },
+  { href: '/simulation', label: 'J’ai un conflit ?' },
   { href: '/mise-en-situation', label: 'Mise en situation' },
   { href: '/apprendre', label: 'Apprendre' },
   { href: '/demarches', label: 'Démarches' },
@@ -31,10 +31,10 @@ export type Journey = NavItem & {
 export const JOURNEYS: Journey[] = [
   {
     href: '/simulation',
-    label: 'Ma situation ?',
+    label: 'J’ai un conflit ?',
     description:
       'Répondez à quelques questions sur votre conflit et découvrez la solution amiable la plus adaptée.',
-    cta: 'Faire le point sur ma situation',
+    cta: 'Trouver une solution à mon conflit',
     icon: ClipboardListIcon,
   },
   {

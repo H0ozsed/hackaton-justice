@@ -81,7 +81,7 @@ export type ConflictTypeInput = z.input<typeof conflictTypeSchema>
 // ---- Channels (where the result sends the user) -------------------------------
 
 /**
- * Family of a channel, the categories the user picks from (« Ma situation ? », /apprendre):
+ * Family of a channel, the categories the user picks from (« J’ai un conflit ? », /apprendre):
  * talking directly, conciliation, mediation, other amicable recourse, the judge.
  */
 export const channelFamilySchema = z.enum([

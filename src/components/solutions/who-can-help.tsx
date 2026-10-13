@@ -15,7 +15,7 @@ import { SolutionDetails } from './solution-details'
 
 // « Qui peut vous aider ? » on /apprendre: every kind of conciliator, mediator and other recourse
 // the site knows, grouped by family, each with what the law says first. Same content as the
-// solutions of « Ma situation ? ».
+// solutions of « J’ai un conflit ? ».
 
 const FAMILIES = Object.keys(CHANNEL_FAMILY_LABELS) as ChannelFamily[]
 
