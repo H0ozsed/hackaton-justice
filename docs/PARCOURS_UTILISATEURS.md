@@ -53,6 +53,7 @@
   * Comparer les solutions : discussion, conciliation, médiation, médiation de la consommation, juge (qui aide, coût, qui décide, durée, valeur de l'issue)
   * Pas à pas : conciliateur, médiateur de la consommation, médiation, médiation familiale (étapes numérotées, bon à savoir, sources)
   * Liste « Préparer son rendez-vous » à cocher (rien enregistré), imprimable
+  * Écrire un courrier amiable : formulaire (noms, objet, faits, demande, délai, proposer un conciliateur) → courrier courtois daté à copier ou imprimer, rien envoyé ni enregistré
   * Liens vers la simulation, la mise en situation et le lexique
 
 ### `/`apprendre
