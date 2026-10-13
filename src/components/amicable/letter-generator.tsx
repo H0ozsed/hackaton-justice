@@ -73,6 +73,13 @@ export function LetterGenerator({ today = () => new Date() }: { today?: () => Da
     }
   }
 
+  // Prints the letter alone (see the print rules of globals.css), then the page again.
+  const printLetter = () => {
+    document.body.dataset.print = 'letter'
+    window.addEventListener('afterprint', () => delete document.body.dataset.print, { once: true })
+    window.print()
+  }
+
   const fieldId = (name: string) => `${id}-${name}`
   const error = (name: FieldPath<LetterInput>) => {
     const message = errors[name]?.message
@@ -259,6 +266,7 @@ export function LetterGenerator({ today = () => new Date() }: { today?: () => Da
           </h3>
           <div
             data-testid="letter"
+            data-print-area
             className="rounded-lg border-2 bg-card p-6 font-serif leading-relaxed whitespace-pre-line shadow-sm"
           >
             {letter}
@@ -268,9 +276,9 @@ export function LetterGenerator({ today = () => new Date() }: { today?: () => Da
               <CopyIcon aria-hidden />
               Copier le courrier
             </Button>
-            <Button type="button" variant="outline" onClick={() => window.print()}>
+            <Button type="button" variant="outline" onClick={printLetter}>
               <PrinterIcon aria-hidden />
-              Imprimer
+              Imprimer le courrier
             </Button>
           </div>
           <p aria-live="polite" className="text-sm font-medium">

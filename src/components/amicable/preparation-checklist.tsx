@@ -25,9 +25,16 @@ export function PreparationChecklist({
       return next
     })
 
+  // Prints the list alone (see the print rules of globals.css).
+  const printList = () => {
+    document.body.dataset.print = 'checklist'
+    window.addEventListener('afterprint', () => delete document.body.dataset.print, { once: true })
+    window.print()
+  }
+
   return (
     <div className="space-y-4">
-      <ul className="space-y-3">
+      <ul data-print-area className="space-y-3">
         {items.map((item) => (
           <li key={item.slug} className="flex items-start gap-3">
             <Checkbox
@@ -54,7 +61,7 @@ export function PreparationChecklist({
         {done.size} sur {items.length} prêt{done.size > 1 ? 's' : ''}
         {done.size === items.length && ' : vous êtes prêt(e) pour votre rendez-vous.'}
       </p>
-      <Button type="button" variant="outline" onClick={() => window.print()}>
+      <Button type="button" variant="outline" onClick={printList}>
         <PrinterIcon aria-hidden />
         Imprimer la liste
       </Button>
