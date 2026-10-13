@@ -95,6 +95,13 @@ describe('simulation result screen', () => {
       expect(within(group('Le juge')).getByRole('radio', { name: 'Canal court' })).toBeVisible()
     })
 
+    it('says other third parties exist, and links to all of them', () => {
+      renderResult(answers('yes', 'unknown'))
+      expect(
+        screen.getByRole('link', { name: 'Voir tous les conciliateurs et médiateurs' }),
+      ).toHaveAttribute('href', '/apprendre#qui-peut-vous-aider')
+    })
+
     it('leaves out the solutions meant for another conflict, or that only a judge starts', () => {
       renderResult(answers('yes', 'unknown'))
 

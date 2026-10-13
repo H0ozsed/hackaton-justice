@@ -2,7 +2,6 @@ import Link from 'next/link'
 
 import { GuideList } from '@/components/amicable/guide-list'
 import { KeyFigures } from '@/components/amicable/key-figures'
-import { LetterGenerator } from '@/components/amicable/letter-generator'
 import { PreparationChecklist } from '@/components/amicable/preparation-checklist'
 import { RoutesComparison } from '@/components/amicable/routes-comparison'
 import { SourceLink } from '@/components/amicable/source-link'
@@ -18,7 +17,6 @@ const SECTIONS = [
   { id: 'comparer', label: 'Comparer les solutions' },
   { id: 'pas-a-pas', label: 'Pas à pas' },
   { id: 'preparer', label: 'Préparer son rendez-vous' },
-  { id: 'courrier', label: 'Écrire un courrier amiable' },
 ] as const
 
 const linkClassName = 'text-primary underline underline-offset-4'
@@ -116,21 +114,6 @@ export default function ProceduresPage() {
           enregistré.
         </p>
         <PreparationChecklist />
-      </section>
-
-      <section
-        id="courrier"
-        aria-labelledby="courrier-titre"
-        className="mt-12 max-w-3xl scroll-mt-4"
-      >
-        <h2 id="courrier-titre" className="text-2xl font-bold">
-          Écrire un courrier amiable
-        </h2>
-        <p className="mt-4 mb-6">
-          Avant tout recours, un courrier courtois expose le problème et propose une solution.
-          Remplissez ces champs : votre courrier est rédigé ici, rien n’est envoyé ni enregistré.
-        </p>
-        <LetterGenerator />
       </section>
 
       <section
