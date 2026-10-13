@@ -36,7 +36,8 @@ docs/                     Specs (CDC, user journeys), design charter, RGAA, RGPD
 
 Current domains in `src/shared/`: `home` (home page explainer, « Par où commencer ? »
 orientation, « À propos » and IRIS starter questions; its texts may link glossary terms with
-`[[slug]]`), `glossary`, `faq`, `practical-info`, `amicable` (practical guides of
+`[[slug]]`), `glossary`, `faq`, `practical-info`, `games` (mini-games content, e.g. the rounds of
+"Désamorcer"), `amicable` (practical guides of
 `/demarches`: key figures, routes compared, step-by-step guides, checklist), `simulation`
 (conflict types + channels), `quiz`, `role-play` (scenarios of `/mise-en-situation` and the
 pure game engine that plays them, and the life gauges; its pixel-art stage, sprites and sounds

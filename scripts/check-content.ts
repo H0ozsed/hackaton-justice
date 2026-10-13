@@ -3,6 +3,7 @@
 // Runs before `next build` and in the pre-commit hook. Add new domains here.
 import '@/shared/amicable'
 import '@/shared/faq'
+import '@/shared/games'
 import '@/shared/glossary'
 import '@/shared/home'
 import '@/shared/practical-info'
