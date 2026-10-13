@@ -4,11 +4,10 @@
 
 * **Bandeau** : à quoi sert le site en une phrase (aussi meta description), lien « Par où commencer ? »
 * **L'amiable en 1 minute** : 4 cartes (régler à l'amiable, voies possibles, pourquoi essayer d'abord, qui peut aider), termes du lexique cliquables ; contenu à valider (#120)
-* **Par où commencer ?** : la phrase qui correspond au visiteur mène en un clic au bon parcours
+* **Par où commencer ?** : seule entrée vers les 3 parcours sur l'accueil ; la phrase qui correspond au visiteur mène en un clic au bon parcours (description et bouton du parcours)
   * Conflit en cours → Simulation
   * Comprendre avant d'agir → Mise en situation
   * Apprendre, seul ou en groupe (classe, atelier) → Apprendre
-* **Choix parcours utilisateurs (sim, mes, app)** : les 3 cartes, pour ceux qui savent déjà
 * **À propos** : pour qui, ce qui rend le site différent, ce qu'il n'est pas (ni avocat, ni démarche officielle, aucune décision)
 * **Navbar**
 * **Footer**

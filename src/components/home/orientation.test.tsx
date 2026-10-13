@@ -1,7 +1,7 @@
 import { render, screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 
-import { orientation } from '@/shared/home'
+import { journeyFor, orientation } from '@/shared/home'
 
 import { Orientation } from './orientation'
 
@@ -30,13 +30,12 @@ describe('Orientation', () => {
             slug: 'conflit',
             situation: 'Je vis un conflit',
             journey: '/simulation',
-            hint: 'Quelques questions.',
           },
         ]}
       />,
     )
     expect(screen.getByRole('link')).toHaveAccessibleName(
-      'Je vis un conflit Quelques questions. Aller au parcours Simulation',
+      `Je vis un conflit Parcours Simulation : ${journeyFor('/simulation').description} ${journeyFor('/simulation').cta}`,
     )
   })
 })

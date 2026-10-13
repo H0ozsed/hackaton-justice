@@ -21,9 +21,8 @@ export const orientationOptionSchema = z.object({
   slug: slugSchema,
   /** First person, what the visitor would say (« Je vis un conflit en ce moment »). */
   situation: z.string().min(1),
+  /** The journey it leads to: its description and button text come from JOURNEYS. */
   journey: journeyPathSchema,
-  /** One sentence: what the visitor will find there. */
-  hint: z.string().min(1),
 })
 
 /** What the site is for, for whom, and what it is not (#104). */

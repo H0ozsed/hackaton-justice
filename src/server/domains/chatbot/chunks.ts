@@ -62,7 +62,7 @@ function homeChunks(): Chunk[] {
         'Par où commencer sur ce site ?',
         ...orientation.all.map(
           (o) =>
-            `- ${o.situation} : parcours ${journeyFor(o.journey).label} (${o.journey}). ${o.hint}`,
+            `- ${o.situation} : parcours ${journeyFor(o.journey).label} (${o.journey}). ${journeyFor(o.journey).description}`,
         ),
       ),
       url: '/#par-ou-commencer',

@@ -40,19 +40,16 @@ export const orientationData: OrientationOptionInput[] = [
     slug: 'conflit-en-cours',
     situation: 'Je vis un conflit en ce moment',
     journey: '/simulation',
-    hint: 'Répondez à quelques questions sur votre situation et découvrez la solution amiable adaptée.',
   },
   {
     slug: 'comprendre-avant-d-agir',
     situation: 'Je veux comprendre avant d’agir',
     journey: '/mise-en-situation',
-    hint: 'Vivez un conflit fictif, faites vos choix et voyez ce qu’ils changent.',
   },
   {
     slug: 'apprendre-ou-sensibiliser',
     situation: 'Je veux apprendre, seul ou avec un groupe (classe, atelier)',
     journey: '/apprendre',
-    hint: 'Quiz, lexique et questions fréquentes pour découvrir les notions clés.',
   },
 ]
 
