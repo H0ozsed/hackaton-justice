@@ -41,6 +41,19 @@ describe('Definition', () => {
     expect(screen.getByRole('button')).toHaveFocus()
   })
 
+  it('links to the full entry on the glossary page, reachable with Tab', async () => {
+    const user = userEvent.setup()
+    render(<Definition slug={entry.slug} />)
+
+    await user.click(screen.getByRole('button'))
+    const link = screen.getByRole('link', { name: `Voir dans le lexique : ${entry.term}` })
+    expect(link).toHaveAttribute('href', `/apprendre/lexique#${entry.slug}`)
+
+    // The popover takes the focus when it opens; the link is the next stop.
+    for (let i = 0; i < 3 && document.activeElement !== link; i++) await user.tab()
+    expect(link).toHaveFocus()
+  })
+
   it('shows another text in the sentence when given children', () => {
     render(<Definition slug={entry.slug}>autre forme</Definition>)
     expect(screen.getByRole('button')).toHaveTextContent('autre forme')
