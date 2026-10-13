@@ -7,7 +7,26 @@ const SCENARIO = '/mise-en-situation/voisin-du-dessus'
 // Full runs of /mise-en-situation. Written without knowing the scenario: a run takes
 // always the first or always the last choice, so it keeps working when the content changes.
 
+/**
+ * Waits for the transitions to end before an axe scan: axe would otherwise read the
+ * intermediate colours of a fading text as a contrast failure (#140).
+ * - the "Scène N" title card (decorative, shown 1.8 s then faded out by framer-motion,
+ *   whose JS-driven frames are not in document.getAnimations());
+ * - the finite CSS / Web animations (infinite loops such as idle sprites are ignored).
+ */
+async function settleAnimations(page: Page) {
+  await expect(page.getByTestId('title-card')).toHaveCount(0, { timeout: 5_000 })
+  await page.waitForFunction(() =>
+    document
+      .getAnimations()
+      .every(
+        (a) => a.playState !== 'running' || a.effect?.getComputedTiming().iterations === Infinity,
+      ),
+  )
+}
+
 const expectNoAxeViolation = async (page: Page) => {
+  await settleAnimations(page)
   const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze()
   expect(results.violations).toEqual([])
 }
