@@ -1,14 +1,35 @@
 import { describe, expect, it } from 'vitest'
 
-import { buildMessages, searchQueries, SYSTEM_RULES } from './prompt'
+import { buildMessages, NO_INFORMATION, searchQueries, SYSTEM_PROMPT } from './prompt'
 
 const result = (title: string, text: string) => ({
   chunk: { id: title, domain: 'faq' as const, title, text, url: '/' },
   score: 0.8,
 })
 
+describe('SYSTEM_PROMPT', () => {
+  it('limits the model to rephrasing the retrieved extracts', () => {
+    expect(SYSTEM_PROMPT).toMatch(/Tu es IRIS \(Informer, Renseigner, Indiquer les Solutions\)/)
+    expect(SYSTEM_PROMPT).toMatch(/Ta seule tâche\nReformuler en français simple les extraits/)
+    expect(SYSTEM_PROMPT).toMatch(/Utilise uniquement le contenu des extraits/)
+    expect(SYSTEM_PROMPT).toContain(`« ${NO_INFORMATION} »`)
+  })
+
+  it('keeps IRIS neutral', () => {
+    expect(SYSTEM_PROMPT).toMatch(/ne garantis aucun résultat/)
+    expect(SYSTEM_PROMPT).toMatch(/« vous devez »/)
+  })
+
+  it('asks for a short French answer, lightly formatted, without reasoning', () => {
+    expect(SYSTEM_PROMPT).toMatch(/En français/)
+    expect(SYSTEM_PROMPT).toMatch(/80 mots au plus/)
+    expect(SYSTEM_PROMPT).toMatch(/commençant par « - »/)
+    expect(SYSTEM_PROMPT).toMatch(/pas de raisonnement/)
+  })
+})
+
 describe('buildMessages', () => {
-  it('gives the rules and the numbered extracts, then the history, then the question', () => {
+  it('gives the prompt and the numbered extracts, then the history, then the question', () => {
     const messages = buildMessages(
       'Et pour un voisin ?',
       [
@@ -18,21 +39,13 @@ describe('buildMessages', () => {
       [result('Médiation', 'Texte A'), result('Conciliation', 'Texte B')],
     )
     expect(messages.map((m) => m.role)).toEqual(['system', 'user', 'assistant', 'user'])
-    expect(messages[0].content).toContain(SYSTEM_RULES)
+    expect(messages[0].content).toContain(SYSTEM_PROMPT)
     expect(messages[0].content).toContain('[1] Médiation\nTexte A')
     expect(messages[0].content).toContain('[2] Conciliation\nTexte B')
     expect(messages.at(-1)).toEqual({ role: 'user', content: 'Et pour un voisin ?' })
   })
 
-  it('keeps IRIS in an informative role', () => {
-    expect(SYSTEM_RULES).toMatch(/UNIQUEMENT les extraits/)
-    expect(SYSTEM_RULES).toMatch(/ne garantis jamais/)
-    expect(SYSTEM_RULES).toMatch(/« vous devez »/)
-  })
-})
-
-describe('buildMessages for Qwen3', () => {
-  it('asks Qwen3 not to reason, on the latest user message only', () => {
+  it('asks a thinking Qwen3 model not to reason, on the latest user message only', () => {
     const messages = buildMessages(
       'Et ensuite ?',
       [{ role: 'user', content: 'Avant' }],
@@ -43,17 +56,12 @@ describe('buildMessages for Qwen3', () => {
     expect(messages[1].content).toBe('Avant')
   })
 
-  it('leaves other models untouched', () => {
-    const messages = buildMessages('Bonjour', [], [result('A', 'a')], { model: 'llama3.2' })
-    expect(messages.at(-1)?.content).toBe('Bonjour')
-  })
-})
-
-describe('SYSTEM_RULES format', () => {
-  it('asks for a short, lightly formatted answer without the reasoning', () => {
-    expect(SYSTEM_RULES).toMatch(/80 mots au plus/)
-    expect(SYSTEM_RULES).toMatch(/commençant par « - »/)
-    expect(SYSTEM_RULES).toMatch(/sans montrer ton raisonnement/)
+  it('leaves models without a thinking mode untouched', () => {
+    for (const model of ['qwen3:4b-instruct-2507-q4_K_M', 'llama3.2']) {
+      expect(buildMessages('Bonjour', [], [result('A', 'a')], { model }).at(-1)?.content).toBe(
+        'Bonjour',
+      )
+    }
   })
 })
 

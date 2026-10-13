@@ -37,8 +37,10 @@ IRIS answers from the site content only, with a model that runs locally (no exte
 - First `docker compose up`: the `ollama-models` service downloads the models (about 4 GB,
   once; they are kept in the `ollama` volume), then stops. Progress:
   `docker compose logs -f ollama-models`.
-- Default models run without a GPU, on Linux and macOS: `qwen3:4b` (chat) and `bge-m3`
-  (embeddings). With more RAM, set `OLLAMA_CHAT_MODEL=qwen3:8b` in `.env`.
+- Default models run without a GPU, on Linux and macOS: `qwen3:4b-instruct-2507-q4_K_M` (chat, 2.5 GB)
+  and `bge-m3` (embeddings). Use a chat model **without a thinking mode** (Qwen3
+  `instruct-2507`, not `qwen3:4b`/`qwen3:8b`): a thinking model reasons before answering,
+  which is slow and can be cut before the answer.
 - Ollama URL: `http://ollama:11434` from the containers, `http://localhost:11434` from your
   machine (`OLLAMA_URL` in `.env`, for `npm run dev` outside Docker).
 - The site works without Ollama: IRIS then says it is unavailable.

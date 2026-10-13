@@ -19,11 +19,18 @@ export class OllamaUnavailableError extends Error {
   }
 }
 
+/**
+ * Chat model without a thinking mode (Qwen3 2507 Instruct): it answers directly.
+ * Thinking models (qwen3:4b, qwen3:8b...) reason first: slow, and the reasoning can
+ * be cut by the length limit before the answer.
+ */
+export const DEFAULT_CHAT_MODEL = 'qwen3:4b-instruct-2507-q4_K_M'
+
 /** Same defaults everywhere; Docker sets OLLAMA_URL to http://ollama:11434. */
 export function ollamaConfig(env: Record<string, string | undefined> = process.env): OllamaConfig {
   return {
     url: (env.OLLAMA_URL || 'http://localhost:11434').replace(/\/+$/, ''),
-    chatModel: env.OLLAMA_CHAT_MODEL || 'qwen3:4b',
+    chatModel: env.OLLAMA_CHAT_MODEL || DEFAULT_CHAT_MODEL,
     embedModel: env.OLLAMA_EMBED_MODEL || 'bge-m3',
   }
 }
@@ -67,14 +74,19 @@ export async function embed(texts: string[], config = ollamaConfig(), signal?: A
 type ChatChunk = {
   message?: { content?: string; thinking?: string }
   done?: boolean
+  done_reason?: string
   error?: string
 }
 
-/** A piece of the model's output: its reasoning (never shown) or answer text. */
-export type ChatPart = { kind: 'thinking' } | { kind: 'text'; text: string }
+/**
+ * A piece of the model's output: its reasoning (never shown), answer text, or the
+ * end. `truncated`: stopped by the length limit, the answer may be incomplete.
+ */
+export type ChatPart =
+  { kind: 'thinking' } | { kind: 'text'; text: string } | { kind: 'end'; truncated: boolean }
 
 /** Longest answer generated, in tokens: IRIS answers in a few sentences. */
-const MAX_ANSWER_TOKENS = 600
+const MAX_ANSWER_TOKENS = 400
 
 /**
  * Streams the output of the chat model. Deterministic settings: IRIS rephrases the
@@ -109,7 +121,10 @@ export async function* chat(
     if (chunk.error) throw new OllamaUnavailableError(`Ollama error: ${chunk.error}`)
     if (chunk.message?.thinking) yield { kind: 'thinking' }
     if (chunk.message?.content) yield { kind: 'text', text: chunk.message.content }
-    if (chunk.done) return
+    if (chunk.done) {
+      yield { kind: 'end', truncated: chunk.done_reason === 'length' }
+      return
+    }
   }
 }
 
@@ -133,6 +148,19 @@ export function cleanAnswer(text: string) {
   return answer.trim()
 }
 
+/**
+ * True when the text reads like a model thinking aloud rather than answering, e.g.
+ * a thinking model whose reasoning has no tags ("Okay, let's see. The user is
+ * asking…"). Such text is never shown.
+ */
+export function looksLikeReasoning(text: string) {
+  const start = text.trimStart().slice(0, 200)
+  return (
+    /^(okay|ok|alright|hmm+|wait|let me|let.s|let us|i need to|i should|the user)\b/i.test(start) ||
+    /\bthe user (is asking|asks|wants)\b/i.test(start)
+  )
+}
+
 /** What to do about an Ollama failure, for the server logs. */
 export function explainOllamaError(error: OllamaUnavailableError, config = ollamaConfig()) {
   const message = error.message
@@ -143,7 +171,7 @@ export function explainOllamaError(error: OllamaUnavailableError, config = ollam
     return `${message}. Download the models: docker compose up ollama-models`
   }
   if (/memory/i.test(message)) {
-    return `${message}. The model ${config.chatModel} does not fit in memory: use a smaller one (OLLAMA_CHAT_MODEL=qwen3:4b) or give Docker more memory.`
+    return `${message}. The model ${config.chatModel} does not fit in memory: use a smaller one (OLLAMA_CHAT_MODEL=${DEFAULT_CHAT_MODEL}) or give Docker more memory.`
   }
   return message
 }
