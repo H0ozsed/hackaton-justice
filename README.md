@@ -1,6 +1,10 @@
 # hackaton-justice
 
-App to help people understand and handle a conflict: simulation, role-play, learning.
+App to help people understand amicable solutions (conciliation, mediation) to settle an
+everyday conflict, and to guide them to the right step or contact: simulation, role-play,
+learning. For citizens in a dispute, young people (schools, workshops) and the professionals
+who inform the public. It is not a lawyer, not an official procedure, and decides nothing
+(purpose sentence of the site: `about.purpose` in `src/shared/home/data.ts`, #104).
 Specs: [`docs/CDC.md`](docs/CDC.md) and [`docs/PARCOURS_UTILISATEURS.md`](docs/PARCOURS_UTILISATEURS.md).
 
 **Stack**: Next.js 16 · TypeScript · Tailwind CSS 4 · shadcn · lucide-react · framer-motion ·

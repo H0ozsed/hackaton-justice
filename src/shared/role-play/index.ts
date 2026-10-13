@@ -33,7 +33,7 @@ export {
 export * from './engine'
 export * from './gauges'
 export * from './results'
-export { parseRichText, plainText, type RichTextSegment } from './rich-text'
+export { hasBrokenMarkup, parseRichText, plainText, type RichTextSegment } from './rich-text'
 
 export const scenarios = defineCollection('scenarios', scenarioSchema, scenariosData)
 

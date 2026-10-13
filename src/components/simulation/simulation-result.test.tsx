@@ -84,7 +84,9 @@ describe('simulation result screen', () => {
     it('links to its website in a new window, said in the link text', () => {
       renderResult(answers('yes', 'maybe'))
 
-      const link = screen.getByRole('link', { name: 'Site de Canal neutral (nouvelle fenêtre)' })
+      const link = screen.getByRole('link', {
+        name: 'En savoir plus : Canal neutral (nouvelle fenêtre)',
+      })
       expect(link).toHaveAttribute('href', 'https://example.org/neutral')
       expect(link).toHaveAttribute('target', '_blank')
       expect(link).toHaveAttribute('rel', 'noopener noreferrer')
@@ -279,5 +281,34 @@ describe('from the form to the result', () => {
 
     expect(await screen.findByRole('heading', { level: 2, name: /Type de conflit/ })).toHaveFocus()
     expect(screen.getByRole('radio', { name: 'Type commerce' })).not.toBeChecked()
+  })
+})
+
+describe('mandatory amicable attempt', () => {
+  const neighbours: ConflictType = {
+    ...conflictType,
+    slug: 'voisins',
+    label: 'Type voisins',
+    mandatoryAmicableAttempt: 'always',
+  }
+  const NeighboursResult = createSimulationResult({ channels, conflictTypes: [neighbours] })
+
+  it('is said before the channel, even when the judicial route is recommended', () => {
+    render(
+      <NeighboursResult
+        result={{ ...answers('no', 'no'), 'conflict-type': { type: 'voisins' } }}
+        onRestart={vi.fn()}
+      />,
+    )
+    const notice = screen.getByRole('region', { name: 'Une tentative amiable est obligatoire' })
+    expect(notice).toHaveTextContent('article 750-1 du code de procédure civile')
+    expect(screen.getByRole('region', { name: 'Canal court' })).toBeInTheDocument()
+  })
+
+  it('is not shown when the law requires nothing', () => {
+    renderResult(answers('no', 'no'))
+    expect(
+      screen.queryByRole('region', { name: 'Une tentative amiable est obligatoire' }),
+    ).not.toBeInTheDocument()
   })
 })

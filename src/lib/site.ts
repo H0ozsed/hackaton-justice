@@ -16,6 +16,7 @@ export const MAIN_NAV: NavItem[] = [
   { href: '/simulation', label: 'Simulation' },
   { href: '/mise-en-situation', label: 'Mise en situation' },
   { href: '/apprendre', label: 'Apprendre' },
+  { href: '/demarches', label: 'Démarches' },
 ]
 
 export type Journey = NavItem & {
@@ -26,7 +27,7 @@ export type Journey = NavItem & {
   icon: LucideIcon
 }
 
-// The 3 journeys offered on the home page, in MAIN_NAV order.
+// The 3 journeys, in MAIN_NAV order: linked from « Par où commencer ? » on the home page.
 export const JOURNEYS: Journey[] = [
   {
     href: '/simulation',

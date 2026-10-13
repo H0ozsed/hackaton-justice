@@ -3,7 +3,14 @@ import { describe, expect, it } from 'vitest'
 import { channels as channelsContent, type Channel } from '@/shared/simulation'
 
 import { OPENNESS_STEP_ID } from './openness'
-import { pickChannel, recommendChannel, routeFor, type Route } from './recommend-channel'
+import {
+  channelsFor,
+  mandatoryAttemptNotice,
+  pickChannel,
+  recommendChannel,
+  routeFor,
+  type Route,
+} from './recommend-channel'
 
 // Neutral fixture channels: the rules are written on the attributes of the channels, not on their
 // slugs, so any content with the right attributes works.
@@ -198,5 +205,102 @@ describe('the channels of the content', () => {
     for (const [user, other] of combinations) {
       expect(recommendChannel(answers(user, other), channelsContent.all)).toBeDefined()
     }
+  })
+})
+
+describe('channels of a conflict type', () => {
+  const generic = channel('generic', { contact: { url: 'https://example.org/generic' } })
+  const consumer = channel('consumer', {
+    contact: { url: 'https://example.org/consumer' },
+    conflictTypes: ['conso'],
+  })
+  const family = channel('family', {
+    free: false,
+    contact: { url: 'https://example.org/family' },
+    conflictTypes: ['famille'],
+  })
+  const all = [talk, generic, consumer, family, court]
+  const withType = (type: string) => ({
+    'conflict-type': { type },
+    [OPENNESS_STEP_ID]: { userOpenness: 'yes', otherPartyOpenness: 'unknown' },
+  })
+
+  it('keeps the channels meant for the type, and the channels for every type', () => {
+    expect(channelsFor('conso', all)).toEqual([talk, generic, consumer, court])
+    expect(channelsFor(undefined, all)).toEqual(all)
+  })
+
+  it('recommends the most specific channel, even when it is not free', () => {
+    expect(recommendChannel(withType('conso'), all)?.channel).toBe(consumer)
+    expect(recommendChannel(withType('famille'), all)?.channel).toBe(family)
+    expect(recommendChannel(withType('autre'), all)?.channel).toBe(generic)
+  })
+
+  it('never suggests a channel meant for another conflict type', () => {
+    const alternatives = recommendChannel(withType('conso'), all)?.alternatives
+    expect(alternatives).not.toContain(family)
+    expect(alternatives).toContain(generic)
+  })
+})
+
+describe('mandatoryAttemptNotice', () => {
+  const type = (mandatoryAmicableAttempt?: 'always' | 'up-to-5000') => ({
+    slug: 't',
+    label: 'Type',
+    description: 'Description.',
+    examples: [],
+    lossKinds: ['money' as const],
+    followUpQuestions: [],
+    mandatoryAmicableAttempt,
+  })
+  const amount = (montant: number) => ({ 'follow-up': { montant } })
+
+  it('says the attempt is mandatory, and why, for an "always" type', () => {
+    const notice = mandatoryAttemptNotice(type('always'), {})
+    expect(notice).toMatch(/^Pour ce type de litige, la loi impose une tentative amiable/)
+    expect(notice).toContain('article 750-1 du code de procédure civile')
+    expect(notice).toContain('irrecevable')
+  })
+
+  it('depends on the amount for an "up-to-5000" type', () => {
+    expect(mandatoryAttemptNotice(type('up-to-5000'), amount(5000))).toMatch(
+      /^Pour une somme de 5 000 € ou moins/,
+    )
+    expect(mandatoryAttemptNotice(type('up-to-5000'), amount(5001))).toBeUndefined()
+    expect(mandatoryAttemptNotice(type('up-to-5000'), {})).toMatch(/^Si vous réclamez 5 000 €/)
+  })
+
+  it('says nothing when the law requires no attempt', () => {
+    expect(mandatoryAttemptNotice(type(), {})).toBeUndefined()
+    expect(mandatoryAttemptNotice(undefined, {})).toBeUndefined()
+  })
+})
+
+describe('the real content', () => {
+  it('has a channel for every route, for every conflict type', () => {
+    const routes: Route[] = ['direct', 'assisted', 'judicial']
+    for (const type of [
+      'voisinage',
+      'consommation',
+      'logement',
+      'argent-particuliers',
+      'famille',
+    ]) {
+      const relevant = channelsFor(type, channelsContent.all)
+      for (const route of routes) {
+        const picked = pickChannel(route, relevant)
+        expect(picked, `${type} / ${route}`).toBeDefined()
+        if (route === 'judicial') expect(picked?.amicable).toBe(false)
+        else expect(picked?.amicable, `${type} / ${route}`).toBe(true)
+      }
+    }
+  })
+
+  it('sends a consumer dispute to the consumer mediator and a family one to family mediation', () => {
+    const assisted = (type: string) =>
+      pickChannel('assisted', channelsFor(type, channelsContent.all))?.slug
+    expect(assisted('consommation')).toBe('mediateur-consommation')
+    expect(assisted('famille')).toBe('mediation-familiale')
+    expect(assisted('voisinage')).toBe('conciliateur-de-justice')
   })
 })
