@@ -19,7 +19,15 @@ const richTextSchema = z
   )
 
 /** Look of a character portrait. Fixed list: each one has its own icon and color in the UI. */
-export const avatarSchema = z.enum(['player', 'neighbor', 'official', 'professional', 'relative'])
+export const avatarSchema = z.enum([
+  'player',
+  'neighbor',
+  'official',
+  'professional',
+  'relative',
+  'clerk',
+  'mediator',
+])
 export type Avatar = z.infer<typeof avatarSchema>
 
 // ---- Staging (all optional): drives the pixel-art stage, never needed to understand ----
@@ -34,6 +42,9 @@ export const locationSchema = z.enum([
   'town-hall',
   'courthouse',
   'new-home',
+  'music-room',
+  'shop',
+  'office',
 ])
 export type Location = z.infer<typeof locationSchema>
 
@@ -67,6 +78,10 @@ export const actionSchema = z.enum([
   'move',
 ])
 export type Action = z.infer<typeof actionSchema>
+
+/** Whose shoes the player is in. */
+export const perspectiveSchema = z.enum(['complainant', 'respondent', 'mediator'])
+export type Perspective = z.infer<typeof perspectiveSchema>
 
 export const characterSchema = z.object({
   id: slugSchema,
@@ -134,6 +149,17 @@ export const scenarioSchema = z
   .object({
     slug: slugSchema,
     title: z.string().min(1),
+    /** One or two sentences for the list of scenarios, no spoiler (the intro when omitted). */
+    summary: z.string().min(1).optional(),
+    /** Difficulty, from 1 (discover) to 3 (expert). */
+    level: z.number().int().min(1).max(3).default(1),
+    /** Whose shoes the player is in. */
+    perspective: perspectiveSchema.default('complainant'),
+    /**
+     * Character played by the user (drawn on the left, never introduced). Omitted: the first
+     * character whose avatar is `player`.
+     */
+    playerId: slugSchema.optional(),
     /** Shown before the game starts. */
     intro: richTextSchema,
     /**
@@ -155,6 +181,8 @@ export const scenarioSchema = z
     if (!isUnique(scenario.characters.map((c) => c.id)))
       fail('character ids must be unique', ['characters'])
     const characterIds = new Set(scenario.characters.map((c) => c.id))
+    if (scenario.playerId && !characterIds.has(scenario.playerId))
+      fail(`unknown character "${scenario.playerId}"`, ['playerId'])
 
     const scenes = new Map(scenario.scenes.map((s) => [s.id, s]))
     if (scenes.size !== scenario.scenes.length) fail('scene ids must be unique', ['scenes'])

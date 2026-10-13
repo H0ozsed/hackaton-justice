@@ -20,6 +20,7 @@ import {
 
 import { Intro } from './intro'
 import { useSound } from './pixel/sound'
+import { saveScore } from './progress'
 import { ResultsScreen } from './results-screen'
 import { SceneView } from './scene-view'
 
@@ -128,7 +129,13 @@ export function RolePlayGame({ scenario }: { scenario: Scenario }) {
               announce={setAnnouncement}
               onChoose={choose}
               renderEnding={(ending) => (
-                <Ending title={ending.title} onShowResults={() => setPhase('results')} />
+                <Ending
+                  title={ending.title}
+                  onShowResults={() => {
+                    saveScore(scenario.slug, computeResults(scenario, state).scorePercent)
+                    setPhase('results')
+                  }}
+                />
               )}
             />
           </motion.div>

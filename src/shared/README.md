@@ -6,17 +6,17 @@ conflict types, orientation channels, quizzes. **Only edit the `data.ts` files.*
 Field names and comments are in English; the content itself is in French (it is what users
 read on the site).
 
-| Content                                    | File                                       |
-| ------------------------------------------ | ------------------------------------------ |
-| Home page: explainer, orientation, about   | `home/data.ts`                             |
-| Glossary                                   | `glossary/data.ts`                         |
-| FAQ                                        | `faq/data.ts`                              |
-| Practical info                             | `practical-info/data.ts`                   |
-| Conflict types (simulation)                | `simulation/data.ts` → `conflictTypesData` |
-| Orientation channels (simulation result)   | `simulation/data.ts` → `channelsData`      |
-| Quizzes                                    | `quiz/data.ts`                             |
-| Amicable guides (`/demarches`)             | `amicable/data.ts`                         |
-| Role-play scenarios (`/mise-en-situation`) | `role-play/data.ts`                        |
+| Content                                    | File                                                           |
+| ------------------------------------------ | -------------------------------------------------------------- |
+| Home page: explainer, orientation, about   | `home/data.ts`                                                 |
+| Glossary                                   | `glossary/data.ts`                                             |
+| FAQ                                        | `faq/data.ts`                                                  |
+| Practical info                             | `practical-info/data.ts`                                       |
+| Conflict types (simulation)                | `simulation/data.ts` → `conflictTypesData`                     |
+| Orientation channels (simulation result)   | `simulation/data.ts` → `channelsData`                          |
+| Quizzes                                    | `quiz/data.ts`                                                 |
+| Amicable guides (`/demarches`)             | `amicable/data.ts`                                             |
+| Role-play scenarios (`/mise-en-situation`) | `role-play/scenarios/<slug>.ts`, listed in `role-play/data.ts` |
 
 The content is real and sourced (sources in a comment at the top of each `data.ts`); it must be
 proofread by the legal / content team before the demo.
@@ -53,7 +53,11 @@ proofread by the legal / content team before the demo.
 - **Channels**: `conflictTypes` (slugs) limits a channel to some conflict types (omitted: all).
   The result recommends the most specific channel of the route first.
 - **Quizzes**: one id in `correctChoiceIds` → radio buttons; several → checkboxes.
-- **Role-play scenarios**: a scenario is a set of `scenes`. Each scene has `lines` of
+- **Role-play scenarios**: one file per scenario in `role-play/scenarios/`, added to the list in
+  `role-play/data.ts`. `summary` (card text, no spoiler), `level` (1 to 3), `perspective`
+  (`complainant`, `respondent`, `mediator`) and `playerId` (the character played, when it is not
+  the one with the `player` avatar) place it on `/mise-en-situation`. Avatars: `player`,
+  `neighbor`, `official`, `professional`, `relative`, `clerk`, `mediator`. A scenario is a set of `scenes`. Each scene has `lines` of
   dialogue (`speaker` = a character `id`, omitted for the narrator), then either `choices`
   or an `ending` (never both). Each choice says which scene comes `next`, its `quality`
   (`good`, `ok` or `bad`: 2, 1 or 0 points for the score), its `feedback` (the correction
@@ -61,7 +65,8 @@ proofread by the legal / content team before the demo.
   `relationship` in points). Every scene must be reachable from `startSceneId` and a scene
   cannot come back later in the same run (no loop): the check names the faulty scene.
   Staging, all optional (the pixel-art stage, #76): a scene can set its `location`
-  (`bedroom`, `landing`, `stairwell`, `lobby`, `town-hall`, `courthouse`, `new-home`; a
+  (`bedroom`, `landing`, `stairwell`, `lobby`, `town-hall`, `courthouse`, `new-home`,
+  `music-room`, `shop`, `office`; a
   neutral room when omitted) and its `period` (`morning`, `day`, `evening`, `night`: the
   lighting). A line can set the `emotion` of its speaker (`neutral`, `happy`, `angry`,
   `sad`, `tired`, `surprised`) and an `effect` (`drums`, `knock`, `door`, `phone`,

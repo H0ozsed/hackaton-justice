@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
-import type { Choice, Gauges, Scenario, Scene } from '@/shared/role-play'
+import { playerOf, type Choice, type Gauges, type Scenario, type Scene } from '@/shared/role-play'
 
 import { ChoiceList } from './choice-list'
 import { DialogueBox } from './dialogue-box'
@@ -58,6 +58,7 @@ export function SceneView({
   const [showOutcome, setShowOutcome] = useState(false)
   const heading = useRef<HTMLHeadingElement>(null)
 
+  const player = playerOf(scenario)
   const line = scene.lines[lineIndex]
   const isLastLine = lineIndex === scene.lines.length - 1
   const speaker = scenario.characters.find((c) => c.id === line.speaker)
@@ -66,7 +67,7 @@ export function SceneView({
   // The role of a character is given the first time they speak.
   const role =
     speaker &&
-    speaker.avatar !== 'player' &&
+    speaker.id !== player?.id &&
     !metIds.has(speaker.id) &&
     !scene.lines.slice(0, lineIndex).some((l) => l.speaker === speaker.id)
       ? speaker.role
@@ -102,13 +103,13 @@ export function SceneView({
 
   // The player always faces the characters who speak in this scene.
   const cast = scenario.characters.filter(
-    (c) => c.avatar === 'player' || scene.lines.some((l) => l.speaker === c.id),
+    (c) => c.id === player?.id || scene.lines.some((l) => l.speaker === c.id),
   )
 
   // Partner of the action: the other character of the scene where the choice was made.
   const partner = prelude
     ? scenario.characters.find(
-        (c) => c.avatar !== 'player' && prelude.scene.lines.some((l) => l.speaker === c.id),
+        (c) => c.id !== player?.id && prelude.scene.lines.some((l) => l.speaker === c.id),
       )?.avatar
     : undefined
 
@@ -174,7 +175,8 @@ export function SceneView({
           reduceMotion={reduceMotion}
           titleCard={{ label: `Scène ${sceneNumber}`, setting: scene.setting }}
           speech={speech}
-          action={playingAction && action ? { action, partner } : undefined}
+          playerId={player?.id}
+          action={playingAction && action ? { action, partner, player: player?.avatar } : undefined}
         />
       </div>
 

@@ -170,9 +170,12 @@ export function Stage({
   titleCard,
   speech,
   action,
+  playerId,
 }: {
   /** Characters on stage; the player (if any) is drawn on the left. */
   cast: readonly Character[]
+  /** Character played by the user. */
+  playerId?: string
   /** Id of the character who says the current line (undefined: narrator). */
   speakerId?: string
   /** Face of the speaker. */
@@ -190,10 +193,10 @@ export function Stage({
   /** The current line, shown in a bubble pointing at the speaker. */
   speech?: Speech
   /** Animation of the player's last choice, played instead of the cast. */
-  action?: { action: Action; partner?: Avatar }
+  action?: { action: Action; partner?: Avatar; player?: Avatar }
 }) {
   const frame = useFrame(!reduceMotion && !action)
-  const player = cast.find((c) => c.avatar === 'player')
+  const player = cast.find((c) => c.id === playerId)
   const others = cast.filter((c) => c !== player).slice(0, 3)
   const placed = [
     ...(player ? [{ character: player, x: PLAYER_X, flip: false }] : []),
@@ -219,7 +222,7 @@ export function Stage({
       </motion.g>
 
       {action ? (
-        <ActionArt action={action.action} partner={action.partner} />
+        <ActionArt action={action.action} partner={action.partner} player={action.player} />
       ) : (
         placed.map(({ character, x, flip }, i) => {
           const speaking = character.id === speakerId

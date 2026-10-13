@@ -12,6 +12,7 @@ const cast: Character[] = [
 
 const base = {
   cast,
+  playerId: 'camille',
   talking: false,
   effectKey: 0,
   reduceMotion: false,

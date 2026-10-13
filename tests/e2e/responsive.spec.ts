@@ -8,6 +8,7 @@ const PAGES = [
   '/',
   '/simulation',
   '/mise-en-situation',
+  '/mise-en-situation/voisin-du-dessus',
   '/apprendre',
   '/apprendre/lexique',
   '/apprendre/desamorcer',
