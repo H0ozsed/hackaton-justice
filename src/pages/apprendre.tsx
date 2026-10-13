@@ -29,6 +29,13 @@ const GAMES = [
       'Huit situations du quotidien : trouvez la phrase qui dit les choses sans faire monter la tension.',
     cta: 'Jouer à Désamorcer',
   },
+  {
+    href: '/apprendre/qui-fait-quoi',
+    title: 'Qui fait quoi ?',
+    description:
+      'Conciliateur, médiateur ou juge ? Dix phrases à attribuer pour savoir à qui vous adresser.',
+    cta: 'Jouer à Qui fait quoi ?',
+  },
 ] as const
 
 export default function LearnPage() {
