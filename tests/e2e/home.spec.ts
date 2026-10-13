@@ -19,13 +19,35 @@ test('the home page explains the service and lists the 3 journeys', async ({ pag
   ])
 })
 
-test('the home page sections follow the h1 > h2 heading order', async ({ page }) => {
+test('the home page explains first, then orients, then lists the journeys', async ({ page }) => {
   await page.goto('/')
-  await expect(page.getByRole('heading', { level: 2 })).toHaveText([
+  await expect(page.locator('main').getByRole('heading', { level: 2 })).toHaveText([
+    'L’amiable en 1 minute',
+    'Par où commencer ?',
     'Choisissez votre parcours',
+    'À propos de ce site',
     'Infos pratiques',
     'Questions fréquentes',
   ])
+})
+
+test('the home page says what the site is for, for search engines too', async ({ page }) => {
+  await page.goto('/')
+  const description = await page.locator('meta[name="description"]').getAttribute('content')
+  expect(description).toBeTruthy()
+  await expect(
+    page.getByRole('region', { name: 'Comprendre et gérer votre conflit' }),
+  ).toContainText(description!)
+})
+
+test('the hero link jumps to « Par où commencer ? »', async ({ page }) => {
+  await page.goto('/')
+  await page
+    .getByRole('region', { name: 'Comprendre et gérer votre conflit' })
+    .getByRole('link', { name: 'Par où commencer ?' })
+    .click()
+  await expect(page).toHaveURL(/#par-ou-commencer$/)
+  await expect(page.getByRole('heading', { level: 2, name: 'Par où commencer ?' })).toBeInViewport()
 })
 
 test('a home FAQ question opens and closes from the keyboard', async ({ page, isMobile }) => {
@@ -44,7 +66,24 @@ test('a home FAQ question opens and closes from the keyboard', async ({ page, is
 for (const { cta, path } of JOURNEYS) {
   test(`opens ${path} in one click from the home page`, async ({ page }) => {
     await page.goto('/')
-    await page.getByRole('link', { name: cta }).click()
+    await page.getByRole('link', { name: cta, exact: true }).click()
+    await expect(page).toHaveURL(path)
+  })
+}
+
+const ORIENTATION = [
+  { situation: 'Je vis un conflit en ce moment', path: '/simulation' },
+  { situation: 'Je veux comprendre avant d’agir', path: '/mise-en-situation' },
+  { situation: 'Je veux apprendre', path: '/apprendre' },
+]
+
+for (const { situation, path } of ORIENTATION) {
+  test(`« ${situation} » leads to ${path} in one click`, async ({ page }) => {
+    await page.goto('/')
+    await page
+      .getByRole('region', { name: 'Par où commencer ?' })
+      .getByRole('link', { name: situation })
+      .click()
     await expect(page).toHaveURL(path)
   })
 }

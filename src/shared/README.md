@@ -8,6 +8,7 @@ read on the site).
 
 | Content                                    | File                                       |
 | ------------------------------------------ | ------------------------------------------ |
+| Home page: explainer, orientation, about   | `home/data.ts`                             |
 | Glossary                                   | `glossary/data.ts`                         |
 | FAQ                                        | `faq/data.ts`                              |
 | Practical info                             | `practical-info/data.ts`                   |
@@ -30,6 +31,12 @@ The current entries are **examples** (prefixed `EXEMPLE`) to be replaced.
    build: invalid content blocks them, with a message naming the entry and the field to fix.
 
 ## Things to know
+
+- **Home page** (`home/data.ts`): the « L'amiable en 1 minute » cards (`body` can link
+  glossary terms with `[[slug]]` or `[[slug|displayed text]]`), the « Par où commencer ? »
+  answers (`journey`: `/simulation`, `/mise-en-situation` or `/apprendre`), the « À propos »
+  texts and the questions IRIS suggests on the home page. Legal facts there are drafts until
+  validated (#120): they are marked `TO VALIDATE` in the file.
 
 - **References**: in the glossary (`related`) and quizzes (`glossary`), glossary terms are
   referenced by their `slug`. The referenced term must exist.
