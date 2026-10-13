@@ -2,19 +2,25 @@
 
 ### `/`
 
-* **Choix parcours utilisateurs (sim, mes, app)**
+* **Bandeau** : à quoi sert le site en une phrase (aussi meta description), lien « Par où commencer ? »
+* **L'amiable en 1 minute** : 4 cartes (régler à l'amiable, voies possibles, pourquoi essayer d'abord, qui peut aider), termes du lexique cliquables ; contenu à valider (#120)
+* **Par où commencer ?** : seule entrée vers les 3 parcours sur l'accueil ; la phrase qui correspond au visiteur mène en un clic au bon parcours (description et bouton du parcours)
+  * Conflit en cours → Simulation
+  * Comprendre avant d'agir → Mise en situation
+  * Apprendre, seul ou en groupe (classe, atelier) → Apprendre
+* **À propos** : pour qui, ce qui rend le site différent, ce qu'il n'est pas (ni avocat, ni démarche officielle, aucune décision)
 * **Navbar**
 * **Footer**
 * **Infos pratiques**
 * **FAQ**
 * **Chatbot : IRIS** (Identifier, Rechercher, Informer, Suggérer), « votre assistante »
   * Bouton flottant → panneau accessible (focus, Échap, réponses annoncées aux lecteurs d'écran)
-  * Répond uniquement à partir du contenu du site (FAQ, infos pratiques, lexique, types de conflit, interlocuteurs, quiz), avec ses sources
+  * Répond uniquement à partir du contenu du site (accueil : l'amiable en 1 minute, par où commencer, à propos ; FAQ, infos pratiques, lexique, types de conflit, interlocuteurs, quiz), avec ses sources
   * Rien de pertinent → « Je n'ai pas cette information », sans appeler le modèle
   * Informe et oriente, ne garantit rien, pas de conseil juridique personnalisé
   * Étapes affichées en direct (recherche, lecture des extraits, rédaction), réponse courte et mise en forme (listes, gras), jamais le raisonnement du modèle
   * Arrêter une réponse, la copier, réessayer après une erreur, compteur de caractères
-  * Questions suggérées, relances comprises (historique), termes du lexique cliquables
+  * Questions suggérées (accueil : alignées sur « L'amiable en 1 minute », puis FAQ), relances comprises (historique), termes du lexique cliquables
   * Conversation gardée dans l'onglet uniquement (sessionStorage), rien stocké côté serveur
   * Modèle local (Ollama dans Docker) ; site utilisable si IRIS est indisponible
 

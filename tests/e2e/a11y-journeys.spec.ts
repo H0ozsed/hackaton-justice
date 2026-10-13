@@ -33,13 +33,25 @@ async function expectNoViolations(page: Page, state: string) {
   expect(summary, state).toEqual([])
 }
 
-test('home: mobile menu, FAQ and IRIS chat widget', async ({ page, isMobile }) => {
+test('home: mobile menu, explainer definition, FAQ and IRIS chat widget', async ({
+  page,
+  isMobile,
+}) => {
   await page.goto('/')
   if (isMobile) {
     await page.getByRole('button', { name: 'Ouvrir le menu' }).click()
     await expectNoViolations(page, 'mobile menu open')
     await page.getByRole('button', { name: 'Fermer le menu' }).click()
   }
+
+  await page
+    .getByRole('region', { name: 'L’amiable en 1 minute' })
+    .getByRole('button', { name: /voir la définition/ })
+    .first()
+    .click()
+  await expect(page.getByRole('dialog')).toBeVisible()
+  await expectNoViolations(page, 'explainer definition open')
+  await page.keyboard.press('Escape')
 
   const question = page.locator('main [data-slot="accordion-trigger"]').first()
   if (await question.count()) {

@@ -26,7 +26,7 @@ export type Journey = NavItem & {
   icon: LucideIcon
 }
 
-// The 3 journeys offered on the home page, in MAIN_NAV order.
+// The 3 journeys, in MAIN_NAV order: linked from « Par où commencer ? » on the home page.
 export const JOURNEYS: Journey[] = [
   {
     href: '/simulation',
