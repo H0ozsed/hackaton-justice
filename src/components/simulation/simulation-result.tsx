@@ -1,4 +1,5 @@
 import { ExternalLinkIcon } from 'lucide-react'
+import Link from 'next/link'
 import type { ComponentType } from 'react'
 
 import { Button } from '@/components/ui/button'
@@ -76,6 +77,17 @@ export function createSimulationResult({
               vous de choisir celle qui correspond à votre situation.
             </p>
             <SolutionPicker groups={groups} />
+            <p>
+              Il existe d’autres conciliateurs et médiateurs (familial, de la consommation, de
+              l’éducation, des administrations…) : seuls ceux qui traitent votre type de conflit
+              sont proposés ici.{' '}
+              <Link
+                href="/apprendre#qui-peut-vous-aider"
+                className="font-medium text-france-blue underline underline-offset-4 hover:decoration-2"
+              >
+                Voir tous les conciliateurs et médiateurs
+              </Link>
+            </p>
           </section>
         ) : (
           <p>Aucune solution n’est disponible pour le moment.</p>

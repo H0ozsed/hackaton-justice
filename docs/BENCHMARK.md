@@ -25,7 +25,7 @@ money, family), what is missing, and where this project stands. Written during t
    - mini-games on wording (non-violent communication) and on who does what.
 
    Official sites inform; nobody trains.
-4. **Concrete tools**: a preparation checklist and a generated amicable letter, which is also the proof of the attempt.
+4. **Concrete, information-only tools**: a preparation checklist and, for each third party, what the law says, its cost and the value of the agreement. The site informs; it never writes or sends anything for the user.
 5. **Accessible and private by design**: RGAA self-assessment, every journey state scanned by axe; nothing is sent or stored on a server, and the scores stay on the device.
 6. **IRIS**, a chatbot that answers only from the site's sourced content, gives its sources and says when it does not know.
 

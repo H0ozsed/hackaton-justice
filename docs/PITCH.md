@@ -28,7 +28,7 @@ words, and lets you practise before the real situation.**
 | --- | --- | --- |
 | **Ma situation ?** (`/simulation`) | A few questions → the right amicable channel for *your* dispute, with its cost and the value of the agreement + "the law requires an amicable attempt" when it applies | Turns "I don't know where to go" into a next step |
 | **Mise en situation** | Pixel-art role-play with levels: you suffer the trouble, you are accused of it, then you are the mediator; animated choices, life gauges, a score with corrections | People remember what they lived; seeing the other side de-escalates |
-| **Apprendre** + **Démarches** | Quizzes, glossary, mini-games ("Désamorcer", "Qui fait quoi ?"), comparison of routes, step-by-step guides, checklist, amicable letter generator, IRIS chatbot | Know, compare, prepare, act |
+| **Apprendre** + **Démarches** | Quizzes, glossary, mini-games ("Désamorcer", "Qui fait quoi ?"), comparison of routes, step-by-step guides, checklist, who can help (law first), IRIS chatbot | Know, compare, prepare, act |
 
 ## What makes it different (benchmark)
 
@@ -36,7 +36,7 @@ words, and lets you practise before the real situation.**
   you. We do both, in one place.
 - Practice from **three points of view**, including the mediator's. That is unique, and it is
   the heart of de-escalation.
-- **Concrete tools**: a checklist and a letter that also prove the amicable attempt.
+- **Information only**: the site explains and orients; it writes or sends nothing for the user.
 - **Accessible** (RGAA self-assessment, every state scanned), **private** (nothing sent or
   stored), **sourced** (every fact links to an official page), **frugal** (pixel art drawn in
   code, no images).
@@ -51,7 +51,7 @@ Needs the night PRs merged (#81 to #87: simulation content, `/demarches`, levels
 | 0:30 | `/simulation` | Neighbourhood conflict → result: **"Une tentative amiable est obligatoire"**, then the conciliator recommended | "In 1 minute, you know where to go, and that the law requires it." |
 | 1:30 | `/mise-en-situation` | The list by level → "Le voisin du dessus": the opening shots, one bubble, **one animated choice**, the gauges, then the summary | "You live the conflict. Each choice has a cost, shown and explained." |
 | 2:45 | Level 3 card | "Vous êtes le médiateur": one reformulation choice | "Then you take the mediator's seat, the best way to understand mediation." |
-| 3:15 | `/demarches` | The comparison table, then **generate a letter** | "Compare, then act: the letter is also the proof of your attempt." |
+| 3:15 | `/demarches` | The comparison table, then « Qui peut vous aider ? » on `/apprendre` | "Compare, then know exactly who can help you, and what the law says." |
 | 3:50 | `/apprendre/desamorcer` | One round: the tension goes down | "Say it without attacking: the skill every conciliator wishes you had." |
 | 4:20 | IRIS | "Le conciliateur est-il gratuit ?" → answer with sources | "Answers only from our sourced content, and says when it doesn't know." |
 | 4:40 | Closing | — | Impact and next steps (below) |
@@ -89,7 +89,7 @@ Before the demo:
 1. Legal proofreading of all content; real legal notice (#25).
 2. Deployment and the demo checklist (#27).
 3. More scenarios (work, family with a family mediator, co-ownership), written by partners.
-4. A print-friendly letter and a downloadable "dossier" (checklist + letter).
+4. A printable checklist to prepare a meeting.
 5. Anonymous impact counters, with no personal data.
 
 ## Spoken script (French, ~1 min, for the opening)
