@@ -71,7 +71,7 @@ export function ScenarioList({ scenarios }: { scenarios: readonly Scenario[] }) 
                     )}
                     <Link
                       href={`/mise-en-situation/${scenario.slug}`}
-                      className="mt-auto inline-flex w-fit items-center rounded-md bg-primary px-4 py-2 font-medium text-primary-foreground hover:bg-primary/90"
+                      className="mt-auto inline-flex w-fit items-center rounded-md bg-primary px-4 py-2 font-medium text-primary-foreground hover:bg-primary/90 dark:hover:bg-france-blue-0"
                     >
                       {best === undefined ? 'Jouer' : 'Rejouer'}
                       <span className="sr-only"> : {scenario.title}</span>

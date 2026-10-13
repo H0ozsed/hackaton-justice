@@ -174,7 +174,7 @@ function Round({
             </>
           }
           overlay={
-            <div className="max-w-[92%] self-start border-[3px] border-[#1e1f33] bg-[#fff3d0] px-3 py-2 text-sm text-black shadow-[3px_3px_0_0_#1e1f33] sm:max-w-[75%] sm:text-base">
+            <div className="light-colors max-w-[92%] self-start border-[3px] border-[#1e1f33] bg-[#fff3d0] px-3 py-2 text-sm text-black shadow-[3px_3px_0_0_#1e1f33] sm:max-w-[75%] sm:text-base">
               {reaction ? (
                 <>
                   <p className="font-bold text-primary">Sa réaction</p>

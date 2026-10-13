@@ -11,7 +11,8 @@
      with white, 0 = shade (+10 % black).
    - Usage rule (p. 48): light tints for backgrounds, strong colors for text.
    Contrasts checked (RGAA 3.2/3.3: text >= 4.5:1, UI components >= 3:1),
-   ratios noted in comments. The charter defines no dark mode.
+   ratios noted in comments. The charter defines no dark mode: the dark theme (#132)
+   below is derived from it (see `.dark`).
    ============================================================================= */
 
 :root {
@@ -81,6 +82,82 @@
   --sidebar-accent-foreground: var(--france-blue);
   --sidebar-border: var(--black-4);
   --sidebar-ring: var(--france-blue);
+
+  color-scheme: light;
+}
+
+/* =============================================================================
+   Dark theme (#132). The charter defines none: same roles, colors adapted to a dark
+   background, close to the DSFR dark mode. The charter palette variables are
+   redefined too, so `text-france-blue`, `bg-france-blue-4`... follow the theme.
+   - Strong colors become light tints, to stay readable on dark backgrounds.
+   - Light background tints become dark tints of the same hue.
+   Contrasts checked (RGAA 3.2/3.3), ratios in comments (on --background unless noted).
+   Set on <html> by the script of _document.tsx (system preference, or the choice
+   stored by the header toggle).
+   ============================================================================= */
+.dark {
+  --france-blue: #8585f6; /* text and borders: 5.8:1, 5.3:1 on --card, 4.6:1 on --muted */
+  --france-blue-0: #a1a1f8;
+  --france-blue-3: #313178;
+  --france-blue-4: #1b1b35; /* tinted background: --foreground 14.4:1, --france-blue 5.3:1 */
+  --marianne-red: #ff6d6b; /* 6.6:1, 5.9:1 on --marianne-red-4 */
+  --marianne-red-0: #ff9b97; /* 8:1 on --marianne-red-4 */
+  --marianne-red-4: #3a1416;
+  --slate-blue: #b9bcd6; /* 9.7:1 */
+
+  --background: #161616;
+  --foreground: #eeeeee; /* 15.6:1 */
+  --card: #1e1e1e; /* --foreground 14.4:1 */
+  --card-foreground: var(--foreground);
+  --popover: #242424; /* --foreground 13.4:1 */
+  --popover-foreground: var(--foreground);
+
+  /* Light blue action with dark blue text (4.7:1). */
+  --primary: var(--france-blue);
+  --primary-foreground: #000091; /* France blue */
+
+  --secondary: var(--france-blue-4);
+  --secondary-foreground: var(--france-blue); /* 5.3:1 */
+
+  --muted: #2a2a2a;
+  --muted-foreground: var(--slate-blue); /* 7.7:1 on --muted, 8.9:1 on --card */
+
+  --accent: var(--france-blue-4);
+  --accent-foreground: var(--france-blue);
+
+  --destructive: var(--marianne-red);
+
+  --border: #353535;
+  --input: #8a8a8a; /* 5.2:1 */
+  --ring: var(--france-blue);
+
+  --chart-1: var(--france-blue);
+
+  --sidebar: var(--card);
+  --sidebar-foreground: var(--foreground);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent: var(--accent);
+  --sidebar-accent-foreground: var(--accent-foreground);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--ring);
+
+  /* Native controls and scrollbars in dark too. */
+  color-scheme: dark;
+}
+
+/* Areas that keep their own light colors in both themes (the cream and white speech
+   bubbles of the pixel-art games): the light-theme values apply inside, so a speaker
+   name or a glossary term in France blue stays readable (14.9:1 on white). */
+.dark .light-colors {
+  --france-blue: #000091;
+  --primary: #000091;
+  --primary-foreground: #ffffff;
+  --foreground: #000000;
+  --muted-foreground: #484d7a;
+  --ring: #000091;
+  color-scheme: light;
 }
 
 @theme inline {
