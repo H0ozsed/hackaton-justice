@@ -23,6 +23,7 @@ test('the home page sections follow the h1 > h2 heading order', async ({ page })
   await page.goto('/')
   await expect(page.getByRole('heading', { level: 2 })).toHaveText([
     'Choisissez votre parcours',
+    'Avant le juge, l’amiable',
     'Infos pratiques',
     'Questions fréquentes',
   ])
@@ -48,3 +49,10 @@ for (const { cta, path } of JOURNEYS) {
     await expect(page).toHaveURL(path)
   })
 }
+
+test('the home page leads to the amicable guides', async ({ page }) => {
+  await page.goto('/')
+  await page.getByRole('link', { name: 'Voir comment régler un litige à l’amiable' }).click()
+  await expect(page).toHaveURL('/demarches')
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Régler un litige à l’amiable')
+})
