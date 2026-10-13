@@ -70,6 +70,19 @@ async function ask(user: ReturnType<typeof userEvent.setup>, question: string) {
 const conversation = () => screen.getByRole('list', { name: 'Conversation avec IRIS' })
 
 describe('IrisWidget', () => {
+  it('catches the eye with a bubble hidden from screen readers, until IRIS is opened', async () => {
+    const user = userEvent.setup()
+    render(<IrisWidget />)
+    const teaser = await screen.findByTestId('iris-teaser')
+    expect(teaser).toHaveAttribute('aria-hidden', 'true')
+    expect(teaser).toHaveTextContent('Une question ? Demandez à IRIS')
+    // The button keeps its own name: the bubble adds nothing to it.
+    expect(screen.getByRole('button', { name: 'Poser une question à IRIS' })).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Poser une question à IRIS' }))
+    expect(screen.queryByTestId('iris-teaser')).toBeNull()
+  })
+
   it('opens a labelled panel, moves the focus into it and closes with Escape', async () => {
     const user = await openIris()
     const launcher = screen.getByRole('button', { name: 'Fermer IRIS', expanded: true })
