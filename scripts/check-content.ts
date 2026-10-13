@@ -2,6 +2,7 @@
 // (src/lib/content.ts), so any invalid entry makes this script fail.
 // Runs before `next build` and in the pre-commit hook. Add new domains here.
 import '@/shared/faq'
+import '@/shared/games'
 import '@/shared/glossary'
 import '@/shared/practical-info'
 import '@/shared/quiz'

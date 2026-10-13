@@ -14,9 +14,21 @@ import { quizzes } from '@/shared/quiz'
 // Anchors of the page sections, listed in the table of contents (long page, RGAA 12.6).
 const SECTIONS = [
   { id: 'questionnaires', label: 'Questionnaires' },
+  { id: 'mini-jeux', label: 'Mini-jeux' },
   { id: 'lexique', label: 'Lexique' },
   { id: 'questions-frequentes', label: 'Questions fréquentes' },
   { id: 'infos-pratiques', label: 'Infos pratiques' },
+] as const
+
+// Mini-games, each on its own page.
+const GAMES = [
+  {
+    href: '/apprendre/desamorcer',
+    title: 'Désamorcer',
+    description:
+      'Huit situations du quotidien : trouvez la phrase qui dit les choses sans faire monter la tension.',
+    cta: 'Jouer à Désamorcer',
+  },
 ] as const
 
 export default function LearnPage() {
@@ -54,6 +66,25 @@ export default function LearnPage() {
             <QuizPlayer key={quiz.slug} quiz={quiz} headingLevel={3} />
           ))}
         </div>
+      </section>
+
+      <section id="mini-jeux" aria-labelledby="mini-jeux-titre" className="mt-12 scroll-mt-4">
+        <h2 id="mini-jeux-titre" className="text-2xl font-bold">
+          Mini-jeux
+        </h2>
+        <ul className="mt-6 grid gap-6 md:grid-cols-2">
+          {GAMES.map((game) => (
+            <li key={game.href} className="rounded-lg border-2 border-border bg-card p-6">
+              <h3 className="text-xl font-bold">{game.title}</h3>
+              <p className="mt-2">{game.description}</p>
+              <p className="mt-4">
+                <Link href={game.href} className="text-primary underline underline-offset-4">
+                  {game.cta}
+                </Link>
+              </p>
+            </li>
+          ))}
+        </ul>
       </section>
 
       <section id="lexique" aria-labelledby="lexique-titre" className="mt-12 scroll-mt-4">
