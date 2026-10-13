@@ -1,6 +1,7 @@
 import { batteurDuDessus } from './scenarios/batteur-du-dessus'
 import { colisFantome } from './scenarios/colis-fantome'
 import { depotDeGarantie } from './scenarios/depot-de-garantie'
+import { vacancesDeLeo } from './scenarios/vacances-de-leo'
 import { voisinDuDessus } from './scenarios/voisin-du-dessus'
 import type { ScenarioInput } from './schema'
 
@@ -11,5 +12,6 @@ export const scenariosData: ScenarioInput[] = [
   voisinDuDessus,
   batteurDuDessus,
   colisFantome,
+  vacancesDeLeo,
   depotDeGarantie,
 ]
