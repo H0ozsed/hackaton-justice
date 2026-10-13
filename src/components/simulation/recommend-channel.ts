@@ -1,5 +1,7 @@
-import type { Channel } from '@/shared/simulation'
+import type { Channel, ConflictType } from '@/shared/simulation'
 
+import { CONFLICT_TYPE_FIELD, CONFLICT_TYPE_STEP_ID } from './conflict-type'
+import { FOLLOW_UP_STEP_ID } from './follow-up'
 import { getOpennessAnswers, type OpennessAnswers } from './openness'
 import type { SimulationAnswers } from './types'
 
@@ -43,9 +45,19 @@ export function routeFor(openness: RouteAnswers | undefined): Route {
   return other === 'yes' ? 'direct' : 'assisted'
 }
 
-// Free channels first, then the order of the content.
+// The channels meant for fewer conflict types first (the most specific: a consumer mediator before
+// the conciliator, who handles many kinds of disputes), then free channels, then content order.
+const specificity = (channel: Channel) => channel.conflictTypes?.length ?? Number.POSITIVE_INFINITY
 const freeFirst = (channels: Channel[]) =>
-  [...channels].sort((a, b) => Number(b.free) - Number(a.free))
+  [...channels].sort((a, b) => specificity(a) - specificity(b) || Number(b.free) - Number(a.free))
+
+/** Channels meant for a conflict type (all of them when the type is unknown). */
+export function channelsFor(slug: string | undefined, channels: readonly Channel[]) {
+  if (slug === undefined) return [...channels]
+  return channels.filter(
+    (channel) => !channel.conflictTypes || channel.conflictTypes.includes(slug),
+  )
+}
 
 /**
  * Channel for a route, chosen on the attributes of the channels:
@@ -110,13 +122,47 @@ export function recommendChannel(
 ): Recommendation | undefined {
   const openness = getOpennessAnswers(answers)
   const route = routeFor(openness)
-  const channel = pickChannel(route, channels)
+  const type = answers[CONFLICT_TYPE_STEP_ID]?.[CONFLICT_TYPE_FIELD]
+  const relevant = channelsFor(typeof type === 'string' ? type : undefined, channels)
+  const channel = pickChannel(route, relevant)
   if (!channel) return undefined
 
   return {
     route,
     channel,
-    alternatives: channels.filter((other) => other !== channel),
+    alternatives: relevant.filter((other) => other !== channel),
     reasons: reasonsFor(route, channel, openness),
   }
+}
+
+/** Amount given in the follow-up question "montant" of the conflict type, if any. */
+function amountOf(answers: SimulationAnswers): number | undefined {
+  const value = answers[FOLLOW_UP_STEP_ID]?.montant
+  return typeof value === 'number' && Number.isFinite(value) ? value : undefined
+}
+
+/** Threshold of art. 750-1 of the code de procédure civile. */
+export const MANDATORY_ATTEMPT_MAX_AMOUNT = 5000
+
+/**
+ * When the law requires an amicable attempt before going to court for this conflict type (and
+ * amount): the sentence to show, whatever the recommended route. Undefined otherwise.
+ */
+export function mandatoryAttemptNotice(
+  conflictType: ConflictType | undefined,
+  answers: SimulationAnswers,
+): string | undefined {
+  const rule = conflictType?.mandatoryAmicableAttempt
+  if (!rule) return undefined
+  const consequence =
+    'une conciliation, une médiation ou une procédure participative, avant de saisir le juge. Sans cette tentative, le juge peut déclarer votre demande irrecevable (article 750-1 du code de procédure civile). Gardez une preuve de votre démarche.'
+  if (rule === 'always')
+    return `Pour ce type de litige, la loi impose une tentative amiable : ${consequence}`
+  const amount = amountOf(answers)
+  if (amount !== undefined && amount > MANDATORY_ATTEMPT_MAX_AMOUNT) return undefined
+  const intro =
+    amount === undefined
+      ? 'Si vous réclamez 5 000 € ou moins, la loi impose une tentative amiable'
+      : 'Pour une somme de 5 000 € ou moins, la loi impose une tentative amiable'
+  return `${intro} : ${consequence}`
 }

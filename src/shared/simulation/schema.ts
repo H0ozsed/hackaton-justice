@@ -60,6 +60,12 @@ export const conflictTypeSchema = z.object({
   examples: z.array(z.string().min(1)).default([]),
   /** Losses relevant to this conflict, asked in the "losses" step. */
   lossKinds: z.array(lossKindSchema).min(1).refine(isUnique, 'loss kinds must be unique'),
+  /**
+   * When the law requires an amicable attempt (conciliation, mediation or participatory
+   * procedure) before going to court (art. 750-1 of the code de procédure civile):
+   * `always` (e.g. abnormal neighbourhood disturbance), `up-to-5000` (claims of 5,000 € or less).
+   */
+  mandatoryAmicableAttempt: z.enum(['always', 'up-to-5000']).optional(),
   /** Extra questions specific to this conflict type. */
   followUpQuestions: z
     .array(questionSchema)
@@ -79,6 +85,8 @@ export const channelSchema = z.object({
   /** true: amicable route (seeking an agreement), false: judicial route (a judge decides). */
   amicable: z.boolean(),
   free: z.boolean(),
+  /** Conflict types this channel is meant for (slugs). Omitted: every conflict type. */
+  conflictTypes: z.array(slugSchema).min(1).optional(),
   contact: z
     .object({
       url: z.url().optional(),
