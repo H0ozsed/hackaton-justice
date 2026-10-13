@@ -14,6 +14,7 @@ import { useEffect, useId, useRef, useState, type FormEvent, type KeyboardEvent 
 
 import { Definition } from '@/components/glossary/definition'
 import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 import {
   IRIS,
   IRIS_ERRORS,
@@ -26,6 +27,7 @@ import type { FaqPage } from '@/shared/faq'
 import { parseAnswer, plainAnswer, type Inline } from './answer-format'
 import { glossarySegments } from './glossary-segments'
 import { useIris, type IrisMessage } from './use-iris'
+import { useLauncherAttention } from './use-launcher-attention'
 
 /** What IRIS is doing, shown live while it works on an answer. */
 export function stepLabel(step: ChatStep | undefined, count?: number) {
@@ -56,6 +58,7 @@ export function IrisWidget({
 }) {
   const [open, setOpen] = useState(false)
   const { messages, busy, ask, stop, retry, reset } = useIris()
+  const attention = useLauncherAttention(open)
   const [question, setQuestion] = useState('')
   const [announcement, setAnnouncement] = useState('')
   const [copiedId, setCopiedId] = useState<string | null>(null)
@@ -140,19 +143,43 @@ export function IrisWidget({
 
   return (
     <>
-      <Button
-        ref={launcherRef}
-        size="lg"
-        className="fixed right-4 bottom-4 z-40 size-12 rounded-full shadow-lg sm:w-auto sm:px-4"
-        aria-expanded={open}
-        aria-controls={panelId}
-        onClick={() => (open ? close() : setOpen(true))}
-      >
-        <MessageCircleIcon aria-hidden className="size-5" />
-        <span className="sr-only sm:not-sr-only">
-          {open ? 'Fermer IRIS' : 'Poser une question à IRIS'}
-        </span>
-      </Button>
+      <div className="fixed right-4 bottom-4 z-40">
+        {/* Catching the eye on arrival (#133): decorative, hidden from screen readers (the
+            button keeps its name). The ring pulses 3 times (under 5 s, RGAA 13.8) and only
+            without `prefers-reduced-motion`; the bubble then shows without animation. */}
+        {attention && (
+          <>
+            <span
+              aria-hidden
+              className="pointer-events-none absolute inset-0 hidden rounded-full bg-france-blue motion-safe:block motion-safe:animate-[iris-ring_1.5s_ease-out_3_forwards]"
+            />
+            <p
+              aria-hidden
+              data-testid="iris-teaser"
+              className="pointer-events-none absolute right-0 bottom-full mb-3 w-max max-w-[calc(100vw-2rem)] rounded-lg border-2 border-france-blue bg-background px-3 py-2 text-sm font-medium text-foreground shadow-lg motion-safe:animate-in motion-safe:duration-500 motion-safe:fade-in motion-safe:slide-in-from-bottom-2"
+            >
+              Une question ? Demandez à IRIS
+            </p>
+          </>
+        )}
+        <Button
+          ref={launcherRef}
+          size="lg"
+          className={cn(
+            'relative size-12 rounded-full shadow-lg sm:w-auto sm:px-4',
+            attention &&
+              'motion-safe:animate-in motion-safe:duration-500 motion-safe:zoom-in-50 motion-safe:fade-in',
+          )}
+          aria-expanded={open}
+          aria-controls={panelId}
+          onClick={() => (open ? close() : setOpen(true))}
+        >
+          <MessageCircleIcon aria-hidden className="size-5" />
+          <span className="sr-only sm:not-sr-only">
+            {open ? 'Fermer IRIS' : 'Poser une question à IRIS'}
+          </span>
+        </Button>
+      </div>
 
       <section
         id={panelId}
