@@ -10,7 +10,8 @@ import {
 } from '@/shared/simulation'
 
 import { summarizeAnswers } from './answers-summary'
-import { recommendChannel } from './recommend-channel'
+import { getChosenConflictType } from './conflict-type'
+import { mandatoryAttemptNotice, recommendChannel } from './recommend-channel'
 import type { ResultViewProps } from './types'
 
 // Result screen of the simulation (#16): the recommended channel and why, how to reach it, the
@@ -27,6 +28,7 @@ export function createSimulationResult({
   function SimulationResultView({ result, onRestart }: ResultViewProps) {
     const recommendation = recommendChannel(result, channels)
     const answers = summarizeAnswers(result, conflictTypes)
+    const notice = mandatoryAttemptNotice(getChosenConflictType(result, conflictTypes), result)
 
     return (
       <div className="space-y-8">
@@ -35,6 +37,18 @@ export function createSimulationResult({
           Cette orientation est indicative : elle s’appuie uniquement sur vos réponses et ne
           remplace pas l’avis d’un professionnel du droit.
         </p>
+
+        {notice && (
+          <section
+            aria-labelledby="result-mandatory"
+            className="space-y-2 rounded-lg border-l-4 border-marianne-red bg-marianne-red-4 p-4"
+          >
+            <h3 id="result-mandatory" className="font-bold">
+              Une tentative amiable est obligatoire
+            </h3>
+            <p>{notice}</p>
+          </section>
+        )}
 
         {recommendation ? (
           <>
@@ -133,7 +147,7 @@ function ChannelContact({ channel }: { channel: Channel }) {
       {contact.url && (
         <li>
           <a href={contact.url} target="_blank" rel="noopener noreferrer" className={linkClassName}>
-            Site de {channel.name}
+            En savoir plus : {channel.name}
             <span className="sr-only"> (nouvelle fenêtre)</span>
             <ExternalLinkIcon aria-hidden className="size-4 shrink-0" />
           </a>

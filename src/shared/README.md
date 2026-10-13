@@ -46,6 +46,11 @@ The current entries are **examples** (prefixed `EXEMPLE`) to be replaced.
   `relationship`); `followUpQuestions` adds questions specific to this type
   (`kind: 'choice'`, `'number'` or `'yesNo'`). The form adapts by itself, validation
   included. A question is required unless you set `required: false`.
+  `mandatoryAmicableAttempt` (`always` or `up-to-5000`) shows on the result that the law requires
+  an amicable attempt before court (art. 750-1 CPC); with `up-to-5000`, the amount is read from
+  the follow-up question whose id is `montant`.
+- **Channels**: `conflictTypes` (slugs) limits a channel to some conflict types (omitted: all).
+  The result recommends the most specific channel of the route first.
 - **Quizzes**: one id in `correctChoiceIds` → radio buttons; several → checkboxes.
 - **Role-play scenarios**: a scenario is a set of `scenes`. Each scene has `lines` of
   dialogue (`speaker` = a character `id`, omitted for the narrator), then either `choices`
