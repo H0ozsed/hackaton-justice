@@ -2,19 +2,25 @@
 
 ### `/`
 
-* **Choix parcours utilisateurs (sim, mes, app)**
+* **Bandeau** : à quoi sert le site en une phrase (aussi meta description), lien « Par où commencer ? »
+* **L'amiable en 1 minute** : 4 cartes (régler à l'amiable, voies possibles, pourquoi essayer d'abord, qui peut aider), termes du lexique cliquables ; contenu à valider (#120)
+* **Par où commencer ?** : seule entrée vers les 3 parcours sur l'accueil ; la phrase qui correspond au visiteur mène en un clic au bon parcours (description et bouton du parcours)
+  * Conflit en cours → Simulation
+  * Comprendre avant d'agir → Mise en situation
+  * Apprendre, seul ou en groupe (classe, atelier) → Apprendre
+* **À propos** : pour qui, ce qui rend le site différent, ce qu'il n'est pas (ni avocat, ni démarche officielle, aucune décision)
 * **Navbar**
 * **Footer**
 * **Infos pratiques**
 * **FAQ**
-* **Chatbot : IRIS** (Informer, Renseigner, Indiquer les Solutions)
+* **Chatbot : IRIS** (Identifier, Rechercher, Informer, Suggérer), « votre assistante »
   * Bouton flottant → panneau accessible (focus, Échap, réponses annoncées aux lecteurs d'écran)
-  * Répond uniquement à partir du contenu du site (FAQ, infos pratiques, lexique, types de conflit, interlocuteurs, quiz), avec ses sources
+  * Répond uniquement à partir du contenu du site (accueil : l'amiable en 1 minute, par où commencer, à propos ; FAQ, infos pratiques, lexique, types de conflit, interlocuteurs, quiz), avec ses sources
   * Rien de pertinent → « Je n'ai pas cette information », sans appeler le modèle
   * Informe et oriente, ne garantit rien, pas de conseil juridique personnalisé
   * Étapes affichées en direct (recherche, lecture des extraits, rédaction), réponse courte et mise en forme (listes, gras), jamais le raisonnement du modèle
   * Arrêter une réponse, la copier, réessayer après une erreur, compteur de caractères
-  * Questions suggérées, relances comprises (historique), termes du lexique cliquables
+  * Questions suggérées (accueil : alignées sur « L'amiable en 1 minute », puis FAQ), relances comprises (historique), termes du lexique cliquables
   * Conversation gardée dans l'onglet uniquement (sessionStorage), rien stocké côté serveur
   * Modèle local (Ollama dans Docker) ; site utilisable si IRIS est indisponible
 
@@ -31,7 +37,10 @@
 * Pokemon like
   * Autonomie pendant la demo
     * Intro (personnages) → scènes : dialogues en texte progressif (passable, instantané si `prefers-reduced-motion`) → choix → scène suivante → fin
-    * Mini-jeu en pixel art (#76) : immeuble en coupe à l'intro, chaque scène jouée sur une scène illustrée (chambre, palier, escalier, hall, mairie, tribunal, nouvel appartement) avec l'éclairage du moment (matin, journée, soir, nuit), personnages animés (visage selon l'émotion, bouche qui parle, clignement), effets (batterie, porte, papier, sommeil…), carton de titre de scène
+    * Ouverture animée sans spoiler : écran titre (la rue la nuit, titre en pixel art), puis plans enchaînés avec légendes (« Suivant », « Commencer » à tout moment) ; les personnages ne sont pas présentés d'avance, leur rôle s'affiche la première fois qu'ils parlent
+    * Répliques en bulles de BD sur la scène (pointe vers celui qui parle, narration en encadré), en vrai texte
+    * Chaque choix est animé (Camille agit : parler, balai, téléphone, courrier, attendre, accord, menace, tribunal, rendez-vous, déménagement) avant la scène suivante, passable avec « Suivant »
+    * Mini-jeu en pixel art (#76) : chaque scène jouée sur une scène illustrée (chambre, palier, escalier, hall, mairie, tribunal, nouvel appartement) avec l'éclairage du moment (matin, journée, soir, nuit), personnages animés (visage selon l'émotion, bouche qui parle, clignement), effets (batterie, porte, papier, sommeil…), carton de titre de scène
     * Jauges de vie en haut de la scène : santé, relation (sur 10), argent dépensé, temps perdu ; ce que coûte chaque choix s'affiche et est annoncé aux lecteurs d'écran
     * Son 8 bits optionnel (bouton « Son », coupé par défaut, mémorisé sur l'appareil)
     * Tout le décor est décoratif (masqué aux lecteurs d'écran) : l'information est dans le titre, les répliques et les jauges en texte ; animations coupées avec `prefers-reduced-motion`

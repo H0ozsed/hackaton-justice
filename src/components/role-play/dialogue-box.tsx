@@ -6,13 +6,14 @@ import { RichText, toPlainText } from './rich-text'
 const LETTER_MS = 25
 
 /**
- * One line of dialogue, written letter by letter. `revealed` shows it all at once
+ * Content of a speech bubble: the speaker, then the line written letter by letter. `revealed` shows it all at once
  * (skip button, or reduced motion); `onRevealed` is called when the whole line shows.
  * The typed text is hidden from screen readers: the full line is announced by the
  * live region of the scene, and once revealed its glossary terms become usable.
  */
 export function DialogueBox({
   speaker,
+  role,
   text,
   revealed,
   onRevealed,
@@ -20,6 +21,8 @@ export function DialogueBox({
 }: {
   /** Name of the speaker, or undefined for the narrator. */
   speaker?: string
+  /** Shown after the name the first time a character speaks ("votre voisin du dessus"). */
+  role?: string
   text: string
   revealed: boolean
   onRevealed: () => void
@@ -43,17 +46,22 @@ export function DialogueBox({
   }, [letters, plain, revealed, onRevealed, onLetter])
 
   return (
-    <div className="min-h-32 rounded-lg border-4 border-double border-foreground bg-background p-4 shadow-[4px_4px_0_0_var(--color-foreground)]">
-      <p className="mb-2 font-bold text-primary">{speaker ?? 'Narrateur'}</p>
+    <>
+      <p className="font-bold text-primary">
+        {speaker ?? 'Narrateur'}
+        {role && <span className="font-normal text-slate-blue"> ({role})</span>}
+      </p>
       {revealed ? (
-        <p className="text-lg">
+        <p>
           <RichText text={text} />
         </p>
       ) : (
-        <p className="text-lg" aria-hidden>
-          {plain.slice(0, letters)}
+        // The whole line is laid out invisibly so the bubble keeps its size while typing.
+        <p className="relative" aria-hidden>
+          <span className="invisible">{plain}</span>
+          <span className="absolute inset-0">{plain.slice(0, letters)}</span>
         </p>
       )}
-    </div>
+    </>
   )
 }

@@ -6,9 +6,9 @@ import type { ChatErrorCode } from './schema'
 export const IRIS = {
   name: 'IRIS',
   /** Meaning of the acronym. */
-  tagline: 'Informer, Renseigner, Indiquer les Solutions',
+  tagline: 'Identifier, Rechercher, Informer, Suggérer',
   greeting:
-    'Bonjour, je suis IRIS. Je réponds à vos questions sur les solutions amiables à partir du contenu de ce site.',
+    'Bonjour, je suis IRIS, votre assistante. Je vous guide vers les solutions amiables pour régler votre conflit.',
   notice:
     'Information générale, pas un conseil juridique. Ne partagez pas d’informations personnelles.',
   noAnswer:
@@ -22,10 +22,25 @@ export const IRIS_ERRORS: Record<ChatErrorCode, string> = {
   'rate-limited': 'Vous avez posé beaucoup de questions d’un coup. Patientez une minute.',
 }
 
-/** Answers to small talk ("bonjour", "merci", "au revoir"), given without the model. */
+/**
+ * Answers given without the model: small talk and IRIS presenting itself. They use
+ * the same light formatting as the model's answers (**bold**, "- " lists).
+ */
 export const IRIS_SMALL_TALK = {
   greeting:
-    'Bonjour ! Je suis IRIS. Posez-moi une question sur la conciliation, la médiation ou les démarches amiables : je vous réponds à partir du contenu de ce site.',
+    'Bonjour ! Je suis **IRIS**, votre assistante. Je vous guide vers les solutions amiables (conciliation, médiation…) et vers la bonne démarche ou le bon interlocuteur. Quelle est votre question ?',
   thanks: 'Avec plaisir ! N’hésitez pas si vous avez une autre question.',
   goodbye: 'Au revoir, et bonne continuation dans vos démarches.',
+  about: `Je suis **IRIS**, l’assistante de ce site :
+- **I**dentifier : je cherche à bien comprendre votre situation et votre besoin.
+- **R**echercher : je trouve l’information exacte dans le contenu de ce site.
+- **I**nformer : je vous la restitue de façon claire, neutre et accessible.
+- **S**uggérer : je vous indique des pistes, et le choix final vous appartient.
+
+Concrètement :
+- Je vous explique simplement les solutions amiables : conciliation, médiation, accord entre les personnes.
+- Je vous oriente vers la page du site ou l’interlocuteur adapté à votre situation.
+- Je réponds uniquement à partir du contenu de ce site, et j’indique toujours mes sources.
+
+Je ne suis ni avocate, ni médiatrice, ni juge : je ne donne pas de conseil et je ne prends aucune décision à votre place.`,
 } as const

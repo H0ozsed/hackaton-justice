@@ -1,6 +1,7 @@
 import { guides, keyFigures, routes } from '@/shared/amicable'
 import { faq } from '@/shared/faq'
 import { glossary } from '@/shared/glossary'
+import { about, explainer, explainerText, journeyFor, orientation } from '@/shared/home'
 import { practicalInfo } from '@/shared/practical-info'
 import { quizzes } from '@/shared/quiz'
 import { channels, conflictTypes } from '@/shared/simulation'
@@ -9,6 +10,7 @@ import { channels, conflictTypes } from '@/shared/simulation'
 // is indexed, so IRIS can only rephrase what the site already says.
 
 export type ChunkDomain =
+  | 'home'
   | 'faq'
   | 'practical-info'
   | 'glossary'
@@ -52,8 +54,47 @@ export function isPlaceholder(text: string) {
 const lines = (...parts: (string | false | undefined)[]) =>
   withoutPlaceholderMarkers(parts.filter(Boolean).join('\n'))
 
+/** The home page explainer, orientation and « À propos » (#127, #104). */
+function homeChunks(): Chunk[] {
+  return [
+    ...explainer.all.map((card): Chunk => ({
+      id: `home:${card.slug}`,
+      domain: 'home',
+      title: card.title,
+      text: lines(`L’amiable en 1 minute : ${card.title}`, explainerText(card)),
+      url: '/#amiable-en-1-minute',
+    })),
+    {
+      id: 'home:par-ou-commencer',
+      domain: 'home',
+      title: 'Par où commencer ?',
+      text: lines(
+        'Par où commencer sur ce site ?',
+        ...orientation.all.map(
+          (o) =>
+            `- ${o.situation} : parcours ${journeyFor(o.journey).label} (${o.journey}). ${journeyFor(o.journey).description}`,
+        ),
+      ),
+      url: '/#par-ou-commencer',
+    },
+    {
+      id: 'home:a-propos',
+      domain: 'home',
+      title: 'À propos de ce site',
+      text: lines(
+        `À quoi sert ce site : ${about.purpose}`,
+        `Pour qui : ${about.audiences.join(' ')}`,
+        `Ce qui le rend différent : ${about.differences.join(' ')}`,
+        `Ce que ce site n’est pas : ${about.limits.join(' ')}`,
+      ),
+      url: '/#a-propos',
+    },
+  ]
+}
+
 export function buildChunks(): Chunk[] {
   return [
+    ...homeChunks(),
     ...faq.all
       .filter((entry) => !isPlaceholder(entry.answer))
       .map((entry): Chunk => ({

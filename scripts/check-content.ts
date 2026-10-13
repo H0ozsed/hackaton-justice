@@ -4,6 +4,7 @@
 import '@/shared/amicable'
 import '@/shared/faq'
 import '@/shared/glossary'
+import '@/shared/home'
 import '@/shared/practical-info'
 import '@/shared/quiz'
 import '@/shared/role-play'

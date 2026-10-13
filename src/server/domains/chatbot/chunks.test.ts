@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest'
 import { guides, keyFigures, routes } from '@/shared/amicable'
 import { faq } from '@/shared/faq'
 import { glossary } from '@/shared/glossary'
+import { explainer } from '@/shared/home'
 import { practicalInfo } from '@/shared/practical-info'
 import { quizzes } from '@/shared/quiz'
 import { channels, conflictTypes } from '@/shared/simulation'
@@ -14,8 +15,11 @@ describe('buildChunks', () => {
 
   it('has one chunk per written entry, and none for placeholder content', () => {
     const written = (texts: string[]) => texts.filter((t) => !isPlaceholder(t)).length
+    // Home: one chunk per explainer card, plus « Par où commencer ? » and « À propos ».
     expect(chunks).toHaveLength(
-      written(faq.all.map((e) => e.answer)) +
+      explainer.all.length +
+        2 +
+        written(faq.all.map((e) => e.answer)) +
         written(practicalInfo.all.map((i) => i.body)) +
         written(glossary.all.map((t) => t.definition)) +
         written(conflictTypes.all.map((t) => t.description)) +
@@ -50,6 +54,20 @@ describe('buildChunks', () => {
     expect(chunks.find((c) => c.id === `glossary:${term.slug}`)?.url).toBe(
       `/apprendre/lexique#${term.slug}`,
     )
+  })
+
+  it('tells IRIS which journey fits each situation of the home orientation', () => {
+    const chunk = chunks.find((c) => c.id === 'home:par-ou-commencer')
+    expect(chunk?.url).toBe('/#par-ou-commencer')
+    expect(chunk?.text).toContain(
+      'Je vis un conflit en ce moment : parcours Simulation (/simulation)',
+    )
+  })
+
+  it('indexes the explainer cards without the glossary markup', () => {
+    for (const card of explainer.all) {
+      expect(chunks.find((c) => c.id === `home:${card.slug}`)?.text).not.toMatch(/\[\[|\]\]/)
+    }
   })
 
   it('keeps the question and the answer of a FAQ entry in its text', () => {

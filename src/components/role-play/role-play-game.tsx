@@ -10,6 +10,7 @@ import {
   currentScene,
   describeGaugeChange,
   gaugesAfter,
+  resolveHistory,
   rolePlayReducer,
   type Gauges,
   type RolePlayAction,
@@ -17,11 +18,9 @@ import {
   type Scenario,
 } from '@/shared/role-play'
 
-import { CharacterPortrait } from './character-portrait'
-import { BuildingCutaway } from './pixel/cutaway'
+import { Intro } from './intro'
 import { useSound } from './pixel/sound'
 import { ResultsScreen } from './results-screen'
-import { RichText } from './rich-text'
 import { SceneView } from './scene-view'
 
 /**
@@ -43,6 +42,13 @@ export function RolePlayGame({ scenario }: { scenario: Scenario }) {
 
   const scene = currentScene(scenario, state)
   const gauges = useMemo(() => gaugesAfter(scenario, state.history), [scenario, state.history])
+  const steps = useMemo(() => resolveHistory(scenario, state.history), [scenario, state.history])
+  // Characters already met in earlier scenes, and the last choice (its action is played).
+  const metIds = useMemo(
+    () => new Set(steps.flatMap(({ scene: s }) => s.lines.flatMap((l) => l.speaker ?? []))),
+    [steps],
+  )
+  const prelude = steps.at(-1)
 
   // Says what the last choice cost (the HUD bars are only visual).
   const [gaugeNotice, setGaugeNotice] = useState('')
@@ -102,6 +108,7 @@ export function RolePlayGame({ scenario }: { scenario: Scenario }) {
             <Intro
               scenario={scenario}
               reduceMotion={reduceMotion}
+              announce={setAnnouncement}
               onStart={() => setPhase('playing')}
             />
           </motion.div>
@@ -114,6 +121,8 @@ export function RolePlayGame({ scenario }: { scenario: Scenario }) {
               sceneNumber={state.history.length + 1}
               gauges={gauges}
               previousGauges={previousGauges}
+              prelude={prelude}
+              metIds={metIds}
               reduceMotion={reduceMotion}
               sound={sound}
               announce={setAnnouncement}
@@ -131,47 +140,6 @@ export function RolePlayGame({ scenario }: { scenario: Scenario }) {
         )}
       </AnimatePresence>
     </div>
-  )
-}
-
-function Intro({
-  scenario,
-  reduceMotion,
-  onStart,
-}: {
-  scenario: Scenario
-  reduceMotion: boolean
-  onStart: () => void
-}) {
-  return (
-    <section aria-labelledby="intro-heading" className="flex max-w-3xl flex-col gap-4">
-      <h2 id="intro-heading" className="text-xl font-bold">
-        {scenario.title}
-      </h2>
-      <div className="overflow-hidden rounded-lg border-4 border-[#1e1f33] shadow-[4px_4px_0_0_var(--color-foreground)]">
-        <BuildingCutaway reduceMotion={reduceMotion} />
-      </div>
-      <p className="text-lg">
-        <RichText text={scenario.intro} />
-      </p>
-      <ul
-        aria-label="Personnages"
-        className="flex flex-wrap justify-around gap-4 rounded-lg bg-secondary px-4 py-6"
-      >
-        {scenario.characters.map((c) => (
-          <li key={c.id}>
-            <CharacterPortrait character={c} />
-          </li>
-        ))}
-      </ul>
-      <p className="text-muted-foreground">
-        Lisez les dialogues puis choisissez ce que vous feriez. Vos choix restent sur votre
-        appareil.
-      </p>
-      <Button onClick={onStart} className="self-start">
-        Commencer
-      </Button>
-    </section>
   )
 }
 

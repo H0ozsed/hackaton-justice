@@ -74,3 +74,53 @@ test('IRIS opens and closes from the keyboard', async ({ page, isMobile }) => {
   await expect(page.getByRole('dialog', { name: 'IRIS' })).toBeHidden()
   await expect(page.getByRole('button', { name: 'Poser une question à IRIS' })).toBeFocused()
 })
+
+test.describe('launcher on arrival (#133)', () => {
+  const teaser = (page: Page) => page.getByTestId('iris-teaser')
+
+  test('a bubble catches the eye, then disappears once IRIS is opened', async ({ page }) => {
+    await page.goto('/')
+    await expect(teaser(page)).toBeVisible()
+    await expect(teaser(page)).toHaveText('Une question ? Demandez à IRIS')
+    await page.getByRole('button', { name: 'Poser une question à IRIS' }).click()
+    await expect(teaser(page)).toBeHidden()
+
+    // Same tab: IRIS was already opened, the launcher stays quiet on the next page.
+    await page.goto('/apprendre')
+    await expect(page.getByRole('button', { name: 'Poser une question à IRIS' })).toBeVisible()
+    await expect(teaser(page)).toBeHidden()
+  })
+
+  test('the ring stops moving after 3 pulses (under 5 s)', async ({ page }) => {
+    await page.goto('/')
+    const ring = page.locator('div.fixed > span[aria-hidden]').first()
+    const animation = await ring.evaluate((el) => {
+      const style = getComputedStyle(el)
+      return {
+        name: style.animationName,
+        count: style.animationIterationCount,
+        duration: style.animationDuration,
+      }
+    })
+    expect(animation).toEqual({ name: 'iris-ring', count: '3', duration: '1.5s' })
+  })
+
+  test('nothing moves with prefers-reduced-motion', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' })
+    await page.goto('/')
+    await expect(teaser(page)).toBeVisible()
+    await expect(page.locator('div.fixed > span[aria-hidden]')).toBeHidden()
+    expect(await teaser(page).evaluate((el) => getComputedStyle(el).animationName)).toBe('none')
+  })
+
+  test('the bubble passes the accessibility scan', async ({ page }) => {
+    await page.goto('/')
+    await expect(teaser(page)).toBeVisible()
+    await page.waitForTimeout(600)
+    const results = await new AxeBuilder({ page })
+      .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
+      .exclude('nextjs-portal')
+      .analyze()
+    expect(results.violations.map((v) => v.id)).toEqual([])
+  })
+})
