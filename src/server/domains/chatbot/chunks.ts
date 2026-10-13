@@ -188,7 +188,7 @@ export function buildChunks(): Chunk[] {
           }
         }),
     ),
-    // Practical guides of /demarches.
+    // Practical guides (section of /apprendre, formerly /demarches).
     ...guides.all.map((guide): Chunk => ({
       id: `guide:${guide.slug}`,
       domain: 'guide',
@@ -199,7 +199,7 @@ export function buildChunks(): Chunk[] {
         ...guide.steps.map((step, i) => `Étape ${i + 1}, ${step.title} : ${step.text}`),
         ...guide.good.map((tip) => `Bon à savoir : ${tip}`),
       ),
-      url: '/demarches#pas-a-pas',
+      url: '/apprendre#pas-a-pas',
     })),
     ...routes.all.map((route): Chunk => ({
       id: `route:${route.slug}`,
@@ -216,7 +216,7 @@ export function buildChunks(): Chunk[] {
         `Point fort : ${route.strengths}`,
         `Limite : ${route.limits}`,
       ),
-      url: '/demarches#comparer',
+      url: '/apprendre#comparer',
     })),
     ...keyFigures.all.map((figure): Chunk => ({
       id: `key-figure:${figure.slug}`,
@@ -226,7 +226,7 @@ export function buildChunks(): Chunk[] {
         `Chiffre clé : ${figure.value} ${figure.label}`,
         `Source : ${figure.source.label}`,
       ),
-      url: '/demarches#chiffres',
+      url: '/apprendre#chiffres',
     })),
   ]
 }

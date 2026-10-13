@@ -58,8 +58,6 @@ export const conflictTypeSchema = z.object({
   label: z.string().min(1),
   description: z.string().min(1),
   examples: z.array(z.string().min(1)).default([]),
-  /** Losses relevant to this conflict, asked in the "losses" step. */
-  lossKinds: z.array(lossKindSchema).min(1).refine(isUnique, 'loss kinds must be unique'),
   /**
    * When the law requires an amicable attempt (conciliation, mediation or participatory
    * procedure) before going to court (art. 750-1 of the code de procédure civile):

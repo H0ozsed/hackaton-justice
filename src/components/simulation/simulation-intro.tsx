@@ -4,9 +4,8 @@ import { Button } from '@/components/ui/button'
 // nothing leaves the device, before the first question. The steps are a real sequence: an
 // ordered list.
 const STEPS = [
-  'Le type de conflit que vous vivez, et quelques précisions.',
-  'Ce qu’il vous coûte : argent, temps, bien-être, relations.',
-  'Les conciliateurs et médiateurs qui peuvent vous aider à trouver un accord, avec ce que dit la loi, leur coût et ce que vaut l’accord.',
+  'Le type de conflit que vous vivez et, si besoin, le montant en jeu.',
+  'Les conciliateurs et médiateurs qui peuvent vous aider à trouver un accord : comment les joindre, leur coût, ce que vaut l’accord et ce que dit la loi.',
 ] as const
 
 export function SimulationIntro({ onStart }: { onStart: () => void }) {
@@ -21,7 +20,7 @@ export function SimulationIntro({ onStart }: { onStart: () => void }) {
         ))}
       </ol>
       <ul className="space-y-2 rounded-lg bg-secondary p-4 text-secondary-foreground">
-        <li>Environ 2 minutes, 3 étapes au plus.</li>
+        <li>Moins d’une minute, 2 questions au plus.</li>
         <li>Une estimation suffit : il n’y a pas de mauvaise réponse.</li>
         <li>Vos réponses restent sur votre appareil : rien n’est envoyé ni enregistré.</li>
         <li>

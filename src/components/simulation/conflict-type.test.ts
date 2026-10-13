@@ -9,7 +9,6 @@ const type = (slug: string): ConflictType => ({
   label: slug,
   description: 'Fixture',
   examples: [],
-  lossKinds: ['money'],
   followUpQuestions: [],
 })
 

@@ -19,7 +19,6 @@ const type = (followUpQuestions: Question[]): ConflictType => ({
   label: 'Fixture',
   description: 'Fixture',
   examples: [],
-  lossKinds: ['time'],
   followUpQuestions,
 })
 

@@ -19,7 +19,7 @@ money, family), what is missing, and where this project stands. Written during t
 ## What nobody does (our angle)
 
 1. **Orientation from the person's situation**: « J’ai un conflit ? » asks a few questions and points to the right amicable route. It says when the law makes the attempt **mandatory** (art. 750-1 CPC: claims of 5,000 € or less, neighbourhood disturbances), a rule most people discover only when their claim is refused.
-2. **Comparison in plain words**: talking, conciliation, mediation, consumer mediation and the judge, side by side, on the same criteria: who helps, cost, who decides, duration, what the outcome is worth (`/demarches`).
+2. **Comparison in plain words**: talking, conciliation, mediation, consumer mediation and the judge, side by side, on the same criteria: who helps, cost, who decides, duration, what the outcome is worth (`/apprendre`).
 3. **Practice before the real situation**:
    - role-play scenarios with levels, from three points of view (the person who suffers the trouble, the person accused of it, the mediator);
    - mini-games on wording (non-violent communication) and on who does what.

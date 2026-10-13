@@ -13,7 +13,6 @@ const PAGES = [
   '/apprendre/lexique',
   '/apprendre/desamorcer',
   '/apprendre/qui-fait-quoi',
-  '/demarches',
   '/mentions-legales',
   '/confidentialite',
   '/cookies',

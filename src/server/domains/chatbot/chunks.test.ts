@@ -78,10 +78,10 @@ describe('buildChunks', () => {
     expect(chunk?.text).toContain(entry.answer)
   })
 
-  it('indexes the step-by-step guides of /demarches with every step', () => {
+  it('indexes the step-by-step guides of /apprendre with every step', () => {
     const guide = guides.all[0]!
     const chunk = chunks.find((c) => c.id === `guide:${guide.slug}`)
-    expect(chunk?.url).toBe('/demarches#pas-a-pas')
+    expect(chunk?.url).toBe('/apprendre#pas-a-pas')
     for (const step of guide.steps) expect(chunk?.text).toContain(step.text)
   })
 })

@@ -2,7 +2,7 @@ import { z } from 'zod'
 
 import { slugSchema } from '@/lib/content'
 
-// Practical guides to settle a dispute amicably (/demarches): key figures, the comparison of
+// Practical guides to settle a dispute amicably (/apprendre, formerly /demarches): key figures, the comparison of
 // the ways to settle a dispute, step-by-step guides, the preparation checklist. Every fact
 // carries its source (`sources`), shown to users.
 

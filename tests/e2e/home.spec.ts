@@ -18,8 +18,7 @@ test('the home page explains first, then orients', async ({ page }) => {
     'L’amiable en 1 minute',
     'Par où commencer ?',
     'À propos de ce site',
-    'Infos pratiques',
-    'Questions fréquentes',
+    'Une question ?',
   ])
 })
 
@@ -42,9 +41,22 @@ test('the hero link jumps to « Par où commencer ? »', async ({ page }) => {
   await expect(page.getByRole('heading', { level: 2, name: 'Par où commencer ?' })).toBeInViewport()
 })
 
-test('a home FAQ question opens and closes from the keyboard', async ({ page, isMobile }) => {
-  test.skip(isMobile, 'keyboard navigation is tested on desktop')
+test('the home page links to the FAQ and the practical info of /apprendre', async ({ page }) => {
   await page.goto('/')
+  const questions = page.getByRole('region', { name: 'Une question ?' })
+  await expect(questions.getByRole('link', { name: 'Questions fréquentes' })).toHaveAttribute(
+    'href',
+    '/apprendre#questions-frequentes',
+  )
+  await expect(questions.getByRole('link', { name: 'Infos pratiques' })).toHaveAttribute(
+    'href',
+    '/apprendre#infos-pratiques',
+  )
+})
+
+test('a FAQ question opens and closes from the keyboard', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'keyboard navigation is tested on desktop')
+  await page.goto('/apprendre')
   const faq = page.getByRole('region', { name: 'Questions fréquentes' })
   const question = faq.getByRole('button').first()
   await expect(question).toHaveAttribute('aria-expanded', 'false')

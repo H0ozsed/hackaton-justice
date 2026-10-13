@@ -8,13 +8,20 @@ import { guides, type Guide } from '@/shared/amicable'
 
 import { SourceLink } from './source-link'
 
-/** Step-by-step guides, one per amicable route, as an accordion (h3 triggers under an h2). */
-export function GuideList({ entries = guides.all }: { entries?: readonly Guide[] }) {
+/** Step-by-step guides, one per amicable route, as an accordion (triggers one level below the section). */
+export function GuideList({
+  entries = guides.all,
+  headingLevel = 3,
+}: {
+  entries?: readonly Guide[]
+  /** Level of each guide's trigger heading. */
+  headingLevel?: 3 | 4
+}) {
   return (
     <Accordion type="multiple" className="border-y">
       {entries.map((guide) => (
         <AccordionItem key={guide.slug} value={guide.slug}>
-          <AccordionTrigger level={3} className="py-4 text-lg">
+          <AccordionTrigger level={headingLevel} className="py-4 text-lg">
             {guide.title}
           </AccordionTrigger>
           <AccordionContent className="space-y-4 text-base">

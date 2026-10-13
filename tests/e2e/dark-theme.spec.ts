@@ -14,7 +14,6 @@ const PAGES = [
   '/apprendre/lexique',
   '/apprendre/qui-fait-quoi',
   '/apprendre/desamorcer',
-  '/demarches',
   '/mentions-legales',
   '/confidentialite',
   '/accessibilite',

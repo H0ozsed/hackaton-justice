@@ -11,8 +11,7 @@
 * **À propos** : pour qui, ce qui rend le site différent, ce qu'il n'est pas (ni avocat, ni démarche officielle, aucune décision)
 * **Navbar**
 * **Footer** : liens réglementaires (mentions légales, données personnelles, cookies, déclaration d'accessibilité)
-* **Infos pratiques**
-* **FAQ**
+* **Une question ?** : liens vers les questions fréquentes, les infos pratiques et le lexique d'Apprendre (la FAQ et les infos pratiques ne sont plus répétées sur l'accueil, revue de cohérence du 13 oct.)
 * **Chatbot : IRIS** (Identifier, Rechercher, Informer, Suggérer), « votre assistante »
   * Bouton flottant → panneau accessible (focus, Échap, réponses annoncées aux lecteurs d'écran)
   * Répond uniquement à partir du contenu du site (accueil : l'amiable en 1 minute, par où commencer, à propos ; FAQ, infos pratiques, lexique, types de conflit, interlocuteurs, quiz), avec ses sources
@@ -27,17 +26,17 @@
 ### `/`simulation : « J’ai un conflit ? »
 
 * Nom du parcours choisi après le retour des coachs du 13 oct. (#101) ; l'URL reste `/simulation`
-* **Écran d'introduction** « Comment ça marche ? » : les 4 étapes, environ 3 minutes, rien envoyé ni enregistré, orientation indicative ; bouton « Commencer » qui place le focus sur la première question
-* **Formulaires adaptatifs** (progression « Étape X sur N », bouton « Précédent », aide sous chaque question : ce qui est demandé et pourquoi)
+* **Écran d'introduction** « Comment ça marche ? » : moins d'une minute, 2 questions au plus, rien envoyé ni enregistré, orientation indicative ; bouton « Commencer » qui place le focus sur la première question
+* **Formulaire réduit à ce qui change le résultat** (revue de cohérence du 13 oct. : les questions sur les pertes, la fréquence et l'envie de discuter ne changeaient rien et ont été retirées)
   * Type de conflit : voisinage, professionnel (consommation), logement, argent entre particuliers, famille (séparation, enfants, pension, succession, grands-parents, parent âgé), travail, administration, école
-  * Estimation des pertes/fréquences
-  * Résultat : **uniquement vers un accord à l'amiable** (conciliation ou médiation), adapté au type de conflit, rien à cliquer ni à choisir (retour du 13 oct. : on ne demande plus si la personne est prête à discuter)
-    * « À savoir d'abord » selon le conflit : violences (17, 112, 3919, 119), harcèlement scolaire (3018), délais (12 mois pour une rupture du contrat de travail, 2 mois devant le juge administratif)
-    * Tentative amiable obligatoire (art. 750-1 CPC) quand elle s'applique ; une simple discussion ne suffit pas
-    * « Vers un accord à l'amiable » : une partie Conciliation puis une partie Médiation, chacune avec une phrase d'explication, puis chaque tiers adapté au conflit (par exemple conciliateur de justice et commission départementale de conciliation pour le logement, médiateur familial pour la famille, conciliation aux prud'hommes et médiateur civil pour le travail), tout affiché : d'abord **ce que dit la loi** (statut, conditions, diplôme, textes cités), puis litiges traités et exclus, comment y accéder, coût, valeur de l'accord, contact et sources officielles
-    * Lien vers tous les conciliateurs et médiateurs (et les autres recours) sur `/apprendre`
-  * « Amiable ou procès : ce qui change » (#109) : la voie amiable principale du conflit (conciliation, médiation ou médiation de la consommation) comparée au juge (coût, durée, qui décide, ce que vaut l'issue), mêmes données que la comparaison de `/demarches`, lien vers la comparaison complète
-  * Encadré « Besoin d'en parler avant de choisir ? » : points-justice et CDAD, information gratuite (#94)
+  * Montant en jeu, quand il compte (consommation, logement, argent entre particuliers) : il dit si la tentative amiable est obligatoire (5 000 € ou moins)
+* **Résultat : uniquement vers un accord à l'amiable** (conciliation ou médiation), adapté au type de conflit, rien à cliquer ni à choisir
+  * « À savoir d'abord » selon le conflit : violences (17, 112, 3919, 119), harcèlement scolaire (3018), délais (12 mois pour une rupture du contrat de travail, 2 mois devant le juge administratif)
+  * Tentative amiable obligatoire (art. 750-1 CPC) quand elle s'applique ; une simple discussion ne suffit pas
+  * « Vers un accord à l'amiable » : une partie Conciliation puis une partie Médiation, chacune avec une phrase d'explication, puis une carte par tiers adapté au conflit : d'abord l'essentiel (qui c'est, comment le joindre, coût, valeur de l'accord), puis **ce que dit la loi** en entier (textes cités), contact et sources
+  * « Pourquoi l'amiable d'abord ? » (#109) : deux phrases (durée, coût, qui décide) et un lien vers la comparaison unique de `/apprendre#comparer`
+  * Encadré « Être informé gratuitement près de chez vous » : points-justice et CDAD (#94)
+  * Lien vers tous les conciliateurs et médiateurs sur `/apprendre`
 
 ### `/`mise-en-situation
 
@@ -64,31 +63,25 @@
   * \* définition mot pas facile
     * Termes liés au lexique dans les répliques (`<Definition>`, popover au clic / clavier)
 
-### `/`demarches
-
-* Régler un litige à l'amiable (nuit #80)
-  * Chiffres clés sourcés (Infostat Justice) : demandes aux conciliateurs, taux d'accord, nombre de conciliateurs, gratuité
-  * Faut-il tenter l'amiable avant le juge ? Tentative amiable préalable (art. 750-1 CPC) : sommes ≤ 5 000 €, troubles de voisinage, exceptions, garder une preuve
-  * Comparer les solutions : discussion, conciliation, médiation, médiation de la consommation, juge (qui aide, comment y accéder, coût, qui décide, durée, valeur de l'issue, point fort, limite)
-  * Les démarches étape par étape : conciliateur, médiateur de la consommation, médiation, médiation familiale (étapes numérotées, bon à savoir, sources)
-  * Liste « Préparer son rendez-vous » à cocher (rien enregistré), imprimable
-  * Liens vers « J’ai un conflit ? », « Qui peut vous aider ? » sur `/apprendre`, la mise en situation et le lexique
-
 ### `/`apprendre
 
-* Mini-jeux (nuit #80) : « Désamorcer » (`/apprendre/desamorcer`), 8 situations du quotidien, choisir la phrase qui dit les choses sans attaquer (fait, ressenti, besoin, demande) ; jauge de tension de la discussion en texte, réaction du personnage, explication, bilan ; sans chrono
-* Mini-jeu « Qui fait quoi ? » (`/apprendre/qui-fait-quoi`) : 10 phrases à attribuer au conciliateur, au médiateur et/ou au juge (cases à cocher), vérification d'un coup, score, explication par carte
+La seule page qui explique l'amiable ; elle reprend l'ancienne page Démarches (`/demarches` redirige ici, mêmes ancres). Parcours conseillé en quatre étapes (#106), qui sert aussi de sommaire « Par où commencer ? » ; titres h1 > h2 étape > h3 section, une phrase d'introduction sous chaque section (#105).
 
-* Qui peut vous aider ? : tous les tiers par catégorie, en accordéon, ce que dit la loi d'abord (conciliateur de justice, commission départementale de conciliation, conciliation aux prud'hommes, audience de règlement amiable, médiateur civil, médiateur familial et son diplôme d'État, médiateur de la consommation, médiateurs de secteur, médiateurs des administrations, médiateur de l'éducation nationale, médiation administrative, Défenseur des droits, le juge) ; mêmes données que « J’ai un conflit ? » et IRIS
-* Conciliateur ou médiateur ? (#108) : les deux comparés côte à côte (qui, accès, coût, qui décide, durée, valeur de l'accord, point fort, limite), lien vers la comparaison complète de `/demarches`
-* Sensibiliser en groupe (#94) : le CDAD fait connaître l'amiable dans les écoles et lors d'événements ; questionnaires, mini-jeux et mises en situation utilisables à plusieurs
+1. **Comprendre l'amiable**
+   * Faut-il tenter l'amiable avant le juge ? Tentative amiable préalable (art. 750-1 CPC) : sommes ≤ 5 000 €, troubles de voisinage, bornage, servitudes, plantations, exceptions, garder une preuve
+   * Comparer les solutions : **la seule comparaison du site** (discussion, conciliation, médiation, médiation de la consommation, juge : qui aide, comment y accéder, coût, qui décide, durée, valeur de l'issue, point fort, limite)
+   * La conciliation en chiffres : chiffres clés sourcés (Infostat Justice)
+2. **Qui peut vous aider, et comment**
+   * Qui peut vous aider ? : tous les tiers par catégorie, en accordéon, ce que dit la loi d'abord (conciliateur de justice, commission départementale de conciliation, conciliation aux prud'hommes, audience de règlement amiable, médiateur civil, médiateur familial et son diplôme d'État, médiateur de la consommation, médiateurs de secteur, médiateurs des administrations, médiateur de l'éducation nationale, médiation administrative, Défenseur des droits, le juge) ; mêmes données que « J'ai un conflit ? » et IRIS
+   * Les démarches étape par étape : conciliateur, médiateur de la consommation, médiation, médiation familiale (étapes numérotées, bon à savoir, sources)
+   * Préparer son rendez-vous : liste à cocher (rien enregistré), imprimable
+3. **Tester ses connaissances**
+   * Questionnaires évaluatifs
+   * Mini-jeux : « Désamorcer » (`/apprendre/desamorcer`), 8 situations du quotidien, choisir la phrase qui dit les choses sans attaquer ; « Qui fait quoi ? » (`/apprendre/qui-fait-quoi`), 10 phrases à attribuer au conciliateur, au médiateur et/ou au juge
+4. **Aller plus loin**
+   * Lexique : page dédiée `/apprendre/lexique` (recherche sans accents ni majuscules, index alphabétique, ancre par terme, « Voir aussi »)
+   * FAQ
+   * Infos pratiques
+   * Sensibiliser en groupe (#94) : le CDAD fait connaître l'amiable dans les écoles et lors d'événements ; questionnaires, mini-jeux et mises en situation utilisables à plusieurs
+
 * Chatbot : IRIS, comme sur `/` (questions suggérées tirées de la FAQ de cette page)
-* Questionnaires évaluatif
-* FAQ
-* Infos pratiques
-* Lexique
-  * Page dédiée `/apprendre/lexique` (lien depuis `/apprendre`, « Apprendre » reste la page courante dans la navbar)
-  * Recherche sans tenir compte des accents ni des majuscules (terme et variantes), nombre de résultats annoncé
-  * Index alphabétique, termes groupés par lettre, ancre par terme (`/apprendre/lexique#mediation`), liens « Voir aussi » vers les termes liés
-* Parcours conseillé en trois étapes (#106), qui sert aussi de sommaire : « Par où commencer ? » avec 1. Comprendre les bases (Conciliateur ou médiateur ?, Qui peut vous aider ?), 2. Tester ses connaissances (Questionnaires, Mini-jeux), 3. Aller plus loin (Lexique, Questions fréquentes, Infos pratiques, Sensibiliser en groupe) ; titres h1 > h2 étape > h3 section, une phrase d'introduction sous chaque section (#105)
-

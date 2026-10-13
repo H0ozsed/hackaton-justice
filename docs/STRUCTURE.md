@@ -38,7 +38,7 @@ Current domains in `src/shared/`: `home` (home page explainer, « Par où commen
 orientation, « À propos » and IRIS starter questions; its texts may link glossary terms with
 `[[slug]]`), `glossary`, `faq`, `practical-info`, `games` (mini-games content, e.g. the rounds of
 "Désamorcer"), `amicable` (practical guides of
-`/demarches`: key figures, routes compared, step-by-step guides, checklist), `simulation`
+`/apprendre`, formerly `/demarches`: key figures, routes compared, step-by-step guides, checklist), `simulation`
 (conflict types + channels, i.e. who can help, with their legal framework; rendered by `src/components/solutions` on the result and on `/apprendre`), `quiz`, `role-play` (scenarios of `/mise-en-situation` and the
 pure game engine that plays them, and the life gauges; its pixel-art stage, sprites and sounds
 live in `src/components/role-play/pixel`), `chatbot` (IRIS request/stream schemas and fixed texts; its

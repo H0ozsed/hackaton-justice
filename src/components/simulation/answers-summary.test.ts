@@ -13,7 +13,6 @@ const withEverything: ConflictType = {
   label: 'Type tout',
   description: 'Fixture',
   examples: [],
-  lossKinds: ['money', 'time', 'health', 'relationship'],
   followUpQuestions: [
     q({
       id: 'nature',
@@ -43,7 +42,6 @@ const moneyOnly: ConflictType = {
   ...withEverything,
   slug: 'argent',
   label: 'Type argent',
-  lossKinds: ['money'],
   followUpQuestions: [],
 }
 const types = [withEverything, moneyOnly]
@@ -51,14 +49,6 @@ const types = [withEverything, moneyOnly]
 const full = {
   'conflict-type': { type: 'tout' },
   'follow-up': { nature: 'odeurs', effects: ['a', 'b'], amount: 12.5, talked: 'no' },
-  'loss-frequency': {
-    money: 149.9,
-    time: 2.5,
-    timeUnit: 'hours',
-    health: 'high',
-    relationship: 'none',
-    frequency: 'weekly',
-  },
 }
 
 const lines = (answers: Record<string, Record<string, unknown>>) =>
@@ -72,11 +62,6 @@ describe('summarizeAnswers', () => {
       'Effets ? = Sommeil, Stress',
       'Montant ? = 12,5 €',
       'En avez-vous parlé ? = Non',
-      'Argent = 149,9 €',
-      'Temps = 2,5 heures',
-      'Bien-être = Fort',
-      'Relations = Aucun effet',
-      'Fréquence du conflit = Une ou plusieurs fois par semaine',
     ])
   })
 
@@ -84,39 +69,11 @@ describe('summarizeAnswers', () => {
     expect(summarizeAnswers({}, types)).toEqual([])
   })
 
-  describe('losses', () => {
-    const losses = (loss: Record<string, unknown>) =>
-      lines({ 'conflict-type': { type: 'tout' }, 'loss-frequency': loss }).slice(1)
-
-    it('writes the time with the unit in the singular below 2, as in French', () => {
-      expect(losses({ time: 1, timeUnit: 'hours' })).toEqual(['Temps = 1 heure'])
-      expect(losses({ time: 1.5, timeUnit: 'days' })).toEqual(['Temps = 1,5 jour'])
-      expect(losses({ time: 2, timeUnit: 'days' })).toEqual(['Temps = 2 jours'])
-      expect(losses({ time: 0, timeUnit: 'hours' })).toEqual(['Temps = 0 heure'])
-    })
-
-    it('writes zero and decimals', () => {
-      expect(losses({ money: 0 })).toEqual(['Argent = 0 €'])
-      expect(losses({ money: 0.5 })).toEqual(['Argent = 0,5 €'])
-    })
-
-    it('only writes the loss kinds that the conflict type declares', () => {
-      const result = lines({
-        'conflict-type': { type: 'argent' },
-        'loss-frequency': {
-          money: 10,
-          time: 3,
-          timeUnit: 'hours',
-          health: 'low',
-          frequency: 'once',
-        },
-      })
-      expect(result).toEqual([
-        'Type de conflit = Type argent',
-        'Argent = 10 €',
-        'Fréquence du conflit = Une seule fois',
-      ])
-    })
+  it('writes zero and decimals', () => {
+    const amount = (value: number) =>
+      lines({ 'conflict-type': { type: 'tout' }, 'follow-up': { amount: value } }).slice(1)
+    expect(amount(0)).toEqual(['Montant ? = 0 €'])
+    expect(amount(0.5)).toEqual(['Montant ? = 0,5 €'])
   })
 
   describe('follow-up answers', () => {

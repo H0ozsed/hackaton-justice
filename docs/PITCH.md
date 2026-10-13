@@ -28,7 +28,7 @@ words, and lets you practise before the real situation.**
 | --- | --- | --- |
 | **J’ai un conflit ?** (`/simulation`) | A few questions → the right amicable channel for *your* dispute, with its cost and the value of the agreement + "the law requires an amicable attempt" when it applies | Turns "I don't know where to go" into a next step |
 | **Mise en situation** | Pixel-art role-play with levels: you suffer the trouble, you are accused of it, then you are the mediator; animated choices, life gauges, a score with corrections | People remember what they lived; seeing the other side de-escalates |
-| **Apprendre** + **Démarches** | Quizzes, glossary, mini-games ("Désamorcer", "Qui fait quoi ?"), comparison of routes, step-by-step guides, checklist, who can help (law first), IRIS chatbot | Know, compare, prepare, act |
+| **Apprendre** (formerly also Démarches) | Quizzes, glossary, mini-games ("Désamorcer", "Qui fait quoi ?"), comparison of routes, step-by-step guides, checklist, who can help (law first), IRIS chatbot | Know, compare, prepare, act |
 
 ## What makes it different (benchmark)
 
@@ -43,15 +43,15 @@ words, and lets you practise before the real situation.**
 
 ## Demo path (5 minutes)
 
-Needs the night PRs merged (#81 to #87: simulation content, `/demarches`, levels, content, mini-games, letter).
+Up to date with the coherence review of 13 Oct 2026: three journeys, « J’ai un conflit ? » leads to conciliation or mediation only, every explanation lives on `/apprendre`.
 
 | Time | Screen | What to show | What to say |
 | --- | --- | --- | --- |
 | 0:00 | `/` | The three journeys | "Three ways in, one goal: settle it without a judge." |
-| 0:30 | `/simulation` | Neighbourhood conflict → result: **"Une tentative amiable est obligatoire"**, then the conciliator recommended | "In 1 minute, you know where to go, and that the law requires it." |
+| 0:30 | `/simulation` | « J’ai un conflit ? », neighbourhood conflict → result: **"Une tentative amiable est obligatoire"**, then the conciliator and the mediator for this conflict, with how to reach them and what the law says | "One question, and you know who can help you, and that the law requires it." |
 | 1:30 | `/mise-en-situation` | The list by level → "Le voisin du dessus": the opening shots, one bubble, **one animated choice**, the gauges, then the summary | "You live the conflict. Each choice has a cost, shown and explained." |
 | 2:45 | Level 3 card | "Vous êtes le médiateur": one reformulation choice | "Then you take the mediator's seat, the best way to understand mediation." |
-| 3:15 | `/demarches` | The comparison table, then « Qui peut vous aider ? » on `/apprendre` | "Compare, then know exactly who can help you, and what the law says." |
+| 3:15 | `/apprendre` | The four-step path, the comparison table, then « Qui peut vous aider ? » | "Everything to understand in one place: compare, then know exactly who can help you, and what the law says." |
 | 3:50 | `/apprendre/desamorcer` | One round: the tension goes down | "Say it without attacking: the skill every conciliator wishes you had." |
 | 4:20 | IRIS | "Le conciliateur est-il gratuit ?" → answer with sources | "Answers only from our sourced content, and says when it doesn't know." |
 | 4:40 | Closing | — | Impact and next steps (below) |

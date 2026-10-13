@@ -237,7 +237,7 @@
   }
 }
 
-/* Printing one part of a page only (e.g. the preparation checklist of /demarches): the page sets
+/* Printing one part of a page only (e.g. the preparation checklist of /apprendre): the page sets
    data-print on <body> before window.print(), and marks the part with data-print-area.
    Everything else is removed from the printed page (so no blank pages follow). */
 @media print {

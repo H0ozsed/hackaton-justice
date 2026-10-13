@@ -15,7 +15,7 @@ read on the site).
 | Conflict types (simulation)                  | `simulation/data.ts` → `conflictTypesData`                     |
 | Who can help (simulation result, /apprendre) | `simulation/data.ts` → `channelsData`                          |
 | Quizzes                                      | `quiz/data.ts`                                                 |
-| Amicable guides (`/demarches`)               | `amicable/data.ts`                                             |
+| Amicable guides (`/apprendre`)               | `amicable/data.ts`                                             |
 | Role-play scenarios (`/mise-en-situation`)   | `role-play/scenarios/<slug>.ts`, listed in `role-play/data.ts` |
 
 The content is real and sourced (sources in a comment at the top of each `data.ts`); it must be

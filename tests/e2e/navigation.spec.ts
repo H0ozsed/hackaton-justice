@@ -10,7 +10,6 @@ const PAGES = [
     nav: 'Mise en situation',
   },
   { path: '/apprendre', title: 'Apprendre | Hackaton Justice', nav: 'Apprendre' },
-  { path: '/demarches', title: 'Démarches | Hackaton Justice', nav: 'Démarches' },
 ]
 
 for (const { path, title, nav } of PAGES) {
