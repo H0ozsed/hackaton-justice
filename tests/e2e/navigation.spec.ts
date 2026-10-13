@@ -48,6 +48,63 @@ test('the skip link moves the keyboard focus to the main content', async ({ page
   await expect(page.locator('main#main-content')).toBeFocused()
 })
 
+// Regulatory pages (#24, #25): reached from the footer of every page.
+const FOOTER_PAGES = [
+  {
+    path: '/mentions-legales',
+    title: 'Mentions légales | Hackaton Justice',
+    link: 'Mentions légales',
+  },
+  {
+    path: '/confidentialite',
+    title: 'Données personnelles | Hackaton Justice',
+    link: 'Données personnelles',
+  },
+  { path: '/cookies', title: 'Cookies | Hackaton Justice', link: 'Cookies' },
+  { path: '/accessibilite', title: 'Accessibilité | Hackaton Justice', link: /^Accessibilité/ },
+]
+
+test('the cookie policy is linked from the footer of every page', async ({ page }) => {
+  // Many pages in one test: on a cold dev server each first visit compiles the page.
+  test.slow()
+  const paths = [
+    ...PAGES.map(({ path }) => path),
+    ...FOOTER_PAGES.map(({ path }) => path),
+    '/mise-en-situation/voisin-du-dessus',
+    '/apprendre/lexique',
+    '/apprendre/desamorcer',
+    '/apprendre/qui-fait-quoi',
+    '/page-qui-n-existe-pas',
+  ]
+  for (const path of paths) {
+    await page.goto(path)
+    await expect(
+      page.getByRole('navigation', { name: 'Liens réglementaires' }).getByRole('link', {
+        name: 'Cookies',
+      }),
+      path,
+    ).toHaveAttribute('href', '/cookies')
+  }
+})
+
+for (const { path, title, link } of FOOTER_PAGES) {
+  test(`the footer leads to ${path}, with one h1 and no automatic accessibility violation`, async ({
+    page,
+  }) => {
+    await page.goto('/simulation')
+    await page
+      .getByRole('navigation', { name: 'Liens réglementaires' })
+      .getByRole('link', { name: link })
+      .click()
+    await expect(page).toHaveURL(path)
+    await expect(page).toHaveTitle(title)
+    await expect(page.locator('h1')).toHaveCount(1)
+
+    const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze()
+    expect(results.violations).toEqual([])
+  })
+}
+
 test('the navbar leads to every journey', async ({ page, isMobile }) => {
   await page.goto('/')
   for (const { path, nav } of PAGES.slice(1)) {

@@ -10,8 +10,7 @@
   * Apprendre, seul ou en groupe (classe, atelier) → Apprendre
 * **À propos** : pour qui, ce qui rend le site différent, ce qu'il n'est pas (ni avocat, ni démarche officielle, aucune décision)
 * **Navbar**
-  * Bouton « Thème sombre » (bouton bascule, `aria-pressed`) : suit le réglage du système par défaut, le choix est gardé sur l'appareil ; thème appliqué avant l'affichage (pas de flash blanc)
-* **Footer**
+* **Footer** : liens réglementaires (mentions légales, données personnelles, cookies, déclaration d'accessibilité)
 * **Infos pratiques**
 * **FAQ**
 * **Chatbot : IRIS** (Identifier, Rechercher, Informer, Suggérer), « votre assistante »

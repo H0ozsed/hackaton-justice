@@ -55,9 +55,34 @@ export const JOURNEYS: Journey[] = [
   },
 ]
 
+// Publisher and host, shown on /mentions-legales, /confidentialite and /accessibilite (#25).
+// Taken from justice.gouv.fr (mentions légales, données personnelles), checked 2026-10-13.
+export const PUBLISHER = {
+  name: 'Ministère de la Justice, Secrétariat général',
+  address: '13 place Vendôme, 75042 Paris Cedex 01',
+  /** A role, not a name: it stays right when the person changes. */
+  publicationDirector:
+    'Le délégué à l’information et à la communication du ministère de la Justice',
+  contact: {
+    label: 'formulaire « Question au ministère de la Justice »',
+    href: 'https://www.demarches-simplifiees.fr/commencer/questions-au-ministere-de-la-justice',
+  },
+  /** Data protection officer (délégué à la protection des données). */
+  dpo: {
+    email: 'dpd@justice.gouv.fr',
+    address: 'Ministère de la Justice, DPD, 13 place Vendôme, 75001 Paris',
+  },
+  host: {
+    name: 'Service du numérique du ministère de la Justice',
+    address: '13 place Vendôme, 75042 Paris Cedex 01',
+    location: 'France',
+  },
+}
+
 // Legal links of the footer (content: GDPR / RGAA issues).
 export const FOOTER_NAV: NavItem[] = [
   { href: '/mentions-legales', label: 'Mentions légales' },
   { href: '/confidentialite', label: 'Données personnelles' },
+  { href: '/cookies', label: 'Cookies' },
   { href: '/accessibilite', label: 'Accessibilité : non conforme' },
 ]

@@ -1,22 +1,12 @@
-import type { ReactNode } from 'react'
-
+import { LegalArticle } from '@/components/layout/legal-page'
 import { PageTitle } from '@/components/layout/page-title'
-import { SITE_NAME } from '@/lib/site'
+import { PUBLISHER, SITE_NAME } from '@/lib/site'
 
 // Accessibility statement (#24), following the official RGAA structure.
 // Status stays "non conforme" until a full RGAA audit (106 criteria) is done: see
-// docs/RGAA_AUDIT.md for what was tested. Values marked <ToFill> must be completed
-// before going live (same information as the legal notice, #25).
+// docs/RGAA_AUDIT.md for what was tested. Publisher and contact: PUBLISHER in src/lib/site.ts,
+// same as the legal notice (#25).
 // Page text is site content: French.
-
-/** Visible placeholder for information the team still has to provide. */
-function ToFill({ children }: { children: ReactNode }) {
-  return (
-    <mark className="rounded-sm bg-marianne-red-4 px-1 font-semibold text-marianne-red-0">
-      [À compléter : {children}]
-    </mark>
-  )
-}
 
 const TESTED_PAGES = [
   ['Accueil', '/'],
@@ -26,23 +16,21 @@ const TESTED_PAGES = [
   ['Lexique', '/apprendre/lexique'],
   ['Mentions légales', '/mentions-legales'],
   ['Données personnelles', '/confidentialite'],
+  ['Cookies', '/cookies'],
   ['Déclaration d’accessibilité', '/accessibilite'],
 ] as const
 
 export default function AccessibilityPage() {
   return (
-    <article className="max-w-3xl space-y-8 [&_a]:text-primary [&_a]:underline [&_a]:underline-offset-4 [&_h2]:text-2xl [&_h2]:font-bold [&_h3]:text-lg [&_h3]:font-semibold [&_section]:space-y-3 [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-6">
+    <LegalArticle>
       <PageTitle title="Accessibilité" />
       <h1 className="text-3xl font-bold">Déclaration d’accessibilité</h1>
 
       <p>
-        <ToFill>nom de l’entité qui édite le site</ToFill> s’engage à rendre son site internet
-        accessible conformément à l’article 47 de la loi n° 2005-102 du 11 février 2005.
+        Le ministère de la Justice s’engage à rendre son site internet accessible conformément à
+        l’article 47 de la loi n° 2005-102 du 11 février 2005.
       </p>
-      <p>
-        Cette déclaration d’accessibilité s’applique au site {SITE_NAME} (
-        <ToFill>adresse du site</ToFill>).
-      </p>
+      <p>Cette déclaration d’accessibilité s’applique au site {SITE_NAME}.</p>
 
       <section aria-labelledby="etat">
         <h2 id="etat">État de conformité</h2>
@@ -96,9 +84,7 @@ export default function AccessibilityPage() {
 
       <section aria-labelledby="etablissement">
         <h2 id="etablissement">Établissement de cette déclaration d’accessibilité</h2>
-        <p>
-          Cette déclaration a été établie le <ToFill>date</ToFill>.
-        </p>
+        <p>Cette déclaration a été établie le 13 octobre 2026.</p>
         <h3>Technologies utilisées pour la réalisation du site</h3>
         <ul>
           <li>HTML5</li>
@@ -130,7 +116,7 @@ export default function AccessibilityPage() {
         <p>
           Si vous n’arrivez pas à accéder à un contenu ou à un service, vous pouvez nous contacter
           pour être orienté vers une alternative accessible ou obtenir le contenu sous une autre
-          forme : <ToFill>adresse e-mail de contact</ToFill>.
+          forme, avec le <a href={PUBLISHER.contact.href}>{PUBLISHER.contact.label}</a>.
         </p>
       </section>
 
@@ -154,6 +140,6 @@ export default function AccessibilityPage() {
           </li>
         </ul>
       </section>
-    </article>
+    </LegalArticle>
   )
 }
