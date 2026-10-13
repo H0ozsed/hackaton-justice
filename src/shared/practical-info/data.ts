@@ -27,6 +27,22 @@ export const practicalInfoData: PracticalInfoInput[] = [
     ],
   },
   {
+    // Structures rather than individual mediators (#124). TO VALIDATE (#120).
+    slug: 'trouver-un-mediateur',
+    title: 'Trouver un médiateur',
+    body: 'Passez par une structure plutôt que de chercher un médiateur seul. Un point-justice vous informe gratuitement et vous oriente vers une association ou un service de médiation. Pour un conflit familial, adressez-vous à un service de médiation familiale (Caf, association conventionnée). Pour un litige avec un professionnel, c’est son médiateur de la consommation.',
+    links: [
+      {
+        label: 'Les points-justice à La Réunion',
+        href: 'https://www.cours-appel.justice.fr/saint-denis/acces-au-droit-la-reunion',
+      },
+      {
+        label: 'La médiation familiale (Caf)',
+        href: 'https://caf.fr/professionnels/offres-et-services/dispositifs-partenaires/mediation-familiale',
+      },
+    ],
+  },
+  {
     slug: 'litige-professionnel',
     title: 'Un litige avec un professionnel ?',
     body: 'Écrivez d’abord au service client et gardez une copie. Sans réponse satisfaisante, saisissez le médiateur de la consommation indiqué dans les conditions générales de vente : c’est gratuit pour vous, dans l’année qui suit votre réclamation.',

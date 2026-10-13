@@ -463,15 +463,19 @@ export const channelsData: ChannelInput[] = [
       'Famille (hors violences)',
     ],
     excluded: ['Droit pénal'],
+    // Structures rather than individual mediators, whose contacts are hard to get (#124).
+    // TO VALIDATE (#120): where people in La Réunion are oriented to a mediation structure.
     access:
-      'Choisissez-le ensemble : chaque cour d’appel publie une liste de médiateurs (civils, familiaux, sociaux, commerciaux). Pendant un procès, le juge peut en désigner un, avec votre accord.',
+      'Passez par une structure plutôt que de chercher un médiateur seul : un point-justice vous informe gratuitement et vous oriente vers une association ou un service de médiation. Chaque cour d’appel publie aussi une liste de médiateurs. Pendant un procès, le juge peut en désigner un, avec votre accord.',
     amicable: true,
     free: false,
     cost: 'Payant : honoraires fixés avec les parties et partagés à parts égales sauf accord ou décision du juge ; l’aide juridictionnelle peut prendre en charge une médiation ordonnée par le juge',
     agreement:
       'Accord écrit, que le juge peut homologuer à la demande des parties (force exécutoire)',
     conflictTypes: ['voisinage', 'logement', 'argent-particuliers', 'travail'],
-    contact: { url: SOURCES.mediateur.href },
+    contact: {
+      url: 'https://www.cours-appel.justice.fr/saint-denis/acces-au-droit-la-reunion',
+    },
     sources: [SOURCES.mediateur],
   },
   {
