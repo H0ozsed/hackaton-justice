@@ -7,6 +7,7 @@ import {
   explainOllamaError,
   isInsideThinking,
   isOllamaAvailable,
+  looksLikeReasoning,
   ollamaConfig,
   OllamaUnavailableError,
   type ChatPart,
@@ -41,7 +42,7 @@ describe('ollamaConfig', () => {
   it('uses the same defaults everywhere', () => {
     expect(ollamaConfig({})).toEqual({
       url: 'http://localhost:11434',
-      chatModel: 'qwen3:4b',
+      chatModel: 'qwen3:4b-instruct-2507-q4_K_M',
       embedModel: 'bge-m3',
     })
   })
@@ -128,7 +129,26 @@ describe('chat', () => {
     expect(await collect(chat([{ role: 'user', content: 'x' }], config))).toEqual([
       { kind: 'thinking' },
       { kind: 'text', text: 'Réponse' },
+      { kind: 'end', truncated: false },
     ])
+  })
+
+  it('says when the answer was cut by the length limit', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi
+        .fn()
+        .mockResolvedValue(
+          ndjsonResponse([
+            { message: { content: 'Okay, the user' } },
+            { done: true, done_reason: 'length' },
+          ]),
+        ),
+    )
+    expect((await collect(chat([{ role: 'user', content: 'x' }], config))).at(-1)).toEqual({
+      kind: 'end',
+      truncated: true,
+    })
   })
 
   it('retries without the thinking flag when the model does not support it', async () => {
@@ -186,6 +206,20 @@ describe('cleanAnswer', () => {
   })
 })
 
+describe('looksLikeReasoning', () => {
+  it('spots a model thinking aloud', () => {
+    expect(looksLikeReasoning("Okay, let's tackle this query. The user is asking…")).toBe(true)
+    expect(looksLikeReasoning('Let me check the extracts.')).toBe(true)
+    expect(looksLikeReasoning('First, the user is asking about mediation.')).toBe(true)
+  })
+
+  it('accepts real answers, in French or English', () => {
+    expect(looksLikeReasoning('La **médiation** est une démarche amiable.')).toBe(false)
+    expect(looksLikeReasoning('Mediation is an amicable process.')).toBe(false)
+    expect(looksLikeReasoning('First, talk to your neighbour.')).toBe(false)
+  })
+})
+
 describe('isInsideThinking', () => {
   it('is true between an opening tag and its closing tag only', () => {
     expect(isInsideThinking('<think>hmm')).toBe(true)
@@ -204,7 +238,7 @@ describe('explainOllamaError', () => {
       /ollama-models/,
     )
     expect(explain('Ollama error: model requires more system memory (5.6 GiB)')).toMatch(
-      /does not fit in memory.*qwen3:4b/,
+      /does not fit in memory.*instruct-2507/,
     )
   })
 })
