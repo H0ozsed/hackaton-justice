@@ -36,7 +36,7 @@ Legend: ✅ checked, no issue found · ⚠️ issue or limit · 👤 needs a hum
 | --- | --- | --- | --- |
 | 1 | Images | ✅ | No `<img>`. Icons are decorative and hidden from assistive tech (`aria-hidden`). The pixel-art role-play (stage, sprites, opening shots, choice animations, effects) is decorative SVG hidden with `aria-hidden`: the scene heading, the speech bubbles and captions (real text over the picture) and the life gauges in text carry all the information. |
 | 2 | Frames | — | No `<iframe>`. |
-| 3 | Colours | ✅ | Theme contrasts checked (`src/styles/globals.css`, ratios in comments): text ≥ 4.5:1, UI components ≥ 3:1. Information never by colour alone (quiz and role-play results use text + icon). axe `color-contrast` passes in every state. |
+| 3 | Colours | ✅ | Theme contrasts checked (`src/styles/globals.css`, ratios in comments): text ≥ 4.5:1, UI components ≥ 3:1, in the light and the dark theme (#132; dark pages and states scanned by `tests/e2e/dark-theme.spec.ts`). Information never by colour alone (quiz and role-play results use text + icon). axe `color-contrast` passes in every state. |
 | 4 | Multimedia | ✅ | No video. Role-play animations are decorative and turned off with `prefers-reduced-motion`. Role-play 8-bit sounds are optional, off by default, switched by a "Son" button (`aria-pressed`, 4.10) and never carry information. |
 | 5 | Tables | — | No data table. |
 | 6 | Links | ✅ 👤 | Every link has an accessible name; links opening a new window say so ("nouvelle fenêtre"). 👤 Check that link texts make sense out of context. |

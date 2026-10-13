@@ -117,7 +117,7 @@ function Bubble({ speech, tailAt }: { speech: Speech; tailAt?: number }) {
     return (
       <div
         data-testid="caption"
-        className="max-w-[92%] self-start border-[3px] border-[#1e1f33] bg-[#fff3d0] px-3 py-2 text-sm text-black shadow-[3px_3px_0_0_#1e1f33] sm:max-w-[75%] sm:text-base"
+        className="light-colors max-w-[92%] self-start border-[3px] border-[#1e1f33] bg-[#fff3d0] px-3 py-2 text-sm text-black shadow-[3px_3px_0_0_#1e1f33] sm:max-w-[75%] sm:text-base"
       >
         {speech.content}
       </div>
@@ -129,7 +129,7 @@ function Bubble({ speech, tailAt }: { speech: Speech; tailAt?: number }) {
       <div
         data-testid="bubble"
         className={cn(
-          'relative z-10 w-fit max-w-[92%] min-w-[55%] rounded-2xl border-[3px] border-[#1e1f33] bg-white px-3 py-2 text-sm text-black sm:max-w-[75%] sm:text-base',
+          'light-colors relative z-10 w-fit max-w-[92%] min-w-[55%] rounded-2xl border-[3px] border-[#1e1f33] bg-white px-3 py-2 text-sm text-black sm:max-w-[75%] sm:text-base',
           left ? 'self-start' : 'self-end',
         )}
       >
