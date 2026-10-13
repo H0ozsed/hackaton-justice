@@ -39,3 +39,19 @@ export const rephraseRoundSchema = z
 
 export type RephraseRound = z.output<typeof rephraseRoundSchema>
 export type RephraseRoundInput = z.input<typeof rephraseRoundSchema>
+
+/** The people a statement of "Qui fait quoi ?" can be about. */
+export const actorSchema = z.enum(['conciliator', 'mediator', 'judge'])
+export type Actor = z.infer<typeof actorSchema>
+
+export const whoStatementSchema = z.object({
+  slug: slugSchema,
+  /** A sentence about "il" (the conciliator, the mediator or the judge). */
+  statement: z.string().min(1),
+  /** Everyone the statement is true for. */
+  actors: z.array(actorSchema).min(1).refine(isUnique, 'actors must be unique'),
+  explanation: z.string().min(1),
+})
+
+export type WhoStatement = z.output<typeof whoStatementSchema>
+export type WhoStatementInput = z.input<typeof whoStatementSchema>

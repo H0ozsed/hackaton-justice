@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 import { rephraseRoundSchema } from './schema'
 
-import { nextTension, rephraseRounds, TENSION_MAX } from '.'
+import { isRightSet, nextTension, rephraseRounds, TENSION_MAX, whoStatements } from '.'
 
 describe('rephrase rounds', () => {
   it('have exactly one non-violent reply each, never always at the same place', () => {
@@ -39,5 +39,20 @@ describe('nextTension', () => {
     expect(nextTension(5, 'threat')).toBe(8)
     expect(nextTension(1, 'nvc')).toBe(0)
     expect(nextTension(TENSION_MAX - 1, 'threat')).toBe(TENSION_MAX)
+  })
+})
+
+describe('who statements', () => {
+  it('compare exact sets of actors', () => {
+    expect(isRightSet(['judge'], ['judge'])).toBe(true)
+    expect(isRightSet(['mediator', 'conciliator'], ['conciliator', 'mediator'])).toBe(true)
+    expect(isRightSet(['judge', 'mediator'], ['judge'])).toBe(false)
+    expect(isRightSet([], ['judge'])).toBe(false)
+  })
+
+  it('cover every actor, and some statements are about several', () => {
+    const actors = new Set(whoStatements.all.flatMap((s) => s.actors))
+    expect(actors).toEqual(new Set(['conciliator', 'mediator', 'judge']))
+    expect(whoStatements.all.some((s) => s.actors.length > 1)).toBe(true)
   })
 })

@@ -51,6 +51,7 @@
 ### `/`apprendre
 
 * Mini-jeux (nuit #80) : « Désamorcer » (`/apprendre/desamorcer`), 8 situations du quotidien, choisir la phrase qui dit les choses sans attaquer (fait, ressenti, besoin, demande) ; jauge de tension de la discussion en texte, réaction du personnage, explication, bilan ; sans chrono
+* Mini-jeu « Qui fait quoi ? » (`/apprendre/qui-fait-quoi`) : 10 phrases à attribuer au conciliateur, au médiateur et/ou au juge (cases à cocher), vérification d'un coup, score, explication par carte
 
 * Chatbot : IRIS, comme sur `/` (questions suggérées tirées de la FAQ de cette page)
 * Questionnaires évaluatif

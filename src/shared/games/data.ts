@@ -1,4 +1,4 @@
-import type { RephraseRoundInput } from './schema'
+import type { RephraseRoundInput, WhoStatementInput } from './schema'
 
 // Rounds of "Désamorcer" (night work #80): turn what you feel like saying into a request the
 // other person can hear. The non-violent reply follows the four steps of non-violent
@@ -180,5 +180,80 @@ export const rephraseRoundsData: RephraseRoundInput[] = [
     ],
     explanation:
       'Votre voisine ne peut pas savoir ce qui se passe en son absence : lui donner les horaires précis l’informe au lieu de l’accuser. Et se taire laisse la gêne s’accumuler jusqu’à l’explosion.',
+  },
+]
+
+// Statements of "Qui fait quoi ?" (night work #80). Sources: justice.fr (conciliateur de
+// justice, médiateur civil), service-public.gouv.fr; confidentiality of conventional
+// conciliation and mediation: art. 1531 du code de procédure civile. To be proofread.
+export const whoStatementsData: WhoStatementInput[] = [
+  {
+    slug: 'benevole',
+    statement: 'Il est bénévole.',
+    actors: ['conciliator'],
+    explanation:
+      'Le conciliateur de justice est un bénévole nommé par la justice. Le médiateur est un professionnel rémunéré, le juge un magistrat.',
+  },
+  {
+    slug: 'tranche',
+    statement: 'Il tranche le litige : sa décision s’impose aux parties.',
+    actors: ['judge'],
+    explanation:
+      'Seul le juge décide à la place des parties. Le conciliateur et le médiateur aident à trouver un accord, mais ne tranchent pas.',
+  },
+  {
+    slug: 'neutre',
+    statement: 'Il est neutre et impartial.',
+    actors: ['conciliator', 'mediator', 'judge'],
+    explanation: 'Tous les trois : aucun ne prend parti pour l’une des parties.',
+  },
+  {
+    slug: 'accord',
+    statement: 'Il aide les parties à trouver elles-mêmes un accord.',
+    actors: ['conciliator', 'mediator'],
+    explanation:
+      'C’est le principe de l’amiable : les parties gardent la main sur la solution, avec l’aide d’un tiers neutre.',
+  },
+  {
+    slug: 'gratuit',
+    statement: 'Le rencontrer ne coûte rien.',
+    actors: ['conciliator'],
+    explanation:
+      'La conciliation est gratuite. La médiation est en général payante, partagée entre les parties (sauf la médiation de la consommation, gratuite pour le consommateur).',
+  },
+  {
+    slug: 'confidentiel',
+    statement: 'Ce qui se dit devant lui reste confidentiel.',
+    actors: ['conciliator', 'mediator'],
+    explanation:
+      'La conciliation et la médiation sont confidentielles : ce qui s’y dit ne peut pas, en principe, être utilisé ensuite devant le juge. Une audience au tribunal, elle, est en général publique.',
+  },
+  {
+    slug: 'homologue',
+    statement: 'Il peut homologuer un accord pour lui donner la force d’un jugement.',
+    actors: ['judge'],
+    explanation:
+      'L’homologation est faite par le juge, à la demande des parties, après une conciliation ou une médiation réussie.',
+  },
+  {
+    slug: 'condamne',
+    statement: 'Il peut condamner à payer des dommages et intérêts.',
+    actors: ['judge'],
+    explanation:
+      'Condamner est le rôle du juge. Le conciliateur et le médiateur n’ont aucun pouvoir de sanction.',
+  },
+  {
+    slug: 'mairie',
+    statement: 'On le rencontre souvent en mairie ou dans une maison de justice.',
+    actors: ['conciliator'],
+    explanation:
+      'Les conciliateurs tiennent des permanences en mairie, au tribunal ou en maison de justice. On les trouve sur conciliateurs.fr.',
+  },
+  {
+    slug: 'ordonne',
+    statement: 'Le juge peut lui confier le litige pendant un procès.',
+    actors: ['conciliator', 'mediator'],
+    explanation:
+      'Pendant une procédure, le juge peut désigner un conciliateur ou ordonner une médiation, pour tenter un accord avant de juger.',
   },
 ]
