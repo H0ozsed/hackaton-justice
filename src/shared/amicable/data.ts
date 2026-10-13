@@ -1,6 +1,6 @@
 import type { ChecklistItem, GuideInput, KeyFigure, Route } from './schema'
 
-// Content of /demarches (see src/shared/README.md). Field names in English, content in French.
+// Content of the practical sections of /apprendre, formerly /demarches (see src/shared/README.md). Field names in English, content in French.
 // Facts checked against official sources in October 2026 (listed with each entry); to be
 // proofread by the legal / content team before the demo.
 

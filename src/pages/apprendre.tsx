@@ -1,32 +1,47 @@
 import Link from 'next/link'
+import type { ReactNode } from 'react'
 
+import { GuideList } from '@/components/amicable/guide-list'
+import { KeyFigures } from '@/components/amicable/key-figures'
+import { PreparationChecklist } from '@/components/amicable/preparation-checklist'
 import { RoutesComparison } from '@/components/amicable/routes-comparison'
+import { SourceLink } from '@/components/amicable/source-link'
 import { IrisWidget } from '@/components/chatbot/iris-widget'
 import { FaqSection } from '@/components/faq/faq-section'
 import { PageTitle } from '@/components/layout/page-title'
 import { PracticalInfoSection } from '@/components/practical-info/practical-info'
 import { QuizPlayer } from '@/components/quiz/quiz-player'
 import { WhoCanHelp } from '@/components/solutions/who-can-help'
-import { routes } from '@/shared/amicable'
 import { glossary } from '@/shared/glossary'
 import { quizzes } from '@/shared/quiz'
 
-// Learning hub (docs/PARCOURS_UTILISATEURS.md), with the IRIS chatbot.
-// #106: a suggested path in three steps, so that a first-time visitor knows where to start:
-// 1. understand the basics, 2. test yourself, 3. go further. The path is also the table of
-// contents (long page, RGAA 12.6): each step links to its sections. The glossary has its own
-// page (/apprendre/lexique, #22). Outline: h1 > h2 step > h3 section.
+// Learning hub (docs/PARCOURS_UTILISATEURS.md): the one page that explains the amicable routes.
+// It also holds what used to be /demarches (redirected here): key figures, the mandatory attempt,
+// the single comparison of the routes, step-by-step guides and the preparation checklist.
+// #106: a suggested path in four steps, which is also the table of contents (RGAA 12.6).
+// Outline: h1 > h2 step > h3 section > h4 item. Content in src/shared (amicable, simulation…).
 
 const linkClassName = 'text-primary underline underline-offset-4'
 
 const STEPS = [
   {
     id: 'comprendre',
-    title: 'Comprendre les bases',
-    summary: 'Ce que font le conciliateur et le médiateur, et qui peut vous aider.',
+    title: 'Comprendre l’amiable',
+    summary: 'Quand tenter l’amiable, et ce qui change par rapport à un procès.',
     sections: [
-      { id: 'conciliateur-ou-mediateur', label: 'Conciliateur ou médiateur ?' },
+      { id: 'obligatoire', label: 'Faut-il tenter l’amiable avant le juge ?' },
+      { id: 'comparer', label: 'Comparer les solutions' },
+      { id: 'chiffres', label: 'La conciliation en chiffres' },
+    ],
+  },
+  {
+    id: 'qui-et-comment',
+    title: 'Qui peut vous aider, et comment',
+    summary: 'Chaque conciliateur et médiateur, ce que dit la loi, et les démarches pas à pas.',
+    sections: [
       { id: 'qui-peut-vous-aider', label: 'Qui peut vous aider ?' },
+      { id: 'pas-a-pas', label: 'Les démarches étape par étape' },
+      { id: 'preparer', label: 'Préparer son rendez-vous' },
     ],
   },
   {
@@ -69,16 +84,42 @@ const GAMES = [
   },
 ] as const
 
-/** Heading of a step, numbered like the path above (h2), with its one-line summary. */
-function StepHeading({ index }: { index: number }) {
+/** A step of the path: numbered h2 and its one-line summary, then its sections. */
+function Step({ index, children }: { index: number; children: ReactNode }) {
   const step = STEPS[index]
   return (
-    <>
+    <section id={step.id} aria-labelledby={`${step.id}-titre`} className="mt-16 scroll-mt-4">
       <h2 id={`${step.id}-titre`} className="text-3xl font-bold">
         {index + 1}. {step.title}
       </h2>
       <p className="mt-2 text-lg text-muted-foreground">{step.summary}</p>
-    </>
+      {children}
+    </section>
+  )
+}
+
+/** A section of a step: h3 and one intro sentence (#105). */
+function Section({
+  id,
+  title,
+  intro,
+  children,
+  className = 'mt-12',
+}: {
+  id: string
+  title: string
+  intro: ReactNode
+  children?: ReactNode
+  className?: string
+}) {
+  return (
+    <section id={id} aria-labelledby={`${id}-titre`} className={`${className} scroll-mt-4`}>
+      <h3 id={`${id}-titre`} className="text-2xl font-bold">
+        {title}
+      </h3>
+      <div className="mt-2 max-w-3xl text-muted-foreground">{intro}</div>
+      {children}
+    </section>
   )
 }
 
@@ -88,13 +129,13 @@ export default function LearnPage() {
       <PageTitle title="Apprendre" />
       <h1 className="text-3xl font-bold">Apprendre</h1>
       <p className="mt-4 max-w-3xl text-lg">
-        Comprendre comment régler un conflit à l’amiable, en trois étapes. Si c’est votre première
-        visite, commencez par la première.
+        Tout pour comprendre comment régler un conflit à l’amiable, sans aller directement devant un
+        juge. Si c’est votre première visite, commencez par la première étape.
       </p>
 
       {/* The suggested path, which is also the table of contents. Numbered: it is a sequence. */}
       <nav aria-label="Par où commencer ?" className="mt-8">
-        <ol className="grid gap-4 md:grid-cols-3">
+        <ol className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           {STEPS.map((step, index) => (
             <li
               key={step.id}
@@ -121,88 +162,122 @@ export default function LearnPage() {
         </ol>
       </nav>
 
-      {/* ---- 1. Understand the basics ---- */}
-      <section id="comprendre" aria-labelledby="comprendre-titre" className="mt-16 scroll-mt-4">
-        <StepHeading index={0} />
-
-        <section
-          id="conciliateur-ou-mediateur"
-          aria-labelledby="conciliateur-ou-mediateur-titre"
-          className="mt-8 scroll-mt-4"
+      {/* ---- 1. Understand the amicable routes ---- */}
+      <Step index={0}>
+        <Section
+          id="obligatoire"
+          title="Faut-il tenter l’amiable avant le juge ?"
+          intro="Souvent, oui : c’est la loi."
+          className="mt-8"
         >
-          <h3 id="conciliateur-ou-mediateur-titre" className="text-2xl font-bold">
-            Conciliateur ou médiateur ?
-          </h3>
-          <p className="mt-4">
-            Les deux vous aident, sans juger, à trouver un accord avec l’autre partie. Le
-            conciliateur de justice est gratuit et peut proposer des solutions ; le médiateur est
-            payant et vous aide à construire la vôtre, surtout quand la relation compte. Dans les
-            deux cas, le juge peut homologuer l’accord si les parties le demandent.
-          </p>
-          <div className="mt-6">
-            <RoutesComparison
-              entries={[routes.get('conciliation'), routes.get('mediation')]}
-              caption="Conciliation et médiation comparées"
-              showScale={false}
-              cardHeadingLevel={4}
-            />
+          <div className="mt-4 max-w-3xl">
+            <p>
+              Pour certains litiges, la loi impose de tenter une solution amiable (conciliation par
+              un conciliateur de justice, médiation ou procédure participative) avant de saisir le
+              juge ; une simple discussion ne suffit pas. Sinon, le juge peut déclarer la demande
+              irrecevable, c’est-à-dire refuser de l’examiner (article 750-1 du code de procédure
+              civile). C’est le cas :
+            </p>
+            <ul className="mt-3 list-disc space-y-1 pl-5">
+              <li>des demandes en paiement de 5 000 € ou moins ;</li>
+              <li>des troubles anormaux de voisinage (bruit, odeurs, plantations…) ;</li>
+              <li>
+                de certains conflits de voisinage précis (bornage, servitudes, distances des
+                plantations, élagage).
+              </li>
+            </ul>
+            <p className="mt-3">
+              Des exceptions existent, par exemple en cas d’urgence ou si aucun conciliateur n’est
+              disponible dans les trois mois. Dans tous les cas, gardez une preuve de votre
+              tentative : courriers, convocation, attestation du conciliateur.
+            </p>
+            <p className="mt-3 text-sm">
+              Source :{' '}
+              <SourceLink
+                source={{
+                  label: 'justice.fr : le conciliateur de justice',
+                  href: 'https://www.justice.fr/fiche/conciliateur-justice',
+                }}
+              />
+            </p>
           </div>
-          <p className="mt-4">
-            <Link href="/demarches" className={linkClassName}>
-              Comparer toutes les démarches, de la discussion au juge
-            </Link>
-          </p>
-        </section>
+        </Section>
 
-        <section
-          id="qui-peut-vous-aider"
-          aria-labelledby="qui-peut-vous-aider-titre"
-          className="mt-12 scroll-mt-4"
+        <Section
+          id="comparer"
+          title="Comparer les solutions"
+          intro="De la discussion au juge : qui vous aide, ce que ça coûte, combien de temps ça prend, qui décide et ce que vaut l’issue."
         >
-          <h3 id="qui-peut-vous-aider-titre" className="text-2xl font-bold">
-            Qui peut vous aider ?
-          </h3>
-          <p className="mt-4 max-w-3xl">
-            Tous les conciliateurs, médiateurs et autres recours amiables, avec d’abord ce que dit
-            la loi : leur statut, leurs conditions (par exemple le diplôme d’État exigé du médiateur
-            familial dans les services financés par la Caf), ce qu’ils traitent, leur coût et ce que
-            vaut l’accord. Ouvrez celui qui vous concerne.
-          </p>
+          <div className="mt-6">
+            <RoutesComparison cardHeadingLevel={4} />
+          </div>
+        </Section>
+
+        <Section
+          id="chiffres"
+          title="La conciliation en chiffres"
+          intro="Des chiffres officiels pour savoir à quoi vous attendre."
+        >
+          <div className="mt-6">
+            <KeyFigures />
+          </div>
+        </Section>
+      </Step>
+
+      {/* ---- 2. Who can help, and how ---- */}
+      <Step index={1}>
+        <Section
+          id="qui-peut-vous-aider"
+          title="Qui peut vous aider ?"
+          intro="Chaque conciliateur, médiateur et autre recours, puis le juge, avec d’abord ce que dit la loi : statut, conditions (par exemple le diplôme d’État exigé du médiateur familial dans les services financés par la Caf), ce qu’ils traitent, leur coût et ce que vaut l’accord. Ouvrez celui qui vous concerne."
+          className="mt-8"
+        >
           <div className="mt-6 max-w-3xl">
             <WhoCanHelp headingLevel={4} />
           </div>
-        </section>
-      </section>
+        </Section>
 
-      {/* ---- 2. Test yourself ---- */}
-      <section id="tester" aria-labelledby="tester-titre" className="mt-16 scroll-mt-4">
-        <StepHeading index={1} />
-
-        <section
-          id="questionnaires"
-          aria-labelledby="questionnaires-titre"
-          className="mt-8 scroll-mt-4"
+        <Section
+          id="pas-a-pas"
+          title="Les démarches étape par étape"
+          intro="Comment saisir un conciliateur ou un médiateur, du premier contact à l’accord."
         >
-          <h3 id="questionnaires-titre" className="text-2xl font-bold">
-            Questionnaires
-          </h3>
-          <p className="mt-2 text-muted-foreground">
-            Quelques questions, une réponse expliquée à chaque fois, puis votre score.
-          </p>
+          <div className="mt-6 max-w-3xl">
+            <GuideList headingLevel={4} />
+          </div>
+        </Section>
+
+        <Section
+          id="preparer"
+          title="Préparer son rendez-vous"
+          intro="Une conciliation ou une médiation se prépare. Cochez ce qui est prêt : rien n’est enregistré."
+        >
+          <div className="mt-6 max-w-3xl">
+            <PreparationChecklist />
+          </div>
+        </Section>
+      </Step>
+
+      {/* ---- 3. Test yourself ---- */}
+      <Step index={2}>
+        <Section
+          id="questionnaires"
+          title="Questionnaires"
+          intro="Quelques questions, une réponse expliquée à chaque fois, puis votre score."
+          className="mt-8"
+        >
           <div className="mt-6 space-y-12">
             {quizzes.all.map((quiz) => (
               <QuizPlayer key={quiz.slug} quiz={quiz} headingLevel={4} />
             ))}
           </div>
-        </section>
+        </Section>
 
-        <section id="mini-jeux" aria-labelledby="mini-jeux-titre" className="mt-12 scroll-mt-4">
-          <h3 id="mini-jeux-titre" className="text-2xl font-bold">
-            Mini-jeux
-          </h3>
-          <p className="mt-2 text-muted-foreground">
-            Deux jeux courts, chacun sur sa page, pour vous entraîner.
-          </p>
+        <Section
+          id="mini-jeux"
+          title="Mini-jeux"
+          intro="Deux jeux courts, chacun sur sa page, pour vous entraîner."
+        >
           <ul className="mt-6 grid gap-6 md:grid-cols-2">
             {GAMES.map((game) => (
               <li key={game.href} className="rounded-lg border-2 border-border bg-card p-6">
@@ -216,31 +291,23 @@ export default function LearnPage() {
               </li>
             ))}
           </ul>
-        </section>
-      </section>
+        </Section>
+      </Step>
 
-      {/* ---- 3. Go further ---- */}
-      <section
-        id="aller-plus-loin"
-        aria-labelledby="aller-plus-loin-titre"
-        className="mt-16 scroll-mt-4"
-      >
-        <StepHeading index={2} />
-
-        <section id="lexique" aria-labelledby="lexique-titre" className="mt-8 scroll-mt-4">
-          <h3 id="lexique-titre" className="text-2xl font-bold">
-            Lexique
-          </h3>
-          <p className="mt-4">
-            {glossary.all.length} mots du droit expliqués simplement, avec une recherche et un index
-            alphabétique.
-          </p>
+      {/* ---- 4. Go further ---- */}
+      <Step index={3}>
+        <Section
+          id="lexique"
+          title="Lexique"
+          intro={`${glossary.all.length} mots du droit expliqués simplement, avec une recherche et un index alphabétique.`}
+          className="mt-8"
+        >
           <p className="mt-4">
             <Link href="/apprendre/lexique" className={linkClassName}>
               Consulter le lexique
             </Link>
           </p>
-        </section>
+        </Section>
 
         <div id="questions-frequentes" className="scroll-mt-4">
           <FaqSection page="learn" headingLevel={3} className="mt-12" />
@@ -250,15 +317,12 @@ export default function LearnPage() {
           <PracticalInfoSection headingLevel={3} />
         </div>
 
-        <section
+        <Section
           id="sensibiliser"
-          aria-labelledby="sensibiliser-titre"
-          className="mt-12 scroll-mt-4"
+          title="Sensibiliser en groupe"
+          intro="Pour les écoles, les associations et les événements."
         >
-          <h3 id="sensibiliser-titre" className="text-2xl font-bold">
-            Sensibiliser en groupe
-          </h3>
-          <p className="mt-4">
+          <p className="mt-4 max-w-3xl">
             Le CDAD (conseil départemental de l’accès au droit) fait connaître les solutions
             amiables là où sont les gens : dans les écoles auprès des jeunes, et lors d’événements
             pour tous les autres. Les questionnaires, les mini-jeux et les mises en situation de ce
@@ -270,8 +334,8 @@ export default function LearnPage() {
               Choisir une mise en situation
             </Link>
           </p>
-        </section>
-      </section>
+        </Section>
+      </Step>
 
       <IrisWidget page="learn" />
     </>

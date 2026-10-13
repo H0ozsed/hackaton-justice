@@ -24,29 +24,7 @@ export const conflictTypesData: ConflictTypeInput[] = [
     label: 'Conflit de voisinage',
     description: 'Un trouble qui vient d’un voisin et qui dure : bruit, odeurs, haie, animaux…',
     examples: ['bruit tard le soir', 'haie qui dépasse', 'aboiements', 'travaux répétés'],
-    lossKinds: ['time', 'health', 'relationship', 'money'],
     mandatoryAmicableAttempt: 'always',
-    followUpQuestions: [
-      {
-        id: 'nature-trouble',
-        kind: 'choice',
-        label: 'Quelle est la nature du trouble ?',
-        options: [
-          { value: 'bruit', label: 'Bruit' },
-          { value: 'odeurs', label: 'Odeurs' },
-          { value: 'vegetation', label: 'Arbres ou haie' },
-          { value: 'animaux', label: 'Animaux' },
-          { value: 'stationnement', label: 'Stationnement ou passage' },
-          { value: 'autre', label: 'Autre' },
-        ],
-        multiple: true,
-      },
-      {
-        id: 'deja-parle',
-        kind: 'yesNo',
-        label: 'En avez-vous déjà parlé avec votre voisin ?',
-      },
-    ],
   },
   {
     slug: 'consommation',
@@ -54,22 +32,15 @@ export const conflictTypesData: ConflictTypeInput[] = [
     description:
       'Un achat ou un service qui pose problème : colis non livré, produit défectueux, facture contestée, abonnement…',
     examples: ['colis jamais reçu', 'réparation mal faite', 'abonnement impossible à résilier'],
-    lossKinds: ['money', 'time'],
     mandatoryAmicableAttempt: 'up-to-5000',
     followUpQuestions: [
       {
         id: 'montant',
         kind: 'number',
         label: 'Quel est le montant en jeu ?',
-        help: 'Le prix de l’achat ou de la prestation, approximativement.',
+        help: 'Le prix de l’achat ou de la prestation, approximativement. Il sert à savoir si la loi impose une tentative amiable (5 000 € ou moins).',
         unit: '€',
         min: 0,
-      },
-      {
-        id: 'reclamation-ecrite',
-        kind: 'yesNo',
-        label: 'Avez-vous déjà envoyé une réclamation écrite au professionnel ?',
-        help: 'C’est nécessaire avant de saisir le médiateur de la consommation.',
       },
     ],
   },
@@ -79,23 +50,13 @@ export const conflictTypesData: ConflictTypeInput[] = [
     description:
       'Un désaccord sur le logement loué : dépôt de garantie, réparations, charges, loyers…',
     examples: ['dépôt de garantie non rendu', 'réparations jamais faites', 'charges contestées'],
-    lossKinds: ['money', 'time', 'health', 'relationship'],
     mandatoryAmicableAttempt: 'up-to-5000',
     followUpQuestions: [
-      {
-        id: 'role',
-        kind: 'choice',
-        label: 'Vous êtes…',
-        options: [
-          { value: 'locataire', label: 'Locataire' },
-          { value: 'proprietaire', label: 'Propriétaire' },
-        ],
-      },
       {
         id: 'montant',
         kind: 'number',
         label: 'Quel est le montant en jeu ?',
-        help: 'Laissez vide si le litige ne porte pas sur une somme.',
+        help: 'Il sert à savoir si la loi impose une tentative amiable (5 000 € ou moins). Laissez vide si le litige ne porte pas sur une somme.',
         unit: '€',
         min: 0,
         required: false,
@@ -108,13 +69,13 @@ export const conflictTypesData: ConflictTypeInput[] = [
     description:
       'Une somme due par un proche ou un particulier : prêt non remboursé, vente entre particuliers…',
     examples: ['prêt à un ami jamais remboursé', 'objet vendu en ligne et non payé'],
-    lossKinds: ['money', 'relationship'],
     mandatoryAmicableAttempt: 'up-to-5000',
     followUpQuestions: [
       {
         id: 'montant',
         kind: 'number',
         label: 'Quelle somme vous doit-on ?',
+        help: 'Elle sert à savoir si la loi impose une tentative amiable (5 000 € ou moins).',
         unit: '€',
         min: 0,
       },
@@ -126,26 +87,8 @@ export const conflictTypesData: ConflictTypeInput[] = [
     description:
       'Une séparation ou un divorce, l’organisation pour les enfants, une pension, une succession, les liens avec les grands-parents ou un parent âgé.',
     examples: ['garde des enfants', 'pension alimentaire', 'partage d’un héritage', 'parent âgé'],
-    lossKinds: ['money', 'time', 'health', 'relationship'],
     warning:
       'En cas de violences, la médiation familiale n’est pas proposée. En danger : appelez le 17 ou le 112. Violences conjugales : le 3919, gratuit et anonyme. Enfance en danger : le 119.',
-    followUpQuestions: [
-      {
-        id: 'sujet',
-        kind: 'choice',
-        label: 'Sur quoi porte le désaccord ?',
-        options: [
-          { value: 'separation', label: 'Une séparation ou un divorce' },
-          { value: 'enfants', label: 'Les enfants (résidence, droit de visite)' },
-          { value: 'argent', label: 'L’argent (pension, partage)' },
-          { value: 'succession', label: 'Une succession' },
-          { value: 'grands-parents', label: 'Les liens avec les grands-parents' },
-          { value: 'parent-age', label: 'Un parent âgé (aide, hébergement)' },
-          { value: 'relations', label: 'Les relations familiales en général' },
-        ],
-        multiple: true,
-      },
-    ],
   },
   {
     slug: 'travail',
@@ -153,25 +96,8 @@ export const conflictTypesData: ConflictTypeInput[] = [
     description:
       'Un désaccord avec votre employeur ou avec un salarié : salaire, heures, sanction, licenciement, relations dans l’équipe…',
     examples: ['salaire impayé', 'heures supplémentaires', 'licenciement contesté'],
-    lossKinds: ['money', 'time', 'health', 'relationship'],
     warning:
       'Attention aux délais : une action sur la rupture du contrat de travail (licenciement…) se prescrit en principe par 12 mois.',
-    followUpQuestions: [
-      {
-        id: 'role',
-        kind: 'choice',
-        label: 'Vous êtes…',
-        options: [
-          { value: 'salarie', label: 'Salarié(e)' },
-          { value: 'employeur', label: 'Employeur' },
-        ],
-      },
-      {
-        id: 'contrat-en-cours',
-        kind: 'yesNo',
-        label: 'Le contrat de travail est-il toujours en cours ?',
-      },
-    ],
   },
   {
     slug: 'administration',
@@ -179,17 +105,8 @@ export const conflictTypesData: ConflictTypeInput[] = [
     description:
       'Un désaccord avec un service public : Caf, impôts, Assurance maladie, France Travail, préfecture, mairie…',
     examples: ['aide supprimée', 'trop-perçu réclamé', 'dossier bloqué'],
-    lossKinds: ['money', 'time', 'health'],
     warning:
       'Attention aux délais : pour contester une décision administrative devant le juge, vous avez en général 2 mois. Saisir un médiateur ou le Défenseur des droits ne suspend pas toujours ce délai.',
-    followUpQuestions: [
-      {
-        id: 'reclamation-faite',
-        kind: 'yesNo',
-        label: 'Avez-vous déjà écrit au service pour contester sa décision ?',
-        help: 'C’est en général nécessaire avant de saisir un médiateur ou le Défenseur des droits.',
-      },
-    ],
   },
   {
     slug: 'scolaire',
@@ -201,21 +118,8 @@ export const conflictTypesData: ConflictTypeInput[] = [
       'conflit entre élèves',
       'relation difficile avec un enseignant',
     ],
-    lossKinds: ['time', 'health', 'relationship'],
     warning:
       'Le harcèlement scolaire n’est pas un simple conflit : c’est un délit. Appelez le 3018, gratuit et anonyme, et prévenez l’établissement.',
-    followUpQuestions: [
-      {
-        id: 'avec-qui',
-        kind: 'choice',
-        label: 'Avec qui est le désaccord ?',
-        options: [
-          { value: 'etablissement', label: 'L’établissement ou l’administration' },
-          { value: 'personnel', label: 'Un enseignant ou un membre du personnel' },
-          { value: 'eleves', label: 'Entre élèves' },
-        ],
-      },
-    ],
   },
 ]
 
@@ -687,7 +591,7 @@ export const channelsData: ChannelInput[] = [
 
 /** Free information before choosing (#94): shown on every result of the simulation. */
 export const freeInformationData = {
-  title: 'Besoin d’en parler avant de choisir ?',
+  title: 'Être informé gratuitement près de chez vous',
   text: 'Les points-justice vous informent gratuitement sur vos droits et vous orientent vers la bonne démarche ; on y rencontre souvent un conciliateur de justice. À La Réunion, ils sont coordonnés par le CDAD (conseil départemental de l’accès au droit).',
   link: {
     label: 'L’accès au droit à La Réunion (cour d’appel de Saint-Denis)',

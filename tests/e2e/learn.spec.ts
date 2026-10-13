@@ -9,24 +9,32 @@ const expectNoAxeViolation = async (page: Page) => {
   expect(results.violations).toEqual([])
 }
 
-test('the hub is a path in three steps: h1 > h2 step > h3 section (#106)', async ({ page }) => {
+const STEPS = [
+  '1. Comprendre l’amiable',
+  '2. Qui peut vous aider, et comment',
+  '3. Tester ses connaissances',
+  '4. Aller plus loin',
+]
+const SECTIONS = [
+  'Faut-il tenter l’amiable avant le juge ?',
+  'Comparer les solutions',
+  'La conciliation en chiffres',
+  'Qui peut vous aider ?',
+  'Les démarches étape par étape',
+  'Préparer son rendez-vous',
+  'Questionnaires',
+  'Mini-jeux',
+  'Lexique',
+  'Questions fréquentes',
+  'Infos pratiques',
+  'Sensibiliser en groupe',
+]
+
+test('the hub is a path in four steps: h1 > h2 step > h3 section (#106)', async ({ page }) => {
   await page.goto('/apprendre')
   await expect(page.getByRole('heading', { level: 1, name: 'Apprendre' })).toBeVisible()
-  await expect(page.getByRole('heading', { level: 2 })).toHaveText([
-    '1. Comprendre les bases',
-    '2. Tester ses connaissances',
-    '3. Aller plus loin',
-  ])
-  await expect(page.getByRole('heading', { level: 3 })).toContainText([
-    'Conciliateur ou médiateur ?',
-    'Qui peut vous aider ?',
-    'Questionnaires',
-    'Mini-jeux',
-    'Lexique',
-    'Questions fréquentes',
-    'Infos pratiques',
-    'Sensibiliser en groupe',
-  ])
+  await expect(page.getByRole('heading', { level: 2 })).toHaveText(STEPS)
+  await expect(page.getByRole('heading', { level: 3 })).toContainText(SECTIONS)
 })
 
 test('the suggested path says where to start and leads to each step and section', async ({
@@ -34,21 +42,13 @@ test('the suggested path says where to start and leads to each step and section'
 }) => {
   await page.goto('/apprendre')
   const path = page.getByRole('navigation', { name: 'Par où commencer ?' })
-  await expect(path.getByRole('listitem').first()).toContainText('1. Comprendre les bases')
+  await expect(path.getByRole('listitem').first()).toContainText(STEPS[0])
 
-  for (const name of ['2. Tester ses connaissances', '3. Aller plus loin']) {
+  for (const name of STEPS.slice(1)) {
     await path.getByRole('link', { name }).click()
     await expect(page.getByRole('heading', { level: 2, name })).toBeInViewport()
   }
-  for (const name of [
-    'Conciliateur ou médiateur ?',
-    'Qui peut vous aider ?',
-    'Questionnaires',
-    'Lexique',
-    'Questions fréquentes',
-    'Infos pratiques',
-    'Sensibiliser en groupe',
-  ]) {
+  for (const name of SECTIONS) {
     await path.getByRole('link', { name, exact: true }).click()
     await expect(page.getByRole('heading', { level: 3, name })).toBeInViewport()
   }
@@ -75,21 +75,21 @@ test('a quiz can be answered up to its score, then restarted', async ({ page }) 
   await expect(quiz.getByRole('group').first()).toBeVisible()
 })
 
-test('compares the conciliator and the mediator side by side', async ({ page }) => {
+test('compares every solution in one place, from talking to the judge', async ({ page }) => {
   await page.goto('/apprendre')
-  const section = page.getByRole('region', { name: 'Conciliateur ou médiateur ?' })
+  const section = page.getByRole('region', { name: 'Comparer les solutions' })
   const comparison = section
-    .getByRole('table', { name: 'Conciliation et médiation comparées' })
+    .getByRole('table', { name: /Comparaison des façons de régler un litige/ })
     .or(section.getByRole('list'))
   await expect(comparison.first()).toBeVisible()
-  await expect(section.getByText('Gratuit', { exact: true }).first()).toBeAttached()
+  await expect(section.getByText('Saisir le juge').first()).toBeAttached()
   await expectNoAxeViolation(page)
 })
 
 test('presents every conciliator and mediator, what the law says first', async ({ page }) => {
   await page.goto('/apprendre')
   const section = page.getByRole('region', { name: 'Qui peut vous aider ?' })
-  await expect(section.getByRole('heading', { level: 3, name: 'Médiation' })).toBeVisible()
+  await expect(section.getByRole('heading', { level: 4, name: 'Médiation' })).toBeVisible()
 
   await section.getByRole('button', { name: 'Médiateur familial' }).click()
   const familyMediator = section.getByRole('region', { name: 'Médiateur familial' })

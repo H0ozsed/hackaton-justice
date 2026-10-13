@@ -11,7 +11,7 @@ describe('SimulationIntro', () => {
 
     const intro = screen.getByRole('region', { name: 'Comment ça marche ?' })
     expect(within(intro).getAllByRole('list')[0].tagName).toBe('OL')
-    expect(intro).toHaveTextContent('Environ 2 minutes')
+    expect(intro).toHaveTextContent('Moins d’une minute')
     expect(intro).toHaveTextContent('rien n’est envoyé ni enregistré')
   })
 

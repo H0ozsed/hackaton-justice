@@ -36,10 +36,7 @@ async function expectNoViolations(page: Page, state: string) {
   expect(summary, state).toEqual([])
 }
 
-test('home: mobile menu, explainer definition, FAQ and IRIS chat widget', async ({
-  page,
-  isMobile,
-}) => {
+test('home: mobile menu, explainer definition and IRIS chat widget', async ({ page, isMobile }) => {
   await page.goto('/')
   if (isMobile) {
     await page.getByRole('button', { name: 'Ouvrir le menu' }).click()

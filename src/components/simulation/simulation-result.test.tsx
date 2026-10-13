@@ -6,7 +6,6 @@ import { describe, expect, it, vi } from 'vitest'
 import type { Channel, ConflictType } from '@/shared/simulation'
 
 import { createConflictTypeStep } from './conflict-type-step'
-import { createLossFrequencyStep } from './loss-frequency-step'
 import { createSimulationResult } from './simulation-result'
 import { SimulationForm } from './simulation-form'
 import type { SimulationResult } from './types'
@@ -51,7 +50,6 @@ const conflictType: ConflictType = {
   label: 'Type commerce',
   description: 'Description commerce.',
   examples: [],
-  lossKinds: ['money'],
   followUpQuestions: [],
 }
 const elsewhere: ConflictType = { ...conflictType, slug: 'ailleurs', label: 'Type ailleurs' }
@@ -60,7 +58,6 @@ const Result = createSimulationResult({ channels, conflictTypes: [conflictType, 
 
 const answers = (): SimulationResult => ({
   'conflict-type': { type: 'commerce' },
-  'loss-frequency': { money: 150, frequency: 'monthly' },
 })
 
 function renderResult(result: SimulationResult, onRestart = vi.fn()) {
@@ -104,7 +101,7 @@ describe('simulation result screen', () => {
       }
     })
 
-    it('asks nothing: no choice to make, every detail is shown, what the law says first', () => {
+    it('asks nothing: no choice to make, the essentials first, then what the law says', () => {
       renderResult(answers())
 
       expect(within(amicable()).queryByRole('radio')).not.toBeInTheDocument()
@@ -113,20 +110,18 @@ describe('simulation result screen', () => {
       const terms = within(neutralCard)
         .getAllByRole('term')
         .map((dt) => dt.textContent)
-      expect(terms[0]).toBe('Ce que dit la loi')
+      expect(terms.slice(0, 4)).toEqual([
+        'Qui c’est',
+        'Comment le joindre',
+        'Coût',
+        'Valeur de l’accord',
+      ])
+      expect(terms).toContain('Ce que dit la loi')
+      expect(terms.at(-1)).toBe('Pour aller plus loin')
       expect(neutralCard).toHaveTextContent('Le texte de loi du canal neutre.')
       expect(neutralCard).toHaveTextContent('Code, art. 1')
-      expect(terms).toEqual(
-        expect.arrayContaining([
-          'C’est pour vous si…',
-          'Litiges concernés',
-          'Ne traite pas',
-          'Comment y accéder',
-          'Coût',
-          'Valeur de l’accord',
-          'Pour aller plus loin',
-        ]),
-      )
+      // The result only shows the person's conflict: no list of disputes.
+      expect(terms).not.toContain('Litiges concernés')
     })
 
     it('links to the contact and the official sources in a new window, said in the link text', () => {
@@ -159,7 +154,9 @@ describe('simulation result screen', () => {
     it('points to free information (points-justice, CDAD)', () => {
       renderResult(answers())
 
-      const region = screen.getByRole('region', { name: 'Besoin d’en parler avant de choisir ?' })
+      const region = screen.getByRole('region', {
+        name: 'Être informé gratuitement près de chez vous',
+      })
       expect(region).toHaveTextContent('CDAD')
       expect(within(region).getByRole('link')).toHaveAttribute('target', '_blank')
       expect(within(region).getByRole('link')).toHaveAccessibleName(/nouvelle fenêtre/)
@@ -182,7 +179,6 @@ describe('simulation result screen', () => {
       const recap = screen.getByRole('region', { name: 'Vos réponses' })
       expect(recap).toHaveTextContent('Type de conflit')
       expect(recap).toHaveTextContent('Type commerce')
-      expect(recap).toHaveTextContent('150 €')
     })
 
     it('says the orientation is indicative, not legal advice', () => {
@@ -229,16 +225,14 @@ describe('simulation result screen', () => {
     })
   })
 
-  it('compares the amicable route with going to court: cost, time, who decides (#109)', () => {
+  it('says in two sentences why the amicable route first, and links to the one comparison (#109)', () => {
     renderResult(answers())
-    const compare = screen.getByRole('region', { name: 'Amiable ou procès : ce qui change' })
+    const why = screen.getByRole('region', { name: 'Pourquoi l’amiable d’abord ?' })
+    expect(why).toHaveTextContent('c’est le juge qui décide')
+    expect(within(why).queryByRole('table')).not.toBeInTheDocument()
     expect(
-      within(compare).getByRole('table', { name: 'La voie amiable et le procès comparés' }),
-    ).toBeInTheDocument()
-    expect(within(compare).getAllByText('Saisir le juge').length).toBeGreaterThan(0)
-    expect(
-      within(compare).getByRole('link', { name: /Comparer toutes les démarches/ }),
-    ).toHaveAttribute('href', '/demarches#comparer')
+      within(why).getByRole('link', { name: /Comparer toutes les solutions/ }),
+    ).toHaveAttribute('href', '/apprendre#comparer')
   })
 
   describe('accessibility', () => {
@@ -248,8 +242,8 @@ describe('simulation result screen', () => {
       expect(screen.getAllByRole('heading', { level: 2 })).toHaveLength(1)
       expect(screen.getAllByRole('heading', { level: 3 }).map((h) => h.textContent)).toEqual([
         'Vers un accord à l’amiable',
-        'Amiable ou procès : ce qui change',
-        'Besoin d’en parler avant de choisir ?',
+        'Pourquoi l’amiable d’abord ?',
+        'Être informé gratuitement près de chez vous',
         'Vos réponses',
       ])
       expect(within(amicable()).getAllByRole('heading', { level: 4 })).toHaveLength(2)
@@ -273,17 +267,13 @@ describe('simulation result screen', () => {
 describe('from the form to the result', () => {
   function renderFlow() {
     const user = userEvent.setup()
-    const steps = [createConflictTypeStep([conflictType]), createLossFrequencyStep([conflictType])]
+    const steps = [createConflictTypeStep([conflictType])]
     render(<SimulationForm steps={steps} ResultView={Result} />)
     return user
   }
 
   async function answerAll(user: ReturnType<typeof userEvent.setup>) {
     await user.click(screen.getByRole('radio', { name: 'Type commerce' }))
-    await user.click(screen.getByRole('button', { name: 'Suivant' }))
-    await screen.findByRole('heading', { level: 2, name: /Ce que le conflit vous coûte/ })
-    await user.type(screen.getByRole('textbox', { name: 'Montant estimé, en euros (€)' }), '150')
-    await user.click(screen.getByRole('radio', { name: 'Une seule fois' }))
     await user.click(screen.getByRole('button', { name: 'Terminer' }))
   }
 
@@ -294,7 +284,9 @@ describe('from the form to the result', () => {
     const region = await screen.findByRole('region', { name: 'Résultat' })
     expect(region).toHaveFocus()
     expect(within(region).getByRole('article', { name: 'Canal neutral' })).toBeInTheDocument()
-    expect(within(region).getByRole('region', { name: 'Vos réponses' })).toHaveTextContent('150 €')
+    expect(within(region).getByRole('region', { name: 'Vos réponses' })).toHaveTextContent(
+      'Type commerce',
+    )
   })
 
   it('starts over from the result, back to the first step with nothing kept', async () => {

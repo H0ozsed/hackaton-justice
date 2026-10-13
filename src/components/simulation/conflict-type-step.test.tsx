@@ -3,16 +3,10 @@ import userEvent from '@testing-library/user-event'
 import axe from 'axe-core'
 import { describe, expect, it } from 'vitest'
 
-import {
-  questionSchema,
-  type ConflictType,
-  type LossKind,
-  type Question,
-} from '@/shared/simulation'
+import { questionSchema, type ConflictType, type Question } from '@/shared/simulation'
 
 import { createConflictTypeStep } from './conflict-type-step'
 import { createFollowUpStep } from './follow-up-step'
-import { createLossFrequencyStep } from './loss-frequency-step'
 import { SimulationForm } from './simulation-form'
 import type { ResultViewProps, SimulationStep } from './types'
 
@@ -21,79 +15,65 @@ import type { ResultViewProps, SimulationStep } from './types'
 const q = (input: Record<string, unknown>): Question =>
   questionSchema.parse({ id: 'q', label: 'Question', ...input })
 
-const type = (
-  slug: string,
-  lossKinds: LossKind[],
-  followUpQuestions: Question[] = [],
-): ConflictType => ({
+const type = (slug: string, followUpQuestions: Question[] = []): ConflictType => ({
   slug,
   label: `Type ${slug}`,
   description: `Description ${slug}.`,
   examples: [`exemple ${slug}`, `autre ${slug}`],
-  lossKinds,
   followUpQuestions,
 })
 
-const alpha = type(
-  'alpha',
-  ['money'],
-  [
-    q({
-      id: 'nature',
-      kind: 'choice',
-      label: 'Quelle est la nature du problème ?',
-      help: 'Une seule réponse.',
-      options: [
-        { value: 'bruit', label: 'Bruit' },
-        { value: 'odeurs', label: 'Odeurs' },
-      ],
-    }),
-    q({
-      id: 'effects',
-      kind: 'choice',
-      multiple: true,
-      label: 'Quels effets constatez-vous ?',
-      options: [
-        { value: 'sommeil', label: 'Sommeil' },
-        { value: 'stress', label: 'Stress' },
-        { value: 'frais', label: 'Frais' },
-      ],
-    }),
-    q({ id: 'amount', kind: 'number', label: 'Montant concerné', unit: '€', min: 0, max: 100 }),
-    q({ id: 'talked', kind: 'yesNo', label: 'En avez-vous déjà parlé ?' }),
-  ],
-)
-const beta = type('beta', ['health']) // no follow-up question
-const gamma = type(
-  'gamma',
-  ['time'],
-  [
-    q({ id: 'witness', kind: 'yesNo', label: 'Avez-vous un témoin ?', required: false }),
-    q({ id: 'times', kind: 'number', label: 'Nombre de fois', required: false }),
-    q({
-      id: 'tags',
-      kind: 'choice',
-      multiple: true,
-      required: false,
-      label: 'Autres éléments',
-      options: [
-        { value: 'a', label: 'Élément A' },
-        { value: 'b', label: 'Élément B' },
-      ],
-    }),
-  ],
-)
+const alpha = type('alpha', [
+  q({
+    id: 'nature',
+    kind: 'choice',
+    label: 'Quelle est la nature du problème ?',
+    help: 'Une seule réponse.',
+    options: [
+      { value: 'bruit', label: 'Bruit' },
+      { value: 'odeurs', label: 'Odeurs' },
+    ],
+  }),
+  q({
+    id: 'effects',
+    kind: 'choice',
+    multiple: true,
+    label: 'Quels effets constatez-vous ?',
+    options: [
+      { value: 'sommeil', label: 'Sommeil' },
+      { value: 'stress', label: 'Stress' },
+      { value: 'frais', label: 'Frais' },
+    ],
+  }),
+  q({ id: 'amount', kind: 'number', label: 'Montant concerné', unit: '€', min: 0, max: 100 }),
+  q({ id: 'talked', kind: 'yesNo', label: 'En avez-vous déjà parlé ?' }),
+])
+const beta = type('beta') // no follow-up question
+const gamma = type('gamma', [
+  q({ id: 'witness', kind: 'yesNo', label: 'Avez-vous un témoin ?', required: false }),
+  q({ id: 'times', kind: 'number', label: 'Nombre de fois', required: false }),
+  q({
+    id: 'tags',
+    kind: 'choice',
+    multiple: true,
+    required: false,
+    label: 'Autres éléments',
+    options: [
+      { value: 'a', label: 'Élément A' },
+      { value: 'b', label: 'Élément B' },
+    ],
+  }),
+])
 const types = [alpha, beta, gamma]
 
 function ResultFixture({ result }: ResultViewProps) {
   return <p>{JSON.stringify(result)}</p>
 }
 
-// The conflict type and its follow-up questions only, or with the losses step after them.
-function renderFlow({ withLosses = false } = {}) {
+// The conflict type and its follow-up questions: the steps of the real registry.
+function renderFlow() {
   const user = userEvent.setup()
   const steps: SimulationStep[] = [createConflictTypeStep(types), createFollowUpStep(types)]
-  if (withLosses) steps.push(createLossFrequencyStep(types))
   const view = render(<SimulationForm steps={steps} ResultView={ResultFixture} />)
   return { user, ...view }
 }
@@ -187,12 +167,12 @@ describe('conflict type step', () => {
     expect(progress()).toHaveAttribute('aria-valuetext', 'Étape 1 sur 1')
   })
 
-  it('goes straight to the next step for a conflict type without follow-up question', async () => {
-    const { user } = renderFlow({ withLosses: true })
+  it('goes straight to the result for a conflict type without follow-up question', async () => {
+    const { user } = renderFlow()
     await user.click(screen.getByRole('radio', { name: 'Type beta' }))
-    await next(user)
+    await finish(user)
 
-    expect(await heading(/Ce que le conflit vous coûte/)).toHaveFocus()
+    expect(await screen.findByText(/"type":"beta"/)).toBeInTheDocument()
     expect(screen.queryByRole('heading', { name: /Précisions sur votre situation/ })).toBeNull()
   })
 })

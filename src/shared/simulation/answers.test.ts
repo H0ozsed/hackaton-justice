@@ -58,7 +58,6 @@ describe('followUpAnswersSchema', () => {
     label: 'Voisinage',
     description: '...',
     examples: [],
-    lossKinds: ['time'],
     followUpQuestions: [
       q({ id: 'nature', kind: 'choice', options, multiple: true }),
       q({ id: 'deja-parle', kind: 'yesNo' }),

@@ -1,9 +1,7 @@
-import { LOSS_KIND_LABELS, type ConflictType, type Question } from '@/shared/simulation'
+import type { ConflictType, Question } from '@/shared/simulation'
 
 import { getChosenConflictType } from './conflict-type'
 import { FOLLOW_UP_STEP_ID } from './follow-up'
-import { FREQUENCY_OPTIONS, IMPACT_OPTIONS, TIME_UNIT_OPTIONS } from './loss-frequency'
-import { LOSS_FREQUENCY_STEP_ID } from './loss-frequency-step'
 import type { SimulationAnswers } from './types'
 
 // What the person answered, written for the result screen: one { label, value } per answer, in the
@@ -16,14 +14,6 @@ const numberFormat = new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 2 }
 
 const labelOf = (options: readonly { value: string; label: string }[], value: unknown) =>
   options.find((option) => option.value === value)?.label ?? String(value)
-
-// Singular below 2, as in French: "1,5 heure", "2 heures".
-const timeUnitLabel = (unit: unknown, amount: number) => {
-  const plural = Math.abs(amount) >= 2
-  if (unit === 'hours') return plural ? 'heures' : 'heure'
-  if (unit === 'days') return plural ? 'jours' : 'jour'
-  return labelOf(TIME_UNIT_OPTIONS, unit).toLowerCase()
-}
 
 function formatFollowUp(question: Question, answer: unknown): string | undefined {
   switch (question.kind) {
@@ -58,28 +48,6 @@ export function summarizeAnswers(
     for (const question of conflictType.followUpQuestions) {
       const answer = followUp?.[question.id]
       if (answer !== undefined) add(question.label, formatFollowUp(question, answer))
-    }
-  }
-
-  // Losses: only what was asked, that is the kinds the conflict type declares.
-  const losses = answers[LOSS_FREQUENCY_STEP_ID]
-  if (losses) {
-    for (const kind of conflictType?.lossKinds ?? []) {
-      const label = LOSS_KIND_LABELS[kind]
-      if (kind === 'money' && typeof losses.money === 'number') {
-        add(label, `${numberFormat.format(losses.money)} €`)
-      } else if (kind === 'time' && typeof losses.time === 'number') {
-        add(
-          label,
-          `${numberFormat.format(losses.time)} ${timeUnitLabel(losses.timeUnit, losses.time)}`,
-        )
-      } else if (kind === 'health' || kind === 'relationship') {
-        const level = losses[kind]
-        if (level !== undefined) add(label, labelOf(IMPACT_OPTIONS, level))
-      }
-    }
-    if (losses.frequency !== undefined) {
-      add('Fréquence du conflit', labelOf(FREQUENCY_OPTIONS, losses.frequency))
     }
   }
 

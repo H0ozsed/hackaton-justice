@@ -9,6 +9,10 @@ const nextConfig: NextConfig = {
   },
   reactCompiler: true,
   reactStrictMode: true,
+  // /demarches was merged into /apprendre: old links keep working (anchors are the same).
+  async redirects() {
+    return [{ source: '/demarches', destination: '/apprendre', permanent: true }]
+  },
   typescript: {
     // Build type check without .next/dev, left by `next dev` (see tsconfig.build.json).
     tsconfigPath: process.env.NODE_ENV === 'production' ? 'tsconfig.build.json' : 'tsconfig.json',
