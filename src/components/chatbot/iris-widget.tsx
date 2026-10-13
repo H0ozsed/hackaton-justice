@@ -42,7 +42,7 @@ export function stepLabel(step: ChatStep | undefined, count?: number) {
 }
 
 /**
- * IRIS, the site's assistant: a launcher button and a non-modal panel.
+ * IRIS, the site's assistant (« votre assistante » in French): a launcher button and a non-modal panel.
  * RGAA: the panel is labelled by its heading, the field has a visible label and a
  * character counter, the focus moves into the panel on open and back to the
  * launcher on close (Escape works too). One polite live region announces the steps,
