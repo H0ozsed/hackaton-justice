@@ -75,3 +75,22 @@ export function mandatoryAttemptNotice(
       : 'Pour une somme de 5 000 € ou moins, la loi impose une tentative amiable'
   return `${intro} : ${consequence}`
 }
+
+/**
+ * Amicable route compared with going to court on the result (#109), by conflict type: the
+ * main amicable way for that conflict, as described in src/shared/amicable (routes). Types
+ * not listed compare talking directly with the judge.
+ */
+const COMPARED_AMICABLE_ROUTE: Record<string, string> = {
+  voisinage: 'conciliation',
+  logement: 'conciliation',
+  'argent-particuliers': 'conciliation',
+  consommation: 'mediation-consommation',
+  famille: 'mediation',
+}
+
+/** Route slugs to compare on the result: the amicable way, then the judge. */
+export function comparedRoutes(conflictTypeSlug: string | undefined): [string, string] {
+  const amicable = conflictTypeSlug ? COMPARED_AMICABLE_ROUTE[conflictTypeSlug] : undefined
+  return [amicable ?? 'discussion', 'juge']
+}
