@@ -63,7 +63,7 @@ export default function AccessibilityPage() {
           <li>
             Tests automatiques (axe-core, règles WCAG 2.1 niveaux A et AA) sur toutes les pages et à
             chaque étape des parcours : simulation, mise en situation, questionnaires, lexique,
-            foire aux questions, assistant IRIS, menu mobile. Aucune erreur détectée.
+            foire aux questions, assistante IRIS, menu mobile. Aucune erreur détectée.
           </li>
           <li>
             Affichage vérifié de 320 à 1280 pixels de large, et avec le texte agrandi à 200 %, sans
@@ -84,7 +84,7 @@ export default function AccessibilityPage() {
             plan du site (critère 12.1).
           </li>
           <li>
-            Les réponses de l’assistant IRIS sont générées automatiquement : leur clarté et leur
+            Les réponses de l’assistante IRIS sont générées automatiquement : leur clarté et leur
             structure ne peuvent pas être garanties.
           </li>
           <li>

@@ -36,13 +36,25 @@ async function expectNoViolations(page: Page, state: string) {
   expect(summary, state).toEqual([])
 }
 
-test('home: mobile menu, FAQ and IRIS chat widget', async ({ page, isMobile }) => {
+test('home: mobile menu, explainer definition, FAQ and IRIS chat widget', async ({
+  page,
+  isMobile,
+}) => {
   await page.goto('/')
   if (isMobile) {
     await page.getByRole('button', { name: 'Ouvrir le menu' }).click()
     await expectNoViolations(page, 'mobile menu open')
     await page.getByRole('button', { name: 'Fermer le menu' }).click()
   }
+
+  await page
+    .getByRole('region', { name: 'L’amiable en 1 minute' })
+    .getByRole('button', { name: /voir la définition/ })
+    .first()
+    .click()
+  await expect(page.getByRole('dialog')).toBeVisible()
+  await expectNoViolations(page, 'explainer definition open')
+  await page.keyboard.press('Escape')
 
   const question = page.locator('main [data-slot="accordion-trigger"]').first()
   if (await question.count()) {
@@ -121,7 +133,9 @@ test('role-play: a full game until the results', async ({ page }) => {
 
 test('learn: quiz error, feedback, definition and score', async ({ page }) => {
   await page.goto('/apprendre')
-  const validate = page.getByRole('button', { name: 'Valider' })
+  // The first quiz (there can be several on the page).
+  const quiz = page.getByRole('region', { name: 'Questionnaires' }).getByRole('region').first()
+  const validate = quiz.getByRole('button', { name: 'Valider' })
   test.skip((await validate.count()) === 0, 'no quiz on /apprendre')
 
   await validate.click()
@@ -129,7 +143,9 @@ test('learn: quiz error, feedback, definition and score', async ({ page }) => {
 
   for (let i = 0; i < 20; i++) {
     if (await validate.count()) {
-      const form = page.locator('form').filter({ has: validate })
+      const form = quiz
+        .locator('form')
+        .filter({ has: page.getByRole('button', { name: 'Valider' }) })
       await form.locator('[role="radio"], [role="checkbox"]').first().click()
       await validate.click()
       await expectNoViolations(page, `quiz feedback ${i + 1}`)
@@ -140,11 +156,11 @@ test('learn: quiz error, feedback, definition and score', async ({ page }) => {
         await page.keyboard.press('Escape')
       }
     }
-    const next = page.getByRole('button', { name: /^(Question suivante|Voir mon score)$/ })
+    const next = quiz.getByRole('button', { name: /^(Question suivante|Voir mon score)$/ })
     if (!(await next.count())) break
     await next.click()
   }
-  await expect(page.getByRole('heading', { name: /^Votre score/ })).toBeVisible()
+  await expect(quiz.getByRole('heading', { name: /^Votre score/ })).toBeVisible()
   await expectNoViolations(page, 'quiz score')
 })
 

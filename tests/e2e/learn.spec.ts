@@ -14,6 +14,7 @@ test('the hub sections follow the h1 > h2 heading order', async ({ page }) => {
   await expect(page.getByRole('heading', { level: 1, name: 'Apprendre' })).toBeVisible()
   await expect(page.getByRole('heading', { level: 2 })).toHaveText([
     'Questionnaires',
+    'Mini-jeux',
     'Lexique',
     'Questions fréquentes',
     'Infos pratiques',

@@ -1,5 +1,7 @@
+import { guides, keyFigures, routes } from '@/shared/amicable'
 import { faq } from '@/shared/faq'
 import { glossary } from '@/shared/glossary'
+import { about, explainer, explainerText, journeyFor, orientation } from '@/shared/home'
 import { practicalInfo } from '@/shared/practical-info'
 import { quizzes } from '@/shared/quiz'
 import { channels, conflictTypes } from '@/shared/simulation'
@@ -8,7 +10,16 @@ import { channels, conflictTypes } from '@/shared/simulation'
 // is indexed, so IRIS can only rephrase what the site already says.
 
 export type ChunkDomain =
-  'faq' | 'practical-info' | 'glossary' | 'conflict-type' | 'channel' | 'quiz'
+  | 'home'
+  | 'faq'
+  | 'practical-info'
+  | 'glossary'
+  | 'conflict-type'
+  | 'channel'
+  | 'quiz'
+  | 'guide'
+  | 'route'
+  | 'key-figure'
 
 export type Chunk = {
   /** Stable id: `<domain>:<slug>`. */
@@ -43,8 +54,47 @@ export function isPlaceholder(text: string) {
 const lines = (...parts: (string | false | undefined)[]) =>
   withoutPlaceholderMarkers(parts.filter(Boolean).join('\n'))
 
+/** The home page explainer, orientation and « À propos » (#127, #104). */
+function homeChunks(): Chunk[] {
+  return [
+    ...explainer.all.map((card): Chunk => ({
+      id: `home:${card.slug}`,
+      domain: 'home',
+      title: card.title,
+      text: lines(`L’amiable en 1 minute : ${card.title}`, explainerText(card)),
+      url: '/#amiable-en-1-minute',
+    })),
+    {
+      id: 'home:par-ou-commencer',
+      domain: 'home',
+      title: 'Par où commencer ?',
+      text: lines(
+        'Par où commencer sur ce site ?',
+        ...orientation.all.map(
+          (o) =>
+            `- ${o.situation} : parcours ${journeyFor(o.journey).label} (${o.journey}). ${journeyFor(o.journey).description}`,
+        ),
+      ),
+      url: '/#par-ou-commencer',
+    },
+    {
+      id: 'home:a-propos',
+      domain: 'home',
+      title: 'À propos de ce site',
+      text: lines(
+        `À quoi sert ce site : ${about.purpose}`,
+        `Pour qui : ${about.audiences.join(' ')}`,
+        `Ce qui le rend différent : ${about.differences.join(' ')}`,
+        `Ce que ce site n’est pas : ${about.limits.join(' ')}`,
+      ),
+      url: '/#a-propos',
+    },
+  ]
+}
+
 export function buildChunks(): Chunk[] {
   return [
+    ...homeChunks(),
     ...faq.all
       .filter((entry) => !isPlaceholder(entry.answer))
       .map((entry): Chunk => ({
@@ -131,5 +181,42 @@ export function buildChunks(): Chunk[] {
           }
         }),
     ),
+    // Practical guides of /demarches.
+    ...guides.all.map((guide): Chunk => ({
+      id: `guide:${guide.slug}`,
+      domain: 'guide',
+      title: guide.title,
+      text: lines(
+        `Démarche : ${guide.title}`,
+        `Quand : ${guide.when}`,
+        ...guide.steps.map((step, i) => `Étape ${i + 1}, ${step.title} : ${step.text}`),
+        ...guide.good.map((tip) => `Bon à savoir : ${tip}`),
+      ),
+      url: '/demarches#pas-a-pas',
+    })),
+    ...routes.all.map((route): Chunk => ({
+      id: `route:${route.slug}`,
+      domain: 'route',
+      title: route.name,
+      text: lines(
+        `Solution : ${route.name} (${route.amicable ? 'voie amiable' : 'voie judiciaire'})`,
+        `Qui vous aide : ${route.helper}`,
+        `Coût : ${route.cost}`,
+        `Qui décide : ${route.decides}`,
+        `Durée : ${route.duration}`,
+        `Ce que vaut l’issue : ${route.outcome}`,
+      ),
+      url: '/demarches#comparer',
+    })),
+    ...keyFigures.all.map((figure): Chunk => ({
+      id: `key-figure:${figure.slug}`,
+      domain: 'key-figure',
+      title: figure.source.label,
+      text: lines(
+        `Chiffre clé : ${figure.value} ${figure.label}`,
+        `Source : ${figure.source.label}`,
+      ),
+      url: '/demarches#chiffres',
+    })),
   ]
 }

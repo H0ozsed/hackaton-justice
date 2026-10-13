@@ -2,19 +2,25 @@
 
 ### `/`
 
-* **Choix parcours utilisateurs (sim, mes, app)**
+* **Bandeau** : à quoi sert le site en une phrase (aussi meta description), lien « Par où commencer ? »
+* **L'amiable en 1 minute** : 4 cartes (régler à l'amiable, voies possibles, pourquoi essayer d'abord, qui peut aider), termes du lexique cliquables ; contenu à valider (#120)
+* **Par où commencer ?** : seule entrée vers les 3 parcours sur l'accueil ; la phrase qui correspond au visiteur mène en un clic au bon parcours (description et bouton du parcours)
+  * Conflit en cours → Simulation
+  * Comprendre avant d'agir → Mise en situation
+  * Apprendre, seul ou en groupe (classe, atelier) → Apprendre
+* **À propos** : pour qui, ce qui rend le site différent, ce qu'il n'est pas (ni avocat, ni démarche officielle, aucune décision)
 * **Navbar**
 * **Footer**
 * **Infos pratiques**
 * **FAQ**
-* **Chatbot : IRIS** (Informer, Renseigner, Indiquer les Solutions)
+* **Chatbot : IRIS** (Identifier, Rechercher, Informer, Suggérer), « votre assistante »
   * Bouton flottant → panneau accessible (focus, Échap, réponses annoncées aux lecteurs d'écran)
-  * Répond uniquement à partir du contenu du site (FAQ, infos pratiques, lexique, types de conflit, interlocuteurs, quiz), avec ses sources
+  * Répond uniquement à partir du contenu du site (accueil : l'amiable en 1 minute, par où commencer, à propos ; FAQ, infos pratiques, lexique, types de conflit, interlocuteurs, quiz), avec ses sources
   * Rien de pertinent → « Je n'ai pas cette information », sans appeler le modèle
   * Informe et oriente, ne garantit rien, pas de conseil juridique personnalisé
   * Étapes affichées en direct (recherche, lecture des extraits, rédaction), réponse courte et mise en forme (listes, gras), jamais le raisonnement du modèle
   * Arrêter une réponse, la copier, réessayer après une erreur, compteur de caractères
-  * Questions suggérées, relances comprises (historique), termes du lexique cliquables
+  * Questions suggérées (accueil : alignées sur « L'amiable en 1 minute », puis FAQ), relances comprises (historique), termes du lexique cliquables
   * Conversation gardée dans l'onglet uniquement (sessionStorage), rien stocké côté serveur
   * Modèle local (Ollama dans Docker) ; site utilisable si IRIS est indisponible
 
@@ -51,7 +57,21 @@
   * \* définition mot pas facile
     * Termes liés au lexique dans les répliques (`<Definition>`, popover au clic / clavier)
 
+### `/`demarches
+
+* Régler un litige à l'amiable (nuit #80)
+  * Chiffres clés sourcés (Infostat Justice) : demandes aux conciliateurs, taux d'accord, nombre de conciliateurs, gratuité
+  * Est-ce obligatoire ? Tentative amiable préalable (art. 750-1 CPC) : sommes ≤ 5 000 €, troubles de voisinage, exceptions, garder une preuve
+  * Comparer les solutions : discussion, conciliation, médiation, médiation de la consommation, juge (qui aide, coût, qui décide, durée, valeur de l'issue)
+  * Pas à pas : conciliateur, médiateur de la consommation, médiation, médiation familiale (étapes numérotées, bon à savoir, sources)
+  * Liste « Préparer son rendez-vous » à cocher (rien enregistré), imprimable
+  * Écrire un courrier amiable : formulaire (noms, objet, faits, demande, délai, proposer un conciliateur) → courrier courtois daté à copier ou imprimer, rien envoyé ni enregistré
+  * Liens vers la simulation, la mise en situation et le lexique
+
 ### `/`apprendre
+
+* Mini-jeux (nuit #80) : « Désamorcer » (`/apprendre/desamorcer`), 8 situations du quotidien, choisir la phrase qui dit les choses sans attaquer (fait, ressenti, besoin, demande) ; jauge de tension de la discussion en texte, réaction du personnage, explication, bilan ; sans chrono
+* Mini-jeu « Qui fait quoi ? » (`/apprendre/qui-fait-quoi`) : 10 phrases à attribuer au conciliateur, au médiateur et/ou au juge (cases à cocher), vérification d'un coup, score, explication par carte
 
 * Chatbot : IRIS, comme sur `/` (questions suggérées tirées de la FAQ de cette page)
 * Questionnaires évaluatif
