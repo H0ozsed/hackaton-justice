@@ -5,9 +5,29 @@ import { scenariosData } from './data'
 import { termSlugs } from './rich-text'
 import { scenarioSchema, type Scenario } from './schema'
 
-export type { Avatar, Character, Choice, ChoiceQuality, Line, Scenario, Scene } from './schema'
-export { scenarioSchema } from './schema'
+export type {
+  Avatar,
+  Character,
+  Choice,
+  ChoiceQuality,
+  Effect,
+  Emotion,
+  Line,
+  Location,
+  Period,
+  Scenario,
+  Scene,
+} from './schema'
+export {
+  avatarSchema,
+  effectSchema,
+  emotionSchema,
+  locationSchema,
+  periodSchema,
+  scenarioSchema,
+} from './schema'
 export * from './engine'
+export * from './gauges'
 export * from './results'
 export { parseRichText, plainText, type RichTextSegment } from './rich-text'
 

@@ -22,6 +22,33 @@ const richTextSchema = z
 export const avatarSchema = z.enum(['player', 'neighbor', 'official', 'professional', 'relative'])
 export type Avatar = z.infer<typeof avatarSchema>
 
+// ---- Staging (all optional): drives the pixel-art stage, never needed to understand ----
+// the story (every piece of information is also in the text).
+
+/** Illustrated place where a scene happens. Fixed list: each one is drawn in the UI. */
+export const locationSchema = z.enum([
+  'bedroom',
+  'landing',
+  'stairwell',
+  'lobby',
+  'town-hall',
+  'courthouse',
+  'new-home',
+])
+export type Location = z.infer<typeof locationSchema>
+
+/** Time of day: sets the lighting of the place. */
+export const periodSchema = z.enum(['morning', 'day', 'evening', 'night'])
+export type Period = z.infer<typeof periodSchema>
+
+/** Face of the speaking character. */
+export const emotionSchema = z.enum(['neutral', 'happy', 'angry', 'sad', 'tired', 'surprised'])
+export type Emotion = z.infer<typeof emotionSchema>
+
+/** Visual effect played with a line (the line text must say what happens). */
+export const effectSchema = z.enum(['drums', 'knock', 'door', 'phone', 'paper', 'sleep'])
+export type Effect = z.infer<typeof effectSchema>
+
 export const characterSchema = z.object({
   id: slugSchema,
   name: z.string().min(1),
@@ -34,6 +61,10 @@ export const lineSchema = z.object({
   /** Character id. Omitted: the narrator speaks. */
   speaker: slugSchema.optional(),
   text: richTextSchema,
+  /** Face of the speaker while this line shows (neutral when omitted). */
+  emotion: emotionSchema.optional(),
+  /** Visual effect played with this line. */
+  effect: effectSchema.optional(),
 })
 
 /** How good a choice is. Drives the score (see engine.ts) and the corrections. */
@@ -61,6 +92,10 @@ export const sceneSchema = z
     id: slugSchema,
     /** Where the scene takes place ("Dans l’escalier, un mardi soir"). */
     setting: z.string().min(1).optional(),
+    /** Illustrated place (a neutral room when omitted). */
+    location: locationSchema.optional(),
+    /** Lighting (day when omitted). */
+    period: periodSchema.optional(),
     lines: z.array(lineSchema).min(1),
     choices: z
       .array(choiceSchema)
