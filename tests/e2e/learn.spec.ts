@@ -13,18 +13,27 @@ test('the hub sections follow the h1 > h2 heading order', async ({ page }) => {
   await page.goto('/apprendre')
   await expect(page.getByRole('heading', { level: 1, name: 'Apprendre' })).toBeVisible()
   await expect(page.getByRole('heading', { level: 2 })).toHaveText([
+    'Conciliateur ou médiateur ?',
     'Questionnaires',
     'Mini-jeux',
     'Lexique',
     'Questions fréquentes',
     'Infos pratiques',
+    'Sensibiliser en groupe',
   ])
 })
 
 test('the table of contents leads to each section', async ({ page }) => {
   await page.goto('/apprendre')
   const toc = page.getByRole('navigation', { name: 'Sommaire' })
-  for (const name of ['Questionnaires', 'Lexique', 'Questions fréquentes', 'Infos pratiques']) {
+  for (const name of [
+    'Conciliateur ou médiateur ?',
+    'Questionnaires',
+    'Lexique',
+    'Questions fréquentes',
+    'Infos pratiques',
+    'Sensibiliser en groupe',
+  ]) {
     await toc.getByRole('link', { name }).click()
     await expect(page.getByRole('heading', { level: 2, name })).toBeInViewport()
   }
@@ -48,6 +57,17 @@ test('a quiz can be answered up to its score, then restarted', async ({ page }) 
 
   await quiz.getByRole('button', { name: 'Recommencer' }).click()
   await expect(quiz.getByRole('group').first()).toBeVisible()
+})
+
+test('compares the conciliator and the mediator side by side', async ({ page }) => {
+  await page.goto('/apprendre')
+  const section = page.getByRole('region', { name: 'Conciliateur ou médiateur ?' })
+  const comparison = section
+    .getByRole('table', { name: 'Conciliation et médiation comparées' })
+    .or(section.getByRole('list'))
+  await expect(comparison.first()).toBeVisible()
+  await expect(section.getByText('Gratuit', { exact: true }).first()).toBeAttached()
+  await expectNoAxeViolation(page)
 })
 
 test('no automatic accessibility violation with the FAQ open', async ({ page }) => {

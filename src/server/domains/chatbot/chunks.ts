@@ -155,7 +155,8 @@ export function buildChunks(): Chunk[] {
           channel.amicable
             ? 'Voie amiable : on cherche un accord.'
             : 'Voie judiciaire : un juge décide.',
-          channel.free ? 'Gratuit.' : 'Payant.',
+          channel.cost ? `Coût : ${channel.cost}.` : channel.free ? 'Gratuit.' : 'Payant.',
+          channel.agreement && `Valeur de l’accord : ${channel.agreement}.`,
           channel.contact?.url && `Site : ${channel.contact.url}`,
           channel.contact?.phone && `Téléphone : ${channel.contact.phone}`,
         ),
@@ -201,10 +202,13 @@ export function buildChunks(): Chunk[] {
       text: lines(
         `Solution : ${route.name} (${route.amicable ? 'voie amiable' : 'voie judiciaire'})`,
         `Qui vous aide : ${route.helper}`,
+        `Comment y accéder : ${route.access}`,
         `Coût : ${route.cost}`,
         `Qui décide : ${route.decides}`,
         `Durée : ${route.duration}`,
         `Ce que vaut l’issue : ${route.outcome}`,
+        `Point fort : ${route.strengths}`,
+        `Limite : ${route.limits}`,
       ),
       url: '/demarches#comparer',
     })),

@@ -33,6 +33,7 @@ export function createConflictTypeStep(types: readonly ConflictType[]): Simulati
       <RadioGroupField
         name={CONFLICT_TYPE_FIELD}
         legend="Quel type de conflit correspond le mieux à votre situation ?"
+        hint="Si plusieurs vous concernent, choisissez celui qui vous pèse le plus. Votre choix permet de vous proposer les bons interlocuteurs."
         options={options}
       />
     )

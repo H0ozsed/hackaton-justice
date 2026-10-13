@@ -310,7 +310,7 @@ function Lobby({ period }: { period: Period }) {
   )
 }
 
-function TownHall({ period }: { period: Period }) {
+function PointJustice({ period }: { period: Period }) {
   return (
     <Rects
       rects={[
@@ -569,7 +569,7 @@ const PLACES: Record<Location, (props: { period: Period }) => React.ReactNode> =
   landing: Landing,
   stairwell: Stairwell,
   lobby: Lobby,
-  'town-hall': TownHall,
+  'point-justice': PointJustice,
   courthouse: Courthouse,
   'new-home': NewHome,
   'music-room': MusicRoom,

@@ -119,7 +119,7 @@ describe('losses and frequency step', () => {
       expect(duration()).toBeInTheDocument()
       expect(radiogroup('Unité de la durée')).toBeInTheDocument()
       expect(radiogroup(FREQUENCY)).toBeInTheDocument()
-      expect(group('Santé')).not.toBeInTheDocument()
+      expect(group('Bien-être')).not.toBeInTheDocument()
       expect(group('Relations')).not.toBeInTheDocument()
     })
 
@@ -127,9 +127,9 @@ describe('losses and frequency step', () => {
       const { user } = renderFlow()
       await goToLossStep(user, 'Type voisinage')
 
-      expect(group('Santé')).toBeInTheDocument()
+      expect(group('Bien-être')).toBeInTheDocument()
       expect(group('Relations')).toBeInTheDocument()
-      expect(radiogroup(/santé/)).toBeInTheDocument()
+      expect(radiogroup(/bien-être/)).toBeInTheDocument()
       expect(radiogroup(/relations/)).toBeInTheDocument()
       expect(radiogroup(FREQUENCY)).toBeInTheDocument()
       expect(group('Argent')).not.toBeInTheDocument()
@@ -141,7 +141,7 @@ describe('losses and frequency step', () => {
       const { user } = renderFlow()
       await goToLossStep(user, 'Type complet')
 
-      for (const name of ['Argent', 'Temps', 'Santé', 'Relations']) {
+      for (const name of ['Argent', 'Temps', 'Bien-être', 'Relations']) {
         expect(group(name)).toBeInTheDocument()
       }
     })
@@ -203,7 +203,7 @@ describe('losses and frequency step', () => {
     it('refuses to finish without the frequency, and puts the focus on the error summary', async () => {
       const { user } = renderFlow()
       await goToLossStep(user, 'Type voisinage')
-      await user.click(radioIn(/santé/, 'Faible'))
+      await user.click(radioIn(/bien-être/, 'Faible'))
       await user.click(radioIn(/relations/, 'Aucun effet'))
       await user.click(screen.getByRole('button', { name: 'Terminer' }))
 
@@ -312,7 +312,7 @@ describe('losses and frequency step', () => {
 
       expect(screen.queryByRole('textbox')).not.toBeInTheDocument()
       expect(radioIn(FREQUENCY, 'Tous les jours ou presque')).toBeChecked()
-      await user.click(radioIn(/santé/, 'Fort'))
+      await user.click(radioIn(/bien-être/, 'Fort'))
       await user.click(radioIn(/relations/, 'Modéré'))
       await user.click(screen.getByRole('button', { name: 'Terminer' }))
 

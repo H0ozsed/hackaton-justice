@@ -125,7 +125,7 @@ describe('openness to discussion step', () => {
       const group = screen.getByRole('radiogroup', { name: USER_QUESTION })
       expect(group).toBeInvalid()
       expect(group).toHaveAccessibleDescription(
-        'Erreur : Indiquez si vous seriez prêt(e) à discuter avec l’autre partie.',
+        'Directement ou avec l’aide d’une personne neutre, comme un conciliateur ou un médiateur. Erreur : Indiquez si vous seriez prêt(e) à discuter avec l’autre partie.',
       )
       expect(screen.getByRole('radiogroup', { name: OTHER_QUESTION })).toBeInvalid()
     })

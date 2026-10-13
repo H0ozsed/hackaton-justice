@@ -1,14 +1,17 @@
 import { routes, type Route } from '@/shared/amicable'
 
 const CRITERIA: {
-  key: keyof Pick<Route, 'helper' | 'cost' | 'decides' | 'duration' | 'outcome'>
+  key: keyof Omit<Route, 'slug' | 'name' | 'amicable'>
   label: string
 }[] = [
   { key: 'helper', label: 'Qui vous aide' },
+  { key: 'access', label: 'Comment y accéder' },
   { key: 'cost', label: 'Coût' },
   { key: 'decides', label: 'Qui décide' },
   { key: 'duration', label: 'Durée' },
   { key: 'outcome', label: 'Ce que vaut l’issue' },
+  { key: 'strengths', label: 'Point fort' },
+  { key: 'limits', label: 'Limite' },
 ]
 
 /**
@@ -16,23 +19,36 @@ const CRITERIA: {
  * A real table on wide screens (headers on both axes, RGAA 5); the same content as one card per
  * way on narrow screens (no horizontal scrolling).
  */
-export function RoutesComparison({ entries = routes.all }: { entries?: readonly Route[] }) {
+export function RoutesComparison({
+  entries = routes.all,
+  caption = 'Comparaison des façons de régler un litige, de la discussion au juge',
+  showScale = true,
+  cardHeadingLevel = 3,
+}: {
+  entries?: readonly Route[]
+  caption?: string
+  /** The "you keep control → a judge decides" scale, meaningful for the full list. */
+  showScale?: boolean
+  /** Heading level of each card on narrow screens. */
+  cardHeadingLevel?: 3 | 4
+}) {
+  const CardHeading = `h${cardHeadingLevel}` as const
   return (
     <div>
-      {/* The scale: the further right, the less you decide. Words, not only the arrow. */}
-      <p className="mb-4 flex flex-wrap items-center justify-between gap-2 text-sm font-medium">
-        <span>Vous gardez la main</span>
-        <span
-          aria-hidden
-          className="h-0.5 min-w-8 flex-1 bg-gradient-to-r from-france-blue to-marianne-red"
-        />
-        <span>Un juge décide pour vous</span>
-      </p>
+      {showScale && (
+        // The scale: the further right, the less you decide. Words, not only the arrow.
+        <p className="mb-4 flex flex-wrap items-center justify-between gap-2 text-sm font-medium">
+          <span>Vous gardez la main</span>
+          <span
+            aria-hidden
+            className="h-0.5 min-w-8 flex-1 bg-gradient-to-r from-france-blue to-marianne-red"
+          />
+          <span>Un juge décide pour vous</span>
+        </p>
+      )}
 
       <table className="hidden w-full table-fixed border-collapse text-left text-sm md:table">
-        <caption className="sr-only">
-          Comparaison des façons de régler un litige, de la discussion au juge
-        </caption>
+        <caption className="sr-only">{caption}</caption>
         <thead>
           <tr>
             <td className="w-32" />
@@ -72,7 +88,7 @@ export function RoutesComparison({ entries = routes.all }: { entries?: readonly 
             key={route.slug}
             className={`border-l-4 p-4 ${route.amicable ? 'border-france-blue' : 'border-marianne-red'} bg-card`}
           >
-            <h3 className="text-lg font-bold">{route.name}</h3>
+            <CardHeading className="text-lg font-bold">{route.name}</CardHeading>
             <p className="text-sm text-muted-foreground">
               {route.amicable ? 'Voie amiable' : 'Voie judiciaire'}
             </p>

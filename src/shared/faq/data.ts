@@ -15,14 +15,14 @@ export const faqData: FaqEntryInput[] = [
     slug: 'est-ce-gratuit',
     question: 'Est-ce gratuit ?',
     answer:
-      'Le site est gratuit, sans compte, et vos réponses restent sur votre appareil.\n\nCôté démarches : le conciliateur de justice est gratuit, comme le médiateur de la consommation pour le consommateur. La médiation est en général payante et partagée entre les parties ; la médiation familiale suit un barème selon vos revenus.',
+      'Le site est gratuit, sans compte, et vos réponses restent sur votre appareil.\n\nCôté démarches : le conciliateur de justice est gratuit, comme le médiateur de la consommation pour le consommateur et l’information dans un point-justice. La médiation est en général payante et partagée entre les parties : quand le juge désigne un médiateur, c’est avec l’accord des parties, il fixe la somme à verser, et l’aide juridictionnelle peut la prendre en charge. La médiation familiale suit un barème selon vos revenus.',
     pages: ['home', 'learn'],
   },
   {
     slug: 'difference-conciliation-mediation',
     question: 'Quelle différence entre conciliation et médiation ?',
     answer:
-      'Dans les deux cas, une personne neutre vous aide à trouver un accord, et c’est vous qui décidez.\n\nLe conciliateur de justice est un bénévole gratuit, pour les litiges du quotidien ; il peut proposer des solutions. Le médiateur est un professionnel formé, souvent payant, qui aide surtout à renouer le dialogue quand la relation compte (famille, voisins, associés).',
+      'Dans les deux cas, une personne neutre aide deux personnes ou plus à trouver un accord, et ce sont elles qui décident.\n\nLe conciliateur de justice est un bénévole gratuit, que vous contactez directement (conciliateurs.fr, point-justice), pour les litiges du quotidien. Il peut proposer des solutions et, avec l’accord des parties, se rendre sur les lieux et entendre toute personne utile.\n\nLe médiateur est un professionnel formé, payant, en général partagé entre les parties. Vous le choisissez ensemble, ou le juge le désigne avec votre accord pendant un procès ; l’aide juridictionnelle peut alors le prendre en charge. Il ne propose pas de solution : il aide à renouer le dialogue quand la relation compte (famille, voisins, associés).\n\nDans les deux cas, l’accord peut être homologué par le juge si les parties le demandent.',
     pages: ['home', 'learn'],
   },
   {
@@ -43,8 +43,15 @@ export const faqData: FaqEntryInput[] = [
     slug: 'accord-non-respecte',
     question: 'Que faire si l’accord n’est pas respecté ?',
     answer:
-      'Un accord écrit et signé engage les deux parties. Pour plus de sécurité, faites-le homologuer par le juge : il a alors la même force qu’un jugement, et peut être exécuté de force s’il n’est pas respecté.',
+      'Un accord écrit et signé engage les parties. Pour plus de sécurité, demandez au juge de l’homologuer : c’est possible après une conciliation (constat d’accord) comme après une médiation. L’accord a alors force exécutoire, comme un jugement : s’il n’est pas respecté, il peut être exécuté de force.',
     pages: ['learn'],
+  },
+  {
+    slug: 'information-gratuite',
+    question: 'Où être informé gratuitement près de chez moi ?',
+    answer:
+      'Dans un point-justice : on vous y donne une information juridique gratuite et on vous oriente vers la bonne démarche. Selon les lieux, vous pouvez y rencontrer un juriste, un avocat, un conciliateur de justice ou un médiateur.\n\nLes points-justice sont coordonnés dans chaque département par le CDAD (conseil départemental de l’accès au droit). À La Réunion, la cour d’appel de Saint-Denis présente l’accès au droit sur son site.',
+    pages: ['home', 'learn'],
   },
   {
     slug: 'confidentialite',

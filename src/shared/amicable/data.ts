@@ -62,50 +62,70 @@ export const routesData: Route[] = [
     name: 'En parler directement',
     amicable: true,
     helper: 'Personne : vous discutez entre vous',
+    access: 'Vous allez voir l’autre partie, puis vous lui écrivez',
     cost: 'Gratuit',
-    decides: 'Vous deux',
+    decides: 'Vous',
     duration: 'Quelques jours',
-    outcome: 'Un accord écrit et signé engage les deux parties',
+    outcome: 'Un accord écrit et signé engage les parties',
+    strengths: 'Simple et rapide, la relation est préservée',
+    limits: 'Difficile quand le dialogue est rompu',
   },
   {
     slug: 'conciliation',
     name: 'Conciliation',
     amicable: true,
-    helper: 'Un conciliateur de justice, bénévole et neutre',
+    helper: 'Un conciliateur de justice, bénévole et neutre, pour deux personnes ou plus',
+    access: 'Vous le contactez directement (conciliateurs.fr, point-justice, tribunal)',
     cost: 'Gratuit',
-    decides: 'Vous deux (le conciliateur peut proposer des solutions)',
+    decides: 'Vous (le conciliateur peut proposer des solutions)',
     duration: 'Quelques semaines en général',
-    outcome: 'Un constat d’accord signé, que le juge peut rendre exécutoire',
+    outcome: 'Un constat d’accord signé, que le juge peut homologuer : il a alors force exécutoire',
+    strengths:
+      'Gratuit, proche de chez vous ; avec votre accord, il peut se rendre sur les lieux et entendre des témoins',
+    limits:
+      'Pas pour les affaires familiales (pension, garde), le pénal ni les litiges avec l’administration',
   },
   {
     slug: 'mediation',
     name: 'Médiation',
     amicable: true,
     helper: 'Un médiateur formé, neutre et tenu à la confidentialité',
-    cost: 'Payant, partagé entre les parties (aide juridictionnelle possible si le juge l’ordonne)',
-    decides: 'Vous deux',
+    access:
+      'Vous le choisissez ensemble (liste de la cour d’appel), ou le juge le désigne avec votre accord',
+    cost: 'Payant, partagé entre les parties (aide juridictionnelle possible si le juge l’a désigné)',
+    decides: 'Vous',
     duration: '5 mois au plus si le juge l’ordonne (renouvelable 3 mois)',
-    outcome: 'Un accord que le juge peut homologuer : il vaut alors un jugement',
+    outcome:
+      'Un accord que le juge peut homologuer à la demande des parties : il a alors force exécutoire',
+    strengths:
+      'Du temps pour renouer le dialogue quand la relation compte (famille, voisins, associés)',
+    limits: 'Payant ; le médiateur ne propose pas de solution à votre place',
   },
   {
     slug: 'mediation-consommation',
     name: 'Médiation de la consommation',
     amicable: true,
     helper: 'Le médiateur désigné par le professionnel',
+    access: 'Après une réclamation écrite au professionnel, en ligne ou par courrier',
     cost: 'Gratuit pour le consommateur',
-    decides: 'Vous deux : le médiateur propose une solution, libre à chacun de l’accepter',
+    decides: 'Vous : le médiateur propose une solution, libre à chacun de l’accepter',
     duration: '90 jours au plus après la recevabilité',
-    outcome: 'La solution acceptée engage les deux parties',
+    outcome: 'La solution acceptée engage les parties',
+    strengths: 'Gratuit, sans vous déplacer, avec un délai garanti',
+    limits: 'Seulement pour un litige avec un professionnel',
   },
   {
     slug: 'juge',
     name: 'Saisir le juge',
     amicable: false,
     helper: 'Un juge, éventuellement un avocat',
+    access: 'Par une demande au tribunal, souvent après une tentative amiable obligatoire',
     cost: 'Frais possibles (avocat, commissaire de justice, expertise)',
     decides: 'Le juge',
     duration: 'Plusieurs mois, parfois plus',
     outcome: 'Un jugement qui s’impose, même s’il ne vous satisfait pas',
+    strengths: 'Une décision qui s’impose, même si l’autre partie refuse de discuter',
+    limits: 'Long, parfois coûteux, et la relation en sort rarement apaisée',
   },
 ]
 
@@ -121,7 +141,7 @@ export const guidesData: GuideInput[] = [
       },
       {
         title: 'Trouvez une permanence',
-        text: 'Sur conciliateurs.fr, cherchez un conciliateur près de chez vous, du lieu du litige ou de l’autre partie. Les permanences ont lieu en mairie, au tribunal ou dans une maison de justice.',
+        text: 'Sur conciliateurs.fr, cherchez un conciliateur près de chez vous, du lieu du litige ou de l’autre partie. Les permanences ont lieu par exemple dans un point-justice ou au tribunal. Le point-justice le plus proche peut aussi vous orienter.',
       },
       {
         title: 'Faites votre demande',
@@ -129,11 +149,11 @@ export const guidesData: GuideInput[] = [
       },
       {
         title: 'Le rendez-vous',
-        text: 'Chacun s’exprime, accompagné s’il le souhaite. Le conciliateur peut recevoir les parties ensemble ou séparément, et se rendre sur place avec leur accord.',
+        text: 'Chacun s’exprime, accompagné s’il le souhaite. Le conciliateur peut recevoir les parties ensemble ou séparément. Avec leur accord, il peut se rendre sur les lieux et entendre toute personne utile, si elle l’accepte.',
       },
       {
         title: 'L’issue',
-        text: 'En cas d’accord, un constat d’accord est signé et chacun en reçoit un exemplaire. Sinon, vous pouvez saisir le juge : la tentative compte comme tentative amiable.',
+        text: 'En cas d’accord, un constat d’accord est signé et chacun en reçoit un exemplaire. Le juge peut l’homologuer pour lui donner force exécutoire. Sinon, vous pouvez saisir le juge : la tentative compte comme tentative amiable.',
       },
     ],
     good: [
@@ -181,7 +201,7 @@ export const guidesData: GuideInput[] = [
     steps: [
       {
         title: 'Proposez la médiation',
-        text: 'Par écrit, proposez à l’autre partie de rencontrer un médiateur. Le juge peut aussi l’ordonner, même sans votre accord.',
+        text: 'Par écrit, proposez à l’autre partie de rencontrer un médiateur. Pendant un procès, le juge peut aussi désigner un médiateur, avec l’accord des parties, ou vous demander de rencontrer un médiateur pour une réunion d’information.',
       },
       {
         title: 'Choisissez un médiateur',
@@ -197,7 +217,7 @@ export const guidesData: GuideInput[] = [
       },
       {
         title: 'Faites-le homologuer',
-        text: 'L’accord écrit peut être homologué par le juge : il a alors la même force qu’un jugement.',
+        text: 'À la demande des parties, le juge peut homologuer l’accord écrit : il a alors force exécutoire, comme un jugement.',
       },
     ],
     good: [

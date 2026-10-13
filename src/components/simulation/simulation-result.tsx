@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import {
   channels as channelsContent,
   conflictTypes as conflictTypesContent,
+  freeInformation,
   type Channel,
   type ConflictType,
 } from '@/shared/simulation'
@@ -62,6 +63,7 @@ export function createSimulationResult({
               </h3>
               <p>{recommendation.channel.description}</p>
               <ChannelFacts channel={recommendation.channel} />
+              <ChannelDetails channel={recommendation.channel} />
               <ChannelContact channel={recommendation.channel} />
             </section>
 
@@ -83,9 +85,10 @@ export function createSimulationResult({
                 </h3>
                 <ul className="space-y-3">
                   {recommendation.alternatives.map((channel) => (
-                    <li key={channel.slug}>
+                    <li key={channel.slug} className="space-y-1">
                       <p className="font-medium">{channel.name}</p>
                       <p className="text-muted-foreground">{channel.description}</p>
+                      <ChannelDetails channel={channel} />
                     </li>
                   ))}
                 </ul>
@@ -95,6 +98,28 @@ export function createSimulationResult({
         ) : (
           <p>Aucun canal d’orientation n’est disponible pour le moment.</p>
         )}
+
+        <section
+          aria-labelledby="result-information"
+          className="space-y-2 rounded-lg border-l-4 border-france-blue bg-secondary p-4"
+        >
+          <h3 id="result-information" className="font-bold">
+            {freeInformation.title}
+          </h3>
+          <p>{freeInformation.text}</p>
+          <p>
+            <a
+              href={freeInformation.link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium break-words text-france-blue underline underline-offset-4 hover:decoration-2"
+            >
+              {freeInformation.link.label}
+              <span className="sr-only"> (nouvelle fenêtre)</span>
+              <ExternalLinkIcon aria-hidden className="ml-1 inline size-4 align-[-0.125em]" />
+            </a>
+          </p>
+        </section>
 
         {answers.length > 0 && (
           <section aria-labelledby="result-answers" className="space-y-3">
@@ -113,7 +138,7 @@ export function createSimulationResult({
         )}
 
         <Button type="button" variant="outline" size="lg" onClick={onRestart}>
-          Recommencer la simulation
+          Recommencer le questionnaire
         </Button>
       </div>
     )
@@ -128,8 +153,32 @@ function ChannelFacts({ channel }: { channel: Channel }) {
   return (
     <p className="flex flex-wrap gap-2 text-sm">
       <span className={fact}>{channel.amicable ? 'Voie amiable' : 'Voie judiciaire'}</span>
-      <span className={fact}>{channel.free ? 'Gratuit' : 'Peut avoir un coût'}</span>
+      {/* The detailed cost, when the content gives one, is shown just below. */}
+      {!channel.cost && (
+        <span className={fact}>{channel.free ? 'Gratuit' : 'Peut avoir un coût'}</span>
+      )}
     </p>
+  )
+}
+
+// Who pays and what an agreement is worth (#122, #123), when the content says it.
+function ChannelDetails({ channel }: { channel: Channel }) {
+  if (!channel.cost && !channel.agreement) return null
+  return (
+    <dl className="space-y-1 text-sm">
+      {channel.cost && (
+        <div>
+          <dt className="inline font-bold">Coût : </dt>
+          <dd className="inline">{channel.cost}</dd>
+        </div>
+      )}
+      {channel.agreement && (
+        <div>
+          <dt className="inline font-bold">Valeur de l’accord : </dt>
+          <dd className="inline">{channel.agreement}</dd>
+        </div>
+      )}
+    </dl>
   )
 }
 
