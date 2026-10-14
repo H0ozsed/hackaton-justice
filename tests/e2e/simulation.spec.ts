@@ -79,11 +79,11 @@ test('a full journey up to the amicable solutions, then start over', async ({ pa
   const amicable = result(page).getByRole('region', { name: 'Vers un accord à l’amiable' })
   await expect(amicable.getByRole('heading', { level: 4, name: 'Conciliation' })).toBeVisible()
   await expect(amicable.getByRole('heading', { level: 4, name: 'Médiation' })).toBeVisible()
-  // Nothing to choose: every third party is shown, what the law says first.
+  // Nothing to choose: every third party is shown, the essentials first, then what the law says.
   await expect(amicable.getByRole('radio')).toHaveCount(0)
-  await expect(amicable.getByRole('article').first().getByRole('term').first()).toHaveText(
-    'Ce que dit la loi',
-  )
+  const terms = amicable.getByRole('article').first().getByRole('term')
+  await expect(terms.first()).toHaveText('Qui c’est')
+  await expect(terms.filter({ hasText: 'Ce que dit la loi' })).toHaveCount(1)
   await expect(result(page).getByRole('heading', { name: 'Vos réponses' })).toBeVisible()
   await expectNoAxeViolation(page) // result
 
@@ -116,12 +116,15 @@ test('an empty step is refused with a clear message, and can be fixed', async ({
 
 test('going back keeps the answers', async ({ page }) => {
   await openForm(page)
-  const firstChoice = page.getByRole('radiogroup').getByRole('radio').first()
-  await firstChoice.check()
+  // A conflict type with a second step (the amount at stake): the others go straight to the
+  // result since the form was shortened (#161).
+  const choice = page.getByRole('radiogroup').getByRole('radio', { name: /avec un professionnel/ })
+  await choice.check()
   await goOn(page).click()
   await expect(stepTitle(page)).toBeFocused()
+  await expect(stepTitle(page)).not.toContainText('Type de conflit')
 
   await page.getByRole('button', { name: 'Précédent' }).click()
   await expect(stepTitle(page)).toContainText('Type de conflit')
-  await expect(page.getByRole('radiogroup').getByRole('radio').first()).toBeChecked()
+  await expect(choice).toBeChecked()
 })

@@ -49,9 +49,12 @@ test('home: mobile menu, explainer definition and IRIS chat widget', async ({ pa
     .getByRole('button', { name: /voir la définition/ })
     .first()
     .click()
-  await expect(page.getByRole('dialog')).toBeVisible()
+  const definition = page.getByRole('dialog', { name: /^Définition/ })
+  await expect(definition).toBeVisible()
   await expectNoViolations(page, 'explainer definition open')
   await page.keyboard.press('Escape')
+  // The popover fades out before leaving the page: IRIS must not be opened during the fade.
+  await expect(definition).toHaveCount(0)
 
   const question = page.locator('main [data-slot="accordion-trigger"]').first()
   if (await question.count()) {
@@ -60,7 +63,7 @@ test('home: mobile menu, explainer definition and IRIS chat widget', async ({ pa
   }
 
   await page.getByRole('button', { name: 'Poser une question à IRIS' }).click()
-  await expect(page.getByRole('dialog')).toBeVisible()
+  await expect(page.getByRole('dialog', { name: 'IRIS' })).toBeVisible()
   await expectNoViolations(page, 'IRIS widget open')
 })
 

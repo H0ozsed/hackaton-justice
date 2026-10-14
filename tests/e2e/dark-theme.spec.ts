@@ -67,19 +67,20 @@ test.describe('with the system in dark mode', () => {
     })
   }
 
-  test('home states in dark: definition, FAQ answer and IRIS open', async ({ page }) => {
+  // The home FAQ moved to /apprendre (#161): its dark state is covered by the /apprendre scans.
+  test('home states in dark: definition and IRIS open', async ({ page }) => {
     await page.goto('/')
     await page
       .getByRole('region', { name: 'L’amiable en 1 minute' })
       .getByRole('button', { name: /voir la définition/ })
       .first()
       .click()
-    await expect(page.getByRole('dialog')).toBeVisible()
+    const definition = page.getByRole('dialog', { name: /^Définition/ })
+    await expect(definition).toBeVisible()
     await expectNoViolations(page, 'definition open (dark)')
     await page.keyboard.press('Escape')
-
-    await page.locator('main [data-slot="accordion-trigger"]').first().click()
-    await expectNoViolations(page, 'FAQ answer open (dark)')
+    // The popover fades out before leaving the page.
+    await expect(definition).toHaveCount(0)
 
     await page.getByRole('button', { name: 'Poser une question à IRIS' }).click()
     await expect(page.getByRole('dialog', { name: 'IRIS' })).toBeVisible()
